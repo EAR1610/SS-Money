@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Money Engineering Super Sistemas</title>
+
+    <!-- css -->
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+	<link rel="shortcut icon" href="img/supersistemas.png" />
+    <link href="assets/css/animate.css" rel="stylesheet">
+    <link href="assets/css/styleA.css" rel="stylesheet">
+	<link rel="manifest" href="manifest.json">
+	<!-- Toastr style -->
+    <link href="css/plugins/toastr/toastr.min.css" rel="stylesheet">
+	
+    <script>
+        if ( typeof module === "object" && typeof module.exports === "object" ) {
+            window.$ = window.jQuery = require('jquery');
+        }
+    </script>
+</head>
+
+<body class="gray-bg" id="principal" style='background-image: url("assets/img/login_imagen.jpg"); background-size: cover; background-repeat: no-repeat; background-position: center; height: 100vh;'>
+                    
+    <div class="middle-box text-center loginscreen animated fadeInDown" style="margin-bottom: 94px;">
+        <div class="row" id="rowview">
+		
+				<div class="ibox-content" style="margin-top: 21%;background-color: #00050a63; border-radius: 8px; margin: auto;">
+                    <form class="m-t" role="form" action="index.html">
+					
+						<!-- <img src="assets/img/supersistemas.png" style="width: 246px;height: 246px;margin-bottom: 7%;padding-left: 20px;padding-right: 20px;"> -->
+						<img src="img/profile_small2.png" style="height: 80px; margin-bottom: 7%; padding-left: 20px; padding-right: 20px;">
+                        <div class="form-group">
+                            <input id="correo_usuario" type="email" class="form-control" placeholder="Correo electronico" required="">
+                        </div>
+                        <div class="form-group">
+                            <input id="pass_usuario" type="password" class="form-control" placeholder="Contraseña" required="">
+                        </div>
+                        <button type="button" onclick="javascript:iniciar_sesion();" class="btn btn-success block full-width m-b" style="background-color: #2451e4;">INICIAR SESION</button>
+
+                        <a href="javascript:olvide_password();">
+                            <small>Olvidaste tu contraseña?</small>
+                        </a>
+						<label id="conectado_server" style="display:none;">
+						</label>
+                        <a class="btn btn-sm btn-info btn-block" style="margin-top: 6%;" href="javascript:registro_sesion();">CREAR CUENTA</a>
+                    </form>
+                    <div align='center'>
+				 <small>.</small>
+			     <h3 class="modal-title-center" id="commercial"style=" color:white;">SS Money ®</h3>
+			     <h4 class="modal-title-center" id="commercial2"style="color:white;">SuperSistemas
+					<script> 
+						var year = new Date().getFullYear();
+    					document.getElementById('commercial2').innerHTML += ' ' + year;
+					</script>
+				</h4>
+			    </div>
+                </div>
+        </div>
+    </div>
+
+   
+
+	<div class="modal inmodal" id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog">
+		<div class="modal-content animated bounceInRight">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+					<i class="fa fa-laptop modal-icon" style="color:#01a6e2;"></i>
+					<h4 class="modal-title">Elegir uso de aplicación</h4>
+					<small class="font-bold">Cuenta destinada para la siguiente app de la suite</small>
+				</div>
+				<div class="modal-body" align="center">
+					<p class="row">
+						<div class="col-xs-6 col-sm-6 col-md-6" style="cursor:pointer;" onclick="javascript:credict();">
+							<img src="img/credit.png" style="width: 187px;">
+						</div>						
+					</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+    <!-- Mainly scripts -->
+    <script src="js/jquery-3.1.1.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.js"></script> 
+    <script src="js/plugins/mommet/mommet.js"></script>
+
+	<!-- Toastr script -->
+    <script src="js/plugins/toastr/toastr.min.js"></script>
+	<!-- Red script -->
+	<script src="js/backend.js"></script> 
+	<script>
+
+		var block = this;
+		
+		var isMobile = {
+			Android: function() {
+				return navigator.userAgent.match(/Android/i);
+			},
+			BlackBerry: function() {
+				return navigator.userAgent.match(/BlackBerry/i);
+			},
+			iOS: function() {
+				return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+			},
+			Opera: function() {
+				return navigator.userAgent.match(/Opera Mini/i);
+			},
+			Windows: function() {
+				return navigator.userAgent.match(/IEMobile/i) || navigator.userAgent.match(/WPDesktop/i);
+			},
+			any: function() {
+				return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+			}
+		};
+		
+		if(isMobile.any()){
+			$("#rowview").css("margin-left","0px");
+			$("#principal").css("background-image","url('img/mobile.png')");
+		}
+		
+		function credict(){
+			window.sessionStorage.setItem("Money-vars-indice-perfil","credict");
+			toastr.success('Perfil guardado','¡Registro de usuario exitoso!');
+			registro_sesion();
+			$("#myModal").modal("hide");
+		}
+		
+		function zimple(){
+			window.sessionStorage.setItem("Money-vars-indice-perfil","zimple");
+			toastr.success('Perfil guardado','¡Proceso exitoso!');
+			registro_sesion();
+			$("#myModal").modal("hide");
+		}
+
+		function store(){
+			window.sessionStorage.setItem("Money-vars-indice-perfil","store");
+			toastr.success('Perfil guardado','¡Proceso exitoso!');
+			registro_sesion();
+			$("#myModal").modal("hide");
+		}
+		
+		var hoy = moment().format('YYYY-MM-DD');
+		if(window.localStorage.getItem("Money-vars-token-dura-"+hoy)!==null){
+			var salida = window.localStorage.getItem("Money-vars-token-dura-"+hoy);
+			var valor = JSON.parse(salida);
+			window.sessionStorage.setItem("Money-vars-token",salida);
+			if(valor[3]=="0"){
+				location.href = "./panel_root";
+			} else if(valor[3]=="1"){
+				location.href = "./panel_super";
+			} else if(valor[3]=="2"){
+				location.href = "./panel_users";
+			} else if(valor[3]=="3"){
+				location.href = "./panel_client";
+			} else if(valor[3]=="5"){
+				location.href = "./panel_admin";
+			} else if(valor[3]=="6"){
+				location.href = "./panel_zimple";
+			} else if(valor[3]=="7"){
+				location.href = "./panel_store";
+			}
+		}
+		
+		function iniciar_sesion(){
+			if($("#correo_usuario").val()!=="" && $("#pass_usuario").val()!==""){
+				block.arrays = [$("#correo_usuario").val(),$("#pass_usuario").val()];
+				block.obj = {"r":"iniciar_sesion","d":block.arrays};				
+				backend.conexionEnvio(JSON.stringify(block.obj),function(salida){
+					var valor = JSON.parse(salida);	
+					console.log(valor)
+					if(!valor.e){
+						var hoy = moment().format('YYYY-MM-DD');
+						window.sessionStorage.setItem("Money-vars-token",JSON.stringify(valor.d));
+						window.localStorage.setItem("Money-vars-token-dura-"+hoy,JSON.stringify(valor.d));
+
+						if(valor.d[3]=="0") 	 location.href = "./panel_root"; //SUPER ADMIN
+						else if(valor.d[3]=="1") location.href = "./panel_super"; //(SOLICITAR AL SUPERADMIN)
+						else if(valor.d[3]=="2") location.href = "./panel_users"; //ASESOR
+						else if(valor.d[3]=="3") location.href = "./panel_client";
+						else if(valor.d[3]=="4") location.href = "./panel_admin"; //ROL SUPERVISOR
+						else if(valor.d[3]=="5") location.href = "./panel_admin"; //ROL ADMINISTRADOR
+                        
+					} else {
+						if ( valor.d[1]=="1" ) 		  toastr.warning('Esta cuenta No Existe','¡Error!');
+						else if ( valor.d[1] == "2" ) toastr.warning('Caracteres No permitidos','¡Atención!');
+						else if ( valor.d[1] == "3" ) toastr.warning('Esta cuenta no está activada, comuníquese con el administrador del sistema','¡Atención!');
+						else if ( valor.d[1] == "4" ) toastr.warning('Contraseña invalida','¡Error!');
+						else if ( valor.d[1] == "5" ) toastr.warning('Su horario laboral, ha culminado', 'Atención');
+					}
+				});
+				block.config = { "r" : "establecer_configuraciones", "d": block.arrays };
+				backend.conexionEnvio(JSON.stringify(block.config), function(salida){
+					const respuesta = JSON.parse(salida);
+					if (!respuesta.e) {						
+						window.sessionStorage.setItem("Configuracion",respuesta.d[ 1 ] );						
+					}
+				})
+			}else{
+				toastr.error('Faltan datos para iniciar sesion, corrobore sus credenciales','¡Atención!')
+			}
+		}
+		
+		function registro_sesion(){
+			if($("#correo_usuario").val()!=="" && $("#pass_usuario").val()!==""){
+			
+				if(window.sessionStorage.getItem("Money-vars-indice-perfil")!==null){
+				
+					block.arrays = [$("#correo_usuario").val(),$("#pass_usuario").val(),window.sessionStorage.getItem("Money-vars-indice-perfil")];
+					block.obj = {"r":"registro_cuenta","d":block.arrays};
+					backend.conexionEnvio(JSON.stringify(block.obj),function(salida){
+						var valor = JSON.parse(salida);						
+						if(!valor.e){
+							toastr.success('Registrado con exito, el administrador lo habilitará','¡Proceso exitoso!');
+							$("#correo_usuario").val("");
+							$("#pass_usuario").val("");
+						}else{
+							if(valor.d[1]=="1"){
+								toastr.warning('Ya existe este registro','¡Registro duplicado!');
+							}else if(valor.d[1]=="2"){
+								toastr.warning('Los caracteres no son permitidos','¡Atención!');
+							}
+						}
+					});
+					
+				}else{
+					$("#myModal").modal("show");
+				}
+			}else{
+				toastr.error('Faltan datos para iniciar sesion','¡Atención!')
+			}
+		}
+		
+		function olvide_password(){
+			toastr.info('Consulte a su administrador de empresa su contraseña','¡Atención!');
+		}
+
+        $("#pass_usuario").keypress(function (e) {
+            if (e.which == 13) {
+                iniciar_sesion();
+            }
+        });
+
+
+		// if ('serviceWorker' in navigator) {
+		//   window.addEventListener('load', () => {
+		// 	navigator.serviceWorker.register('sw.js')
+		// 		.then((reg) => {
+		// 		  console.log('Service worker registered.', reg);
+		// 		});				
+		//   });
+		// }
+
+		if ('serviceWorker' in navigator) {
+			window.addEventListener('load', () => {
+				navigator.serviceWorker.register('sw.js')
+				.then((reg) => {
+					console.log('Service worker registered.', reg);
+				})
+				.catch((error) => {
+					console.error('Error al registrar el Service Worker: ', error);
+				});				
+			});
+		}
+
+	</script>
+</body>
+</html>

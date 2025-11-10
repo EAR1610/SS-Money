@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Money Engineering Liquidacion</title>
+    <link rel="shortcut icon" href="../img/favicon-credit-card.ico"/>
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <script>
+        if ( typeof module === "object" && typeof module.exports === "object" ) {
+            window.$ = window.jQuery = require('jquery');
+        }
+    </script>
+</head>
+<body>
+	<div class="row" style="padding: 8%;">
+		<div class="col-sm-9 col-md-9 col-xs-9 col-lg-9">
+			<strong>NOMBRE DE EMPRESA:</strong> <label id="nombre"></label>
+		</div>
+		<div class="col-sm-3 col-md-3 col-xs-3 col-lg-3">
+			<strong>NIT:</strong> <label id="nit"></label>
+		</div>
+	</div>
+	<div style="text-align:center;margin-top: -4%;">
+		<strong>CONTRATOS</strong>
+	</div>
+	<div style="margin-left:4px; margin-right:4px;">
+		<strong>ASESOR:</strong> <label id="ase"></label>
+		<br>
+		<strong>CEDULA:</strong> <label id="cedula"></label>
+	</div>
+	<div style="margin-left:4px; margin-right:4px;margin-top:4%">
+		<table class="table table-striped">
+		  <thead>
+			<tr>
+			  <th scope="col">NUMERO</th>
+			  <th scope="col">N</th>
+			  <th scope="col">R</th>
+			  <th scope="col">VALOR</th>
+			  <th scope="col">ENTREGA</th>
+			  <th scope="col">DESCUENTO</th>
+			  <th scope="col">ADELANTO</th>
+			  <th scope="col">PENDIENTE</th>
+			  <th scope="col">PLAZO</th>
+			  <th scope="col">C.C</th>
+			  <th scope="col">NOMBRE/APELLIDO</th>
+			</tr>
+		  </thead>
+		  <tbody id="lista1">
+		  </tbody>
+		</table>
+	</div>
+	<div style="text-align:center">
+		<strong>CANCELADAS</strong>
+	</div>
+	<div style="margin-left:4px; margin-right:4px;margin-top:4%">
+		<table class="table table-striped">
+		  <thead>
+			<tr>
+			  <th scope="col">NUMERO</th>
+			  <th scope="col">N</th>
+			  <th scope="col">R</th>
+			  <th scope="col">VALOR</th>
+			  <th scope="col">CANCELADO</th>
+			  <th scope="col">ABONO</th>
+			  <th scope="col">C.C</th>
+			  <th scope="col">NOMBRE/APELLIDO</th>
+			</tr>
+		  </thead>
+		  <tbody id="lista2">
+		  </tbody>
+		</table>
+	</div>
+	<div style="text-align:center;">
+		<strong>GASTOS</strong>
+	</div>
+	<div style="margin-left:4px; margin-right:4px;margin-top:4%">
+		<div class="col-sm-8 col-md-8 col-xs-8 col-lg-8">
+			<table class="table table-striped">
+			  <thead>
+				<tr>
+				  <th scope="col">DESCRIPCIÓN</th>
+				  <th scope="col">MONTO</th>
+				</tr>
+			  </thead>
+			  <tbody id="lista3">
+			  </tbody>
+			</table>
+		</div>
+		<div class="col-sm-4 col-md-4 col-xs-4 col-lg-4" align="center">
+			<h2><strong>TOTAL: <label id="listaT"></label></strong></h2>
+		</div>
+	</div>
+</body>
+<script src="../js/jquery-3.1.1.min.js"></script>
+<script src="../js/popper.min.js"></script>
+<script src="../js/bootstrap.js"></script>
+<script src="../js/plugins/peity/jquery.peity.min.js"></script>
+<link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css" rel="stylesheet"/>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
+	<script>
+		
+		var block = this;
+		block.totalete = 0;
+		block.todo = window.localStorage.getItem("Money-vars-excel");
+		block.data = JSON.parse(block.todo);
+		$("#nombre").text(block.data[1]);
+		$("#ase").text(block.data[3]);
+		$("#nit").text(block.data[2]);
+		$("#cedula").text(block.data[4]);
+		block.uno = block.data[9];
+		block.lista ="";
+		for(var d = 0; d < block.uno.length; d++){
+			block.indes = JSON.parse(block.uno[d][0]);
+			block.esesd = JSON.parse(block.uno[d][1]);
+			if(block.indes[3].indexOf(".")>-1){
+				block.calai = block.indes[3].replace(".","");
+			}
+			if(block.indes[3].indexOf(".")>-1){
+				calai = calai.replace(".","");
+			}
+			block.totalete = block.totalete - parseInt(calai);
+			block.lista = block.lista + '<tr> <th scope="row">'+block.esesd[6]+'</th><td>X</td><td></td><td>$'+block.indes[3]+'</td> <td>$'+block.indes[3]+'</td><td>$0</td><td>$0</td><td>$0</td><td>'+block.indes[7]+' Coutas</td><td>'+block.indes[1]+'</td><td>'+block.esesd[7]+' '+block.esesd[9]+'</td></tr>';
+		}
+		$("#lista1").html(block.lista);
+		block.dos = block.data[8];
+		block.ines= '';
+		for(var xd = 0; xd < block.dos.length; xd++){
+			block.totalete = block.totalete - parseInt(block.dos[xd][2]);
+			block.ines = block.ines + '<tr> <th scope="row">'+block.dos[xd][1]+'</th><td>$'+block.dos[xd][2]+'</td></tr>';
+		}
+		$("#lista3").html(block.ines);
+		block.tres = block.data[7];
+		block.lista4 ="";
+		for(var d = 0; d < block.tres.length; d++){
+			block.indes = JSON.parse(block.tres[d][0]);
+			block.esesd = JSON.parse(block.tres[d][1]);
+			block.psdse = block.tres[d][2];
+			block.posi = block.psdse[0].split("_");
+			block.totalete = block.totalete + parseInt(block.posi[4]);
+			if(block.posi[3]==block.posi[4]){
+				block.abo = "$0";
+				block.can = "$"+block.posi[3];
+			}else{
+				block.can = "$0";
+				block.abo = "$"+block.posi[4];
+			}
+			block.lista4 = block.lista4 + '<tr><th scope="row">'+block.indes[1]+'</th><td>X</td><td></td><td>$'+block.indes[8]+'</td><td>'+block.can+'</td><td>'+block.abo+'</td><td>'+block.indes[1]+'</td><td>'+block.esesd[7]+' '+block.esesd[9]+'</td></tr>';
+			
+		}
+		$("#lista2").html(block.lista4);
+		 block.totalete = block.totalete.toString().split('').reverse().join('').replace(/(?=\d*\.?)(\d{3})/g,'$1.');
+         block.totalete = block.totalete.split('').reverse().join('').replace(/^[\.]/,'');
+		$("#listaT").text("$"+block.totalete);
+	</script>
+</html>

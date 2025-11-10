@@ -1,0 +1,12 @@
+{
+  "hosting": {
+    "public": "redireccion",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**",
+      "**/backend/**",
+      "**/miselaneos/**"
+    ]
+  }
+}

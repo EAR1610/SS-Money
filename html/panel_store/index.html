@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Money engeneering :: Panel</title>
+    <link rel="shortcut icon" href="../img/favicon-credit-card.ico"/>
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../font-awesome/css/font-awesome.css" rel="stylesheet">
+    <link href="../css/plugins/iCheck/custom.css" rel="stylesheet">
+    <link href="../css/animate.css" rel="stylesheet">
+    <link href="../css/style.css" rel="stylesheet">
+    <link href="../css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+    <link href="../css/plugins/toastr/toastr.min.css" rel="stylesheet">
+    <link href="../css/plugins/fullcalendar/fullcalendar.css" rel="stylesheet">
+    <link href="../css/plugins/fullcalendar/fullcalendar.print.css" rel='stylesheet' media='print'>
+    <link href="../css/plugins/slick/slick.css" rel="stylesheet">
+    <link href="../css/plugins/slick/slick-theme.css" rel="stylesheet">
+    <script>
+        if ( typeof module === "object" && typeof module.exports === "object" ) {
+            window.$ = window.jQuery = require('jquery');
+        }
+    </script>
+
+    <style>
+        @media (max-width: 576px) {
+            .profile-info{
+                margin-left: 0%;
+            }
+            .profile-image{
+                margin-left: 31%;
+            }
+            .modalete{
+                left: -3% !important;
+                width: auto !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="fixed-sidebar no-skin-config full-height-layout">
+
+<div id="wrapper">
+
+    <div class="modal inmodal" id="identidad_fotos" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content animated bounceInRight">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span
+                            aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">Información visual</h4>
+                </div>
+                <div class="modal-body" align="center">
+                    <div class="col-xs-12">
+                        <img id="idfoto" class="ima" src="store.png"
+                             style="padding:4px;max-width: 100%;height: auto;display:block;"/>
+                    </div>
+                    <div class="col-xs-12 img-fluid">
+                        <img id="caratula" class="ima" src="store.png"
+                             style="padding:4px;max-width: 100%;height: auto;display:block;"/>
+                    </div>
+                    <div class="col-xs-12 img-fluid">
+                        <img id="reverso" class="ima" src="store.png"
+                             style="padding:4px;max-width: 100%;height: auto;display:block;"/>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-white" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <nav class="navbar-default navbar-static-side" role="navigation">
+        <div class="sidebar-collapse">
+            <ul class="nav metismenu" id="side-menu">
+                <li class="nav-header">
+                    <div class="dropdown profile-element">
+                        <img alt="image" src="store.png"
+                             style="margin-top: -24px;width: 137px;height: 40px;"/>
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="index.html">
+                            <span class="block m-t-xs font-bold" style="margin-left: 30%;">Store</span>
+                        </a>
+                    </div>
+                    <div class="logo-element">
+                        ME
+                    </div>
+                </li>
+
+                <li>
+                    <a href="javascript:configura_simple();"><i class="fa fa-cogs"></i> <span
+                            class="nav-label">Configuración</span></a>
+                </li>
+				<li>
+                    <a href="javascript:consulta_simple();"><i class="fa fa-bolt"></i> <span
+                            class="nav-label">Consultar</span></a>
+                </li>
+            </ul>
+
+        </div>
+    </nav>
+
+    <div id="page-wrapper" class="gray-bg" style="min-height: 757px;">
+        <div class="row border-bottom">
+            <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+                <div class="navbar-header">
+                    <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i>
+                    </a>
+                    <form role="search" class="navbar-form-custom">
+                        <div class="form-group pull-right">
+                            <img alt="image" src="../img/logos.png" style="width: 195px;margin-top: 11px;"/>
+                        </div>
+                    </form>
+                </div>
+                <ul class="nav navbar-top-links navbar-right">
+                    <li class="dropdown">
+                        <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+                            <i class="fa fa-envelope"></i> <span class="label label-warning">16</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-messages">
+                            <li>
+                                <div class="dropdown-messages-box">
+                                    <a class="dropdown-item float-left" href="profile.html">
+                                        <img alt="image" class="rounded-circle" src="../img/a7.jpg">
+                                    </a>
+                                    <div class="media-body">
+                                        <small class="float-right">46h ago</small>
+                                        <strong>Mike Loreipsum</strong> started following <strong>Monica Smith</strong>.
+                                        <br>
+                                        <small class="text-muted">3 days ago at 7:58 pm - 10.06.2014</small>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="dropdown-divider"></li>
+                            <li>
+                                <div class="dropdown-messages-box">
+                                    <a class="dropdown-item float-left" href="profile.html">
+                                        <img alt="image" class="rounded-circle" src="../img/a4.jpg">
+                                    </a>
+                                    <div class="media-body ">
+                                        <small class="float-right text-navy">5h ago</small>
+                                        <strong>Chris Johnatan Overtunk</strong> started following <strong>Monica
+                                        Smith</strong>. <br>
+                                        <small class="text-muted">Yesterday 1:21 pm - 11.06.2014</small>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="dropdown-divider"></li>
+                            <li>
+                                <div class="dropdown-messages-box">
+                                    <a class="dropdown-item float-left" href="profile.html">
+                                        <img alt="image" class="rounded-circle" src="../img/profile.jpg">
+                                    </a>
+                                    <div class="media-body ">
+                                        <small class="float-right">23h ago</small>
+                                        <strong>Monica Smith</strong> love <strong>Kim Smith</strong>. <br>
+                                        <small class="text-muted">2 days ago at 2:30 am - 11.06.2014</small>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="dropdown-divider"></li>
+                            <li>
+                                <div class="text-center link-block">
+                                    <a href="mailbox.html" class="dropdown-item">
+                                        <i class="fa fa-envelope"></i> <strong>Read All Messages</strong>
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <a href="javascript:salida_sistema();">
+                            <i class="fa fa-sign-out"></i> Salir
+                        </a>
+                    </li>
+                </ul>
+
+            </nav>
+        </div>
+
+        <div class="wrapper wrapper-content animated fadeInRight">
+
+
+            <div class="row">
+
+                <div class="col-lg-12" id="config_simple">
+                    <div class="ibox ">
+                        <div class="ibox-title">
+                            <h5>Configuración de cuenta en simple</h5>
+                        </div>
+                        <div class="ibox-content row" style="margin-right: 0px;margin-left: 0px;">
+							
+							<div class="col-sm-3 col-md-3 col-xs-12">
+                                <form role="form">
+                                    <div class="form-group"><label>Número de cedula Ó</label> <input
+                                            id="cedula_consulta"
+                                            type="number" 
+                                            placeholder=""
+                                            class="form-control"></div>
+                                </form>
+                            </div>
+							
+                            <div class="col-sm-3 col-md-3 col-xs-12">
+                                <form role="form">
+                                    <div class="form-group"><label>Número de PEP</label> <input
+                                            id="cedula_consulta2"
+                                            type="number" 
+                                            placeholder=""
+                                            class="form-control"></div>
+                                </form>
+                            </div>
+							
+							<div class="col-sm-3 col-md-3 col-xs-12">
+                                <form role="form">
+                                    <div class="form-group"><label>Contraseña de acceso</label> <input
+                                            id="passwords_consulta"
+                                            type="password"
+                                            placeholder=""
+                                            class="form-control"></div>
+                                </form>
+                            </div>
+
+							<div class="col-sm-3 col-md-3 col-xs-12">
+                                <button class="btn btn-primary btn-block" style="margin-top: 27px;" id="crear_config_sistema"
+                                        type="button">Guardar
+                                </button>
+                            </div>
+							
+							<h2>Registros</h2>
+							<table class="table">
+								<thead>
+								<tr>
+									<th>Usuario</th>
+									<th>Clave</th>
+									<th>Cedula o PEP</th>
+								</tr>
+								</thead>
+								<tbody id="otros_real">
+								</tbody>
+							</table>
+
+                        </div>
+                    </div>
+                </div>
+				
+				<div class="col-lg-12" id="consul_simple">
+                    <div class="ibox ">
+                        <div class="ibox-title">
+                            <h5>Consultar en simple</h5>
+                        </div>
+                        <div class="ibox-content row" style="margin-right: 0px;margin-left: 0px;">
+
+                            <div class="col-sm-12 col-md-12 col-xs-12">
+                                <h2>No Pagadas</h2>
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th>N° Planilla</th>
+                                        <th>Fecha guardada</th>
+                                        <th>Fecha transacción</th>
+                                        <th>Periodo</th>
+                                        <th>Valor</th>
+                                        <th>Estado</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="nopagadas">
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="col-sm-12 col-md-12 col-xs-12">
+                                <h2>Otras</h2>
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th>N° Planilla</th>
+                                        <th>Fecha guardada</th>
+                                        <th>Fecha transacción</th>
+                                        <th>Periodo</th>
+                                        <th>Valor</th>
+                                        <th>Estado</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="otros">
+                                    </tbody>
+                                </table>
+                            </div>
+							
+							<div class="col-sm-6 col-md-6 col-xs-6">
+                                <label>Cuentas registradas</label>
+								<select class="form-control m-b" id="acount_list">
+								</select>
+                            </div>
+							
+							<div class="col-sm-6 col-md-6 col-xs-6">
+                                <button class="btn btn-primary btn-block" style="margin-top: 27px;" id="consultar_infome"
+                                        type="button">Buscar informe
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+        <div class="footer" style="display:none;">
+            <div class="float-right">
+                Conexión:<strong id="conectado_server">false</strong>.
+            </div>
+            <div>
+                <strong>Copyright</strong> Money engeneering &copy; 2019
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Mainly scripts -->
+<script src="../js/jquery-3.1.1.min.js"></script>
+<script src="../js/plugins/toastr/toastr.min.js" type="text/javascript"></script>
+<script src="../js/popper.min.js"></script>
+<script src="../js/bootstrap.js"></script>
+<script src="../js/plugins/metisMenu/jquery.metisMenu.js"></script>
+<script src="../js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+<!-- Peity -->
+<script src="../js/plugins/peity/jquery.peity.min.js"></script>
+<script src="../js/plugins/fullcalendar/moment.min.js"></script>
+<!-- Custom and plugin javascript -->
+<script src="../js/inspinia.js"></script>
+<script src="../js/plugins/pace/pace.min.js"></script>
+<script src="../js/plugins/mommet/mommet.js"></script>
+<script src="../js/plugins/slick/slick.min.js"></script>
+
+<!-- iCheck -->
+<script src="../js/plugins/iCheck/icheck.min.js"></script>
+
+<script src="../js/plugins/sweetalert/sweetalert.min.js"></script>
+
+<script src="../js/backend.js"></script>
+
+
+<script>
+	
+	$("#page-wrapper").css("height","");
+	
+    var block = this;
+
+    function salida_sistema() {
+         window.sessionStorage.clear(); window.localStorage.clear();
+        location.href = "../index.html";
+    }
+	
+    if (window.sessionStorage.getItem("Money-vars-token") == null) {
+        salida_sistema();
+    }
+
+    function configura_simple(){
+        $("#config_simple").css("display","block");
+        $("#consul_simple").css("display","none");
+    }
+	
+    function consulta_simple(){
+        $("#config_simple").css("display","none");
+        $("#consul_simple").css("display","block");
+    }
+		
+	if(window.localStorage.getItem("Money-simple")!==null){
+		consulta_simple();
+	}
+	
+	if (window.localStorage.getItem("Money-vars-token") !== null) {
+		block.tokens = JSON.parse(window.localStorage.getItem("Money-vars-token"));
+	} else {
+		block.tokens = JSON.parse(window.sessionStorage.getItem("Money-vars-token"));
+	}
+	
+	$("#consultar_infome").click(function(){
+		block.credens = $("#acount_list").val();
+		block.creden = block.credens.split("_");
+		block.cedula = block.creden[1];
+		block.clave = block.creden[2];
+		block.tipo = block.creden[0];
+		toastr.warning('Consultado...', 'System notification!');
+		$("#page-wrapper").css("cursor","wait");
+		block.arrays = [block.tokens[1],block.cedula,block.clave,block.tipo];
+		block.obj = {"r": "consultar_simple", "d": block.arrays};
+		backend.conexionEnvio(JSON.stringify(block.obj), function (salida) {
+			var valor = JSON.parse(salida);
+			if (!valor.e) {
+				block.unie =JSON.parse(valor.d[1]);
+                block.sumto ='';
+                block.sumto2 ='';
+			   for (var k = 0; k < block.unie.length; k++) {
+			       block.itews = block.unie[k];
+			       if(block.itews.situacion=="PAGADA"){
+                       block.sumto = block.sumto +'<tr><td>'+block.itews.codigo+'</td><td>'+block.itews.fecha1+'</td> <td>'+block.itews.fecha2+'</td><td>'+block.itews.periodo+'</td><td>'+block.itews.precio+'</td><td>'+block.itews.situacion+'</td></tr>';
+                   }else{
+			           block.sumto2 = block.sumto2 +'<tr><td>'+block.itews.codigo+'</td><td>'+block.itews.fecha1+'</td> <td>'+block.itews.fecha2+'</td><td>'+block.itews.periodo+'</td><td>'+block.itews.precio+'</td><td>'+block.itews.situacion+'</td></tr>';
+                   }
+               }
+                $("#nopagadas").html(block.sumto2);
+                $("#otros").html(block.sumto);
+				$("#page-wrapper").css("cursor","initial");
+			}
+		});
+		setTimeout(function(){
+			 $("#page-wrapper").css("cursor","initial");
+		},70000);
+			
+	});
+	
+	function origen(){
+		block.arrays = [block.tokens[1]];
+		block.obj = {"r": "existe_config", "d": block.arrays};
+		backend.conexionEnvio(JSON.stringify(block.obj), function (salida) {
+			var valor = JSON.parse(salida);
+			if (!valor.e) {
+				window.localStorage.setItem("Money-simple",valor.d[1]);
+				toastr.success('Se cargo correctamente los datos');
+				$("#config_simple").css("display","none");
+				$("#consul_simple").css("display","block");
+				
+				block.unio='';
+				block.lore = '';
+				block.creden = JSON.parse(window.localStorage.getItem("Money-simple"));
+				for(var d = 0; d < block.creden.length; d++){
+					block.inte = block.creden[d];
+					block.cedula = block.inte[1];
+					block.clave = block.inte[2];
+					block.tiop = block.inte[3];
+					
+					block.reas ="Cedula";
+					if(block.tiop=="2"){
+						block.reas ="PEP";
+					}
+					block.lore = block.lore + '<tr><td>'+block.cedula+'</td><td>'+block.clave+'</td><td>'+block.reas+'</td></tr>';					
+					block.unio = block.unio + '<option value="'+block.tiop+'_'+block.cedula+'_'+block.clave+'">Tipo:'+block.reas+' N°:'+block.cedula+' Clave:'+block.clave+'</option>';
+				}
+				
+				$("#otros_real").html(block.lore);
+				$("#acount_list").html(block.unio);
+
+			}else{
+				if(valor.d[1]=="4"){
+					toastr.warning('Necesita configurar la cuenta con Cedula o con PEP');
+					$("#config_simple").css("display","block");
+					$("#consul_simple").css("display","none");
+				}
+			}
+		});
+    }
+	
+	$("#crear_config_sistema").click(function(){
+		if($("#passwords_consulta").val()!=="" && ($("#cedula_consulta").val()!=="" || $("#cedula_consulta2").val()!=="")){
+			if($("#cedula_consulta").val()!==""){
+				block.depende = $("#cedula_consulta").val();
+				block.tipo=1;
+			}else{
+				block.depende = $("#cedula_consulta2").val();
+				block.tipo=2;
+			}
+			block.arrays = [block.tokens[1],block.depende,$("#passwords_consulta").val(),block.tipo];
+			block.obj = {"r": "crear_simple_config", "d": block.arrays};
+			backend.conexionEnvio(JSON.stringify(block.obj), function (salida) {
+				var valor = JSON.parse(salida);
+				if (!valor.e) {
+				   toastr.success("Guardado correctamente y ha suplantado la anterior",'System notification!');
+				   $("#config_simple").val("");
+				   $("#consul_simple").val("");
+				   origen();
+				}
+			});
+		}else{
+			 toastr.warning('Debe registrar o "Cedula y clave" o "PEP y clave"', 'System notification!');
+		}
+	});
+	
+	origen();
+	
+</script>
+
+</body>
+</html>

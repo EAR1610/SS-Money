@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Money SS Admin</title>
+	<link rel="shortcut icon" href="../assets/img/money_credit.ico"/>
+    <link href="../assets/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+    <link href="../assets/css/plugins/iCheck/custom.css" rel="stylesheet">
+    <link href="../assets/css/animate.css" rel="stylesheet">
+    <link href="../css/style.css" rel="stylesheet">
+    <link href="../assets/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+    <link href="../assets/css/plugins/toastr/toastr.min.css" rel="stylesheet">
+    <link href="../assets/css/datetimepicker.css" rel="stylesheet">
+	<script src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
+
+    <script>
+        if ( typeof module === "object" && typeof module.exports === "object" ) {
+            window.$ = window.jQuery = require('jquery');
+        }
+    </script>
+
+</head>
+
+<body class="fixed-sidebar no-skin-config full-height-layout">
+
+    <div id="wrapper">
+
+    <nav class="navbar-default navbar-static-side" role="navigation">
+        <div class="sidebar-collapse">
+            <ul class="nav metismenu" id="side-menu">
+                <li class="nav-header">
+                    <div class="dropdown profile-element">
+                        <img alt="image" src="../img/profile_small.png"
+                             style="margin-top: -24px; width: 120px;height: 75px; margin-left: 8%"/>
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="index.html">
+                            <span class="block m-t-xs font-bold" style="margin-left: 21%;">Super admin</span>
+                        </a>
+                    </div>
+                    <div class="logo-element">
+                        ME
+                    </div>
+                </li>
+                <li>
+                    <a href="javascript:consultar_empresas();"><i class="fa fa-unlock-alt"></i> <span class="nav-label">Empresas</span></a>
+                </li>
+				<li>
+                    <a href="javascript:ubicaciones_operaciones();"><i class="fa fa-map-marker"></i> <span class="nav-label">Ubicaciones</span></a>
+                </li>
+            </ul>
+
+        </div>
+    </nav>
+
+    <div id="page-wrapper" class="gray-bg" style="min-height: 757px;">
+        <div class="row border-bottom">
+        <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+        <div class="navbar-header">
+            <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
+            <form role="search" class="navbar-form-custom">
+                <div class="form-group pull-right">
+					<p style="text-align: center; "><img alt="image" src="../img/logos.png" style="width: 183px;margin-top: 0px;border-radius: 67px 36% 3% -9%; height: 50px; background: #448ed300; position: absolute; bottom: 9px;"/>
+                </div>
+            </form>
+        </div>
+            <ul class="nav navbar-top-links navbar-right">
+               
+                
+                <li>
+                    <a href="javascript:salida_sistema();">
+						<i class="fa fa-sign-out"></i> Cerrar sesión
+					</a>
+                </li>
+            </ul>
+
+        </nav>
+        </div>
+            
+        <div class="wrapper wrapper-content animated fadeInRight">
+                   
+            <div class="row" id="lista_empresa_div">
+                <div class="col-lg-12">
+                    <div class="ibox ">
+                        <div class="ibox-title">
+                            <h5>Lista de empresas</h5>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                    <tr align="center">
+                                        <th>Usuario</th>
+                                        <th>Clave</th>
+                                        <th>Fecha</th>
+                                        <th>Habilitar</th>
+                                        <th>Eliminar</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody align="center" id="listado_empresas">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> 
+			
+			
+			<div class="row" id="lista_ubicacniones_div">
+                <div class="col-lg-12">
+                    <div class="ibox ">
+                        <div class="ibox-title">
+                            <h5>Registro de ubicaciones</h5>
+								<button class="btn btn-primary btn-sm pull-right" id="limpiar_agrega" type="button" style="margin-top: -7px;">Limpiar</button>
+                        </div>
+                        <div class="ibox-content row" style="margin-left:0px;margin-right:0px;">
+                            
+							<div class="col-sm-6 col-md-4 col-xs-12" id="view_departamento" >
+								<label>Departamento</label>
+								<select class="form-control m-b" id="tipo_departamento">
+									<option value="0"></option>
+									<option value="add">Agregar nuevo</option>
+								</select>
+							</div>
+							
+							<div class="col-sm-6 col-md-4 col-xs-12" id="add_departamento" style="display:none;">
+								<form role="form">
+									<div class="form-group"><label>Agregar departamento</label> <input id="add_departamento_text" type="text" placeholder="Inserte nombre de departamento" class="form-control"></div>
+								</form>
+							</div>
+							
+							
+							<div class="col-sm-6 col-md-4 col-xs-12" id="view_ciudades" >
+								<label>Municipio</label>
+								<select class="form-control m-b" id="tipo_ciudades">
+									<option value="0"></option>
+									<option value="add">Agregar nuevo</option>
+								</select>
+							</div>
+							
+							<div class="col-sm-6 col-md-4 col-xs-12" id="add_ciudades" style="display:none;">
+								<form role="form">
+									<div class="form-group"><label>Agregar municipio</label> <input id="add_ciudad_text" type="text" placeholder="Inserte nombre de ciudad" class="form-control"></div>
+								</form>
+							</div>
+							
+							
+							<div class="col-sm-6 col-md-4 col-xs-12" id="view_barrio" >
+								<label>Barrio</label>
+								<select class="form-control m-b" id="tipo_barrio">
+									<option value=""></option>
+									<option value="add">Agregar nuevo</option>
+								</select>
+							</div>
+							
+							<div class="col-sm-6 col-md-4 col-xs-12" id="add_barrio" style="display:none;">
+								<form role="form">
+									<div class="form-group"><label>Agregar barrio</label> <input id="add_barrio_text" type="text" placeholder="Inserte nombre del barrio" class="form-control"></div>
+								</form>
+							</div>
+							
+							<!-- <div class="col-sm-6 col-md-4 col-xs-12" id="add_barrio">
+								<form role="form">
+									<div class="form-group"><label>Agregar latitud</label> <input id="add_barrio_lat_text" type="number" placeholder="Inserte latitud del barrio" class="form-control"></div>
+								</form>
+							</div>
+							
+							<div class="col-sm-6 col-md-4 col-xs-12" id="add_barrio">
+								<form role="form">
+									<div class="form-group"><label>Agregar longitud</label> <input id="add_barrio_lon_text" type="number" placeholder="Inserte longitud del barrio" class="form-control"></div>
+								</form>
+							</div> -->
+							<div class="col-sm-3 col-md-2 col-xs-6" style="text-align: center;margin-top: 3%;">
+								<button class="btn btn-primary btn-block" id="crear_direccion" type="button" >Agregar</button>
+							</div>
+							<!-- <div class="col-sm-3 col-md-2 col-xs-6" style="text-align: center;margin-top: 3%;">
+								<button class="btn btn-danger btn-block" id="eliminar_direccion" type="button" >Eliminar</button>
+							</div> -->
+							
+                        </div>
+                    </div>
+                </div>
+            </div>
+			
+        </div>
+        <div class="footer" style="display:none;">
+            <div class="float-right">
+                Conexión:<strong id="conectado_server">false</strong>.
+            </div>
+            <div>
+                <strong>Copyright</strong> Money engeneering &copy; 2019
+            </div>
+        </div>
+
+        </div>
+        </div>
+
+
+
+    <!-- Mainly scripts -->
+    <script src="../js/jquery-3.1.1.min.js"></script>
+    <script src="../js/popper.min.js"></script>
+    <script src="../js/bootstrap.js"></script>
+    <script src="../js/plugins/metisMenu/jquery.metisMenu.js"></script>
+    <script src="../js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+	<script src="../js/plugins/toastr/toastr.min.js" type="text/javascript"></script>
+
+    <!-- Peity -->
+    <script src="../js/plugins/peity/jquery.peity.min.js"></script>
+
+    <!-- Custom and plugin javascript -->
+    <script src="../js/inspinia.js"></script>
+    <script src="../js/plugins/pace/pace.min.js"></script>
+    <script src="../js/plugins/mommet/mommet.js"></script>
+
+    <!-- iCheck -->
+    <script src="../js/plugins/iCheck/icheck.min.js"></script>
+
+	<script src="../js/plugins/sweetalert/sweetalert.min.js"></script>
+	<script src="../js/imagen_tool.js"></script>	
+	<script src="../js/backend.js"></script> 
+	<script src="../js/datetimepicker.js"></script>
+	<link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css" rel="stylesheet"/>
+	
+    <script>
+
+		var block = this;
+	
+	
+		$("#page-wrapper").css("height","");
+
+        function salida_sistema() {
+             window.sessionStorage.clear(); window.localStorage.clear();
+            location.href = "../index.html";
+        }
+
+        if (window.sessionStorage.getItem("Money-vars-token") == null) {
+            salida_sistema();
+        }
+		
+		$("#limpiar_agrega").click(function(){
+			$("#view_departamento").css("display","initial");
+			$("#view_ciudades").css("display","initial");
+			$("#view_barrio").css("display","initial");
+			$("#add_barrio").css("display","none");
+			$("#add_barrio_text").val("");
+			$("#add_departamento").css("display","none");
+			$("#add_departamento_text").val("");
+			$("#add_ciudades").css("display","none");
+			$("#add_ciudad_text").val("");
+			$("#tipo_barrio option[value=0]").attr("selected",true);
+			$("#tipo_ciudades option[value=0]").attr("selected",true);
+			$("#tipo_departamento option[value=0]").attr("selected",true);
+		});
+		
+		$("#tipo_departamento").change(function(){
+			if($("#tipo_departamento").val()=="add"){
+				$("#view_departamento").css("display","none");
+				$("#add_departamento").css("display","initial");
+				$("#view_ciudades").css("display","none");
+				$("#add_ciudades").css("display","initial");
+				$("#view_barrio").css("display","none");
+				$("#add_barrio").css("display","initial");
+			}else{
+				extraer_ciudades();
+			}
+		});
+		
+		$("#tipo_ciudades").change(function(){
+			if($("#tipo_ciudades").val()=="add"){
+				$("#view_ciudades").css("display","none");
+				$("#add_ciudades").css("display","initial");
+				$("#view_barrio").css("display","none");
+				$("#add_barrio").css("display","initial");
+			}else{
+				extraer_barrios();
+			}
+		});
+		
+		$("#tipo_barrio").change(function(){
+			if($("#tipo_barrio").val()=="add"){
+				$("#view_barrio").css("display","none");
+				$("#add_barrio").css("display","initial");
+			}else{
+			    block.departe = $("#tipo_departamento").val();
+			    block.cuidad = $("#tipo_ciudades").val();
+			    block.barrios = $("#tipo_barrio").val();
+
+                if(window.localStorage.getItem("Money-vars-token")!==null){
+                    block.tokens = JSON.parse(window.localStorage.getItem("Money-vars-token"));
+                }else{
+                    block.tokens = JSON.parse(window.sessionStorage.getItem("Money-vars-token"));
+                }
+
+                block.arrays = [block.tokens[1],block.departe,block.cuidad,block.barrios];
+                block.obj = {"r":"ver_direccion_root","d":block.arrays};
+                backend.conexionEnvio(JSON.stringify(block.obj),function(salida){
+                    var valor = JSON.parse(salida);
+                    if(!valor.e){
+                        $("#add_barrio_lat_text").val(valor.d[1]);
+                        $("#add_barrio_lon_text").val(valor.d[2]);
+                    }
+                });
+
+            }
+		});
+		
+		$("#eliminar_direccion").click(function(){
+			if($("#tipo_barrio").val()!=="add" && $("#tipo_barrio").val()!=="" && $("#tipo_ciudades").val()!=="add" && $("#tipo_ciudades").val()!=="" && $("#tipo_departamento").val()!=="add" && $("#tipo_departamento").val()!==""){
+				
+				if(window.localStorage.getItem("Money-vars-token")!==null){
+					block.tokens = JSON.parse(window.localStorage.getItem("Money-vars-token"));
+				}else{
+					block.tokens = JSON.parse(window.sessionStorage.getItem("Money-vars-token"));
+				}
+				
+				block.arrays = [block.tokens[1],$("#tipo_departamento").val(),$("#tipo_ciudades").val(),$("#tipo_barrio").val()];
+				block.obj = {"r":"elimina_direccion","d":block.arrays};
+				backend.conexionEnvio(JSON.stringify(block.obj),function(salida){
+					var valor = JSON.parse(salida);
+					if(!valor.e){
+						$("#limpiar_agrega").click();
+						ubicaciones_operaciones();
+						toastr.success('Procesado con éxito','Atención!');
+					}
+				});
+				
+			}else{
+				toastr.warning('Seleccione "Departamento" > "Municipio" > "Barrio" para poder eliminar ','Atención!');
+			}
+		});
+		
+		$("#crear_direccion").click(function(){
+			
+			if($("#view_departamento").css("display")!=="none"){
+				block.depa = $("#tipo_departamento").val();
+			}else{
+				block.depa = $("#add_departamento_text").val();
+			}
+						
+			if($("#view_ciudades").css("display")!=="none"){
+				block.ciud = $("#tipo_ciudades").val();
+			}else{
+				block.ciud = $("#add_ciudad_text").val();
+			}
+						
+			if($("#view_barrio").css("display")!=="none"){
+				block.barr = $("#tipo_barrio").val();
+			}else{
+				block.barr = $("#add_barrio_text").val();
+			}
+			
+			block.lat = $("#add_barrio_lat_text").val();
+			
+			block.lon = $("#add_barrio_lon_text").val();
+			
+			if( block.depa!=="" && block.ciud!=="" && block.barr!=="" ){			
+				
+				if(window.localStorage.getItem("Money-vars-token")!==null){
+					block.tokens = JSON.parse(window.localStorage.getItem("Money-vars-token"));
+				}else{
+					block.tokens = JSON.parse(window.sessionStorage.getItem("Money-vars-token"));
+				}
+				
+				block.arrays = [block.tokens[1],block.depa,block.ciud,block.barr];
+				block.obj = {"r":"crea_direccion","d":block.arrays};
+				backend.conexionEnvio(JSON.stringify(block.obj),function(salida){
+					var valor = JSON.parse(salida);
+					console.log(valor);
+					if(!valor.e){
+						$("#add_barrio_lon_text").val("");
+						$("#add_barrio_lat_text").val("");
+						$("#add_barrio_text").val("");
+
+						$("#limpiar_agrega").click();
+						ubicaciones_operaciones();
+						toastr.success('Procesado con éxito','Atención!');
+					}
+				});
+				
+			}else{
+				toastr.warning('Faltan datos para registrar o coordenadas erradas','Atención!');
+			}
+		});
+		
+		function interruptor_empresa(id){
+			swal({
+				title: "Atención!?",
+				text: "Desea habilitar/deshabilitar la empresa!",
+				type: "warning",
+				showCancelButton: true,
+				confirmButtonColor: "#DD6B55",
+				confirmButtonText: "Si!",
+				closeOnConfirm: true
+			}, function () {
+			
+				if(window.localStorage.getItem("Money-vars-token")!==null){
+					block.tokens = JSON.parse(window.localStorage.getItem("Money-vars-token"));
+				}else{
+					block.tokens = JSON.parse(window.sessionStorage.getItem("Money-vars-token"));
+				}
+				
+				block.arrays = [block.tokens[1],id];
+				block.obj = {"r":"habilitar_deshabilitar_empresa","d":block.arrays};
+				backend.conexionEnvio(JSON.stringify(block.obj),function(salida){
+					var valor = JSON.parse(salida);
+					if(!valor.e){
+						$("#listado_empresas").html("");
+						toastr.success('Procesado con éxito','Atención!');
+						consultar_empresas();
+					}
+				});
+				
+			});
+		}
+		
+		function eliminar_empresa(id){
+			swal({
+				title: "Atención!?",
+				text: "Desea eliminar la cuenta de la empresa!",
+				type: "warning",
+				showCancelButton: true,
+				confirmButtonColor: "#DD6B55",
+				confirmButtonText: "Si!",
+				closeOnConfirm: true
+			}, function () {
+			
+				if(window.localStorage.getItem("Money-vars-token")!==null){
+					block.tokens = JSON.parse(window.localStorage.getItem("Money-vars-token"));
+				}else{
+					block.tokens = JSON.parse(window.sessionStorage.getItem("Money-vars-token"));
+				}
+				
+				block.arrays = [block.tokens[1],id];
+				block.obj = {"r":"eliminar_empresa_admin","d":block.arrays};
+				backend.conexionEnvio(JSON.stringify(block.obj),function(salida){
+					var valor = JSON.parse(salida);
+					if(!valor.e){
+						$("#listado_empresas").html("");
+						toastr.success('Procesado con éxito','Atención!');
+						consultar_empresas();
+					}
+				});
+				
+			});
+		}
+		
+		function consultar_empresas(){
+			
+			$("#lista_empresa_div").css("display","initial");
+			$("#lista_ubicacniones_div").css("display","none");
+			
+			if(window.localStorage.getItem("Money-vars-token")!==null){
+				block.tokens = JSON.parse(window.localStorage.getItem("Money-vars-token"));
+			}else{
+				block.tokens = JSON.parse(window.sessionStorage.getItem("Money-vars-token"));
+			}
+			
+			block.lista ='';
+			block.arrays = [block.tokens[1]];
+			block.obj = {"r":"listar_empresas","d":block.arrays};
+			backend.conexionEnvio(JSON.stringify(block.obj),function(salida){
+				var valor = JSON.parse(salida);
+				if(!valor.e){
+					block.todo = valor.d[1];
+					for(var t = 0; t < block.todo.length; t++){
+						block.item = JSON.parse(block.todo[t]);
+						if(block.item[0]!=="admin@money.com"){
+							
+							if(!block.item[3]){
+								block.valor = 'fa-check';
+							}else{
+								block.valor = 'fa-times';
+							}
+							
+							block.lista = block.lista + '<tr><td>'+block.item[0]+'</td><td>'+block.item[1]+'</td><td>'+block.item[2]+'</td><td><a href="javascript:interruptor_empresa('+String.fromCharCode(39)+block.item[5]+String.fromCharCode(39)+');"><i class="fa '+block.valor+' fa-2x" style="color:#01afef"></i></a></td><td><a href="javascript:eliminar_empresa('+String.fromCharCode(39)+block.item[5]+String.fromCharCode(39)+');"><i class="fa fa-times fa-2x" style="color:#01afef"></i></a></td></tr>';
+						}
+					}
+					$("#listado_empresas").html(block.lista);
+				}
+			});
+		
+		}
+		
+		consultar_empresas();
+
+		function ubicaciones_operaciones(){
+			$("#tipo_departamento").html('<option value="0"></option><option value="add">Agregar nuevo</option>');
+			$("#lista_empresa_div").css("display","none");
+			$("#lista_ubicacniones_div").css("display","initial");
+			
+			if(window.localStorage.getItem("Money-vars-token")!==null){
+				block.tokens = JSON.parse(window.localStorage.getItem("Money-vars-token"));
+			}else{
+				block.tokens = JSON.parse(window.sessionStorage.getItem("Money-vars-token"));
+			}
+			
+			block.arrays = [block.tokens[1]];
+			block.obj = {"r":"extraer_departamentos","d":block.arrays};
+			backend.conexionEnvio(JSON.stringify(block.obj),function(salida){
+				var valor = JSON.parse(salida);
+				if(!valor.e){
+					block.lista = valor.d[1];
+					block.nuevo = "";
+					for(var e=0; e<block.lista.length; e++){
+						block.nuevo = block.nuevo + '<option value="'+block.lista[e]+'">'+block.lista[e]+'</option>';
+					}
+					$("#tipo_departamento").html($("#tipo_departamento").html()+block.nuevo);
+				}
+			});
+		}
+		
+		function extraer_ciudades(){
+			block.depart = $("#tipo_departamento").val();
+			$("#tipo_ciudades").html('<option value="0"></option><option value="add">Agregar nuevo</option>');
+			
+			if(window.localStorage.getItem("Money-vars-token")!==null){
+				block.tokens = JSON.parse(window.localStorage.getItem("Money-vars-token"));
+			}else{
+				block.tokens = JSON.parse(window.sessionStorage.getItem("Money-vars-token"));
+			}
+			
+			block.arrays = [block.tokens[1],block.depart];
+			block.obj = {"r":"extraer_ciudades","d":block.arrays};
+			backend.conexionEnvio(JSON.stringify(block.obj),function(salida){
+				var valor = JSON.parse(salida);
+				if(!valor.e){
+					block.lista = valor.d[1];
+					block.nuevo = "";
+					for(var e = 0; e < block.lista.length; e++){
+						block.nuevo = block.nuevo + '<option value="'+block.lista[e]+'">'+block.lista[e]+'</option>';
+					}
+					$("#tipo_ciudades").html($("#tipo_ciudades").html()+block.nuevo);
+				}
+			});
+		}
+		
+		function extraer_barrios(){
+			block.depart = $("#tipo_departamento").val();
+			block.cuidad = $("#tipo_ciudades").val();
+			$("#tipo_barrio").html('<option value="0"></option><option value="add">Agregar nuevo</option>');
+			
+			if(window.localStorage.getItem("Money-vars-token")!==null){
+				block.tokens = JSON.parse(window.localStorage.getItem("Money-vars-token"));
+			}else{
+				block.tokens = JSON.parse(window.sessionStorage.getItem("Money-vars-token"));
+			}
+			
+			block.arrays = [block.tokens[1],block.depart,block.cuidad];
+			block.obj = {"r":"extraer_barrios","d":block.arrays};
+			backend.conexionEnvio(JSON.stringify(block.obj),function(salida){
+				var valor = JSON.parse(salida);
+				if(!valor.e){
+					block.lista = valor.d[1];
+					block.nuevo = "";
+					for(var e = 0; e < block.lista.length; e++){
+						block.nuevo = block.nuevo + '<option value="'+block.lista[e]+'">'+block.lista[e]+'</option>';
+					}
+					$("#tipo_barrio").html($("#tipo_barrio").html()+block.nuevo);
+				}
+			});
+		}
+		
+    </script>
+
+</body>
+
+</html>
