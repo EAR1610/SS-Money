@@ -56,7 +56,7 @@ eje = function(arrays,origen,redisClient) {
 											var otrasEmpresa = 0;
 										}										
 										/*
-											verifiquo si tiene otros contratos en otras empresas										
+											? verifiquo si tiene otros contratos en otras empresas										
 										*/
 										if( extric == "3" && miEmpresa > 0 ) {
 											resolve( [false,"4",miEmpresa] );
@@ -82,9 +82,9 @@ eje = function(arrays,origen,redisClient) {
 												let cuotaD = arrays[8].replace(/\./g, ""),
 													tiempo = arrays[4],
 													fechaBase = moment(arrays[5], "YYYY-MM-DD"),
-													// Obtener el día de la semana (1=lunes, 7=domingo)
+													// ? Obtener el día de la semana (1=lunes, 7=domingo)
 													diaSemana = fechaBase.isoWeekday(),
-													// Usar la fecha base como punto de partida
+													// ? Usar la fecha base como punto de partida
 													prox = fechaBase.format('YYYY-MM-DD');
 												
 												console.log("Fecha inicial semanal:", prox);
@@ -104,7 +104,7 @@ eje = function(arrays,origen,redisClient) {
 												/**
 												 * TODO: FRECUENCIA DE PAGO: DIARIA
 												 */												
-												let cuotaD = arrays[8].replace(/\./g, ""), // Regex global para eliminar todos los puntos
+												let cuotaD = arrays[8].replace(/\./g, ""), // * Regex global para eliminar todos los puntos
 													fechaBase = moment(arrays[5], "YYYY-MM-DD"),
 													prox = fechaBase,
 													tiempo = arrays[4];
@@ -114,7 +114,7 @@ eje = function(arrays,origen,redisClient) {
 												for(let k = 1; k < tiempo + 1; k++){
 													let prox2 = moment(prox).add(1, 'days');
 													
-													// Saltar domingos (day() === 0)
+													// ? Saltar domingos (day() === 0)
 													if(prox2.day() === 0) prox2 = prox2.add(1, 'days');
 													
 													prox2 = prox2.format('YYYY-MM-DD');
@@ -140,7 +140,7 @@ eje = function(arrays,origen,redisClient) {
 												for(let k = 1; k < tiempo + 1; k++){
 													let prox2 = moment(prox).add(15, 'days');
 													
-													// Saltar domingos (day() === 0)
+													// ? Saltar domingos (day() === 0)
 													if(prox2.day() === 0) prox2 = prox2.add(1, 'days');													
 													
 													prox2 = prox2.format('YYYY-MM-DD');
@@ -157,7 +157,7 @@ eje = function(arrays,origen,redisClient) {
 												console.log(arrays[5]);
 												
 												let cuotaD = arrays[8].replace(/\./g, ""),
-													// Especificar el formato exacto de la fecha
+													//? Especificar el formato exacto de la fecha
 													fechaBase = arrays[5],
 													prox = fechaBase,
 													tiempo = arrays[4];
@@ -177,18 +177,18 @@ eje = function(arrays,origen,redisClient) {
 												 */	
 												let cuotaD = arrays[8].replace(/\./g, ""),
 													tiempo = arrays[4],
-													indi = 12; // Fecha de la primera Cuota (posición 12 en el array)
+													indi = 12; // * Fecha de la primera Cuota (posición 12 en el array)
 
 												console.log("Frecuencia configurable 4 pagos - fechas desde arrays:", arrays.slice(12, 16));
 
 												for (let k = 1; k < 4 + 1; k++) {
-													// Validar que la fecha existe en el array
+													// ? Validar que la fecha existe en el array
 													if (!arrays[indi]) {
 														console.error(`Fecha no proporcionada en posición ${indi}`);
 														break;
 													}
 													
-													// Asegurar que la fecha esté en formato correcto y timezone CON PARSING ESTRICTO
+													// ? Asegurar que la fecha esté en formato correcto y timezone CON PARSING ESTRICTO
 													let fechaPago = moment(arrays[indi], "YYYY-MM-DD").tz("America/Guatemala").format('YYYY-MM-DD');
 													let cuota = (k == 4) ? ultima_cuota.replace(/\./g, "") : cuotaD;
 													
@@ -215,7 +215,7 @@ eje = function(arrays,origen,redisClient) {
 													prox = fechaBase,
 													tiempo = arrays[4],
 
-													// Asegurar timezone en fechaFinal CON PARSING ESTRICTO
+													// ? Asegurar timezone en fechaFinal CON PARSING ESTRICTO
 
 													fechaFinal = moment(prox).add(30, 'days').format('YYYY-MM-DD'),
 													interes = parseInt( arrays[7].replace(/\./g, "") ),
@@ -228,7 +228,7 @@ eje = function(arrays,origen,redisClient) {
 
 												for(let k = 1; k < tiempo + 1; k++){
 													if( k == 3 ){
-														// Última cuota - capital final
+														// * Última cuota - capital final
 														fes.push({ 
 															"cp": ultima_cuota.replace(/\./g, ""), 
 															"ct": false, 
@@ -238,7 +238,7 @@ eje = function(arrays,origen,redisClient) {
 														});
 														console.log(`Cuota ${k} (Final): ${fechaFinal} - Monto: ${ultima_cuota.replace(/\./g, "")}`);
 													} else {
-														// Cuotas de interés (primera y segunda)
+														// * Cuotas de interés (primera y segunda)
 														let prox2 = moment(prox).add(15, 'days').format("YYYY-MM-DD");														
 														// Saltar domingos
 														if(prox2.day() === 0) prox2 = prox2.add(1, 'days').format("YYYY-MM-DD");
@@ -266,7 +266,7 @@ eje = function(arrays,origen,redisClient) {
 												console.log("Fecha inicial catorcenal:", prox);
 												for(let k = 1; k < tiempo + 1; k++){
 													let prox2 = moment(prox).add(14, 'days');
-													// Saltar domingos (day() === 0)
+													// * Saltar domingos (day() === 0)
 													if(prox2.day() === 0) prox2 = prox2.add(1, 'days');
 													
 													prox2 = prox2.format('YYYY-MM-DD');
@@ -279,8 +279,8 @@ eje = function(arrays,origen,redisClient) {
 												/**
 												 * TODO: FRECUENCIA DE PAGO: MENSUAL SEGUN INTERESES
 												 */	
-												let capitalInicial = parseInt(arrays[3].replace(/\./g, "")); // Capital inicial
-												let porcentajeInteres = parseInt(arrays[7].replace(/\./g, "")); // Porcentaje de interés
+												let capitalInicial = parseInt(arrays[3].replace(/\./g, "")); // * Capital inicial
+												let porcentajeInteres = parseInt(arrays[7].replace(/\./g, "")); // * Porcentaje de interés
 												let fechaBase = arrays[5];
 												let prox = fechaBase;
 												
@@ -320,6 +320,28 @@ eje = function(arrays,origen,redisClient) {
 													console.log(`Cuota ${fes.length}: ${prox} - Monto: ${cuota})`);
 												}																	
 												console.log("Total de cuotas generadas:", fes.length);
+											} else if(arrays[10]=="9"){
+												/**
+												 * TODO: FRECUENCIA DE PAGO: MENSUAL UNICO PAGO 25 DIAS
+												 */	
+												console.log("arrays[5]");
+												console.log(arrays[5]);
+												
+												let cuotaD = arrays[8].replace(/\./g, ""),
+													// * Especificar el formato exacto de la fecha
+													fechaBase = arrays[5],
+													prox = fechaBase,
+													tiempo = arrays[4];
+												
+												console.log("Fecha inicial mensual:", prox);
+
+												for(let k = 1; k < tiempo + 1; k++){
+													let prox2 = moment(prox).add(25, 'days').format('YYYY-MM-DD');
+													let cuota = (k == tiempo) ? ultima_cuota.replace(/\./g, "") : cuotaD;
+													fes.push({ "cp":cuota,"ct":false,"fe":prox2,"pe":0, "pago":"" });
+													console.log(`Cuota ${k}: ${prox2}`);
+													prox = prox2;
+												}
 											}
 
 											if(fes.length > 0){
