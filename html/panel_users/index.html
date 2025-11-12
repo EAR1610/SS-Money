@@ -97,6 +97,10 @@
         // doc.output('dataurlnewwindow');
         doc.save('PAGARE DE ' + nombre +'.pdf');   
     }    
+
+    function generarEstadoCuentaCliente(){
+        window.open(`http://localhost:3335/reporte?asesor=${ticketClienteImpresion.cuotas[2]}&contrato=${ticketClienteImpresion.idContrato}&dpi=${ticketClienteImpresion.cuotas[1]}&configuracion=${ticketClienteImpresion.configuracion[0]}`, '_blank');
+    }
     
     function generarPDFPago() {
         var doc = new window.jspdf.jsPDF({
@@ -246,6 +250,10 @@
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('boton_pdff').addEventListener('click', function() {
             generarPDFPago();                  
+        });
+
+        document.getElementById('boton_estado_cuenta_pdf').addEventListener('click', function() {
+            generarEstadoCuentaCliente();
         });
     });
 
@@ -1407,12 +1415,15 @@
                             </div> -->
 
 
-                            <div class="col-sm-6 col-md-2 col-xs-12" style="margin-top: 3%;" >
+                            <div class="col-sm-6 col-md-2 col-xs-12" style="margin-top: -1%;" >
                                 <button class="btn btn-primary btn-block" id="status_prestamo"
                                         type="button">Procesar pago
                                 </button>
                                 <form role="form" style="margin-top: 24px;display:grid;">
                                     <button type="button" class="btn btn-danger" id="boton_pdff"><i class="fa fa-file-pdf"></i></button>
+                                </form>
+                                <form role="form" style="margin-top: 24px;display:grid;">
+                                    <button type="button" class="btn btn-success" id="boton_estado_cuenta_pdf"><i class="fa fa-file-pdf"></i></button>
                                 </form>
                             </div>
 							
@@ -5265,7 +5276,7 @@
 		} else {
 			block.tokens = JSON.parse(window.sessionStorage.getItem("Money-vars-token"));
 		}
-						
+		block.idContrato = id;				
 		block.arrays = [ block.tokens[1], block.tokens[5], "", id, cedula ];
 		block.obj = { "r": "buscar_cliente2", "d": block.arrays };        
 		backend.conexionEnvio(JSON.stringify(block.obj), function (salida) {

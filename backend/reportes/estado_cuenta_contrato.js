@@ -8,20 +8,20 @@ function generarReportePagos(response, redisClient, asesor, contrato, dpi, confi
     try {
       const pattern = `monto_${asesor}_*_*_*_*_*_${contrato}_${dpi}`;
 
-       // Helper: obtener 'ahora' en zona UTC-6 (retorna Date)
+       // * Helper: obtener 'ahora' en zona UTC-6 (retorna Date)
       function getUtcMinus6Now() {
-        // Restar 6 horas al timestamp actual
+        // * Restar 6 horas al timestamp actual
         return new Date(Date.now() - (6 * 60 * 60 * 1000));
       }
 
-      // Helper: formatear fecha/hora corta dd/mm/yyyy HH:MM
+      // ? Helper: formatear fecha/hora corta dd/mm/yyyy HH:MM
       function formatFechaHora(d) {
         if (!d || isNaN(d.getTime())) return '';
         const pad = (n) => String(n).padStart(2, '0');
         return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
       }
 
-      // Helper: descargar imagen remota como Buffer (soporta https)
+      // ? Helper: descargar imagen remota como Buffer (soporta https)
       function fetchImageBuffer(url) {
         return new Promise((resolve) => {
           if (!url || typeof url !== 'string') return resolve(null);
@@ -31,7 +31,7 @@ function generarReportePagos(response, redisClient, asesor, contrato, dpi, confi
               res.on('data', (chunk) => chunks.push(chunk));
               res.on('end', () => {
                 const buffer = Buffer.concat(chunks);
-                // Verificar tipo mínimo (PNG/JPEG)
+                // * Verificar tipo mínimo (PNG/JPEG)
                 if (buffer && buffer.length > 0) return resolve(buffer);
                 return resolve(null);
               });
@@ -49,7 +49,7 @@ function generarReportePagos(response, redisClient, asesor, contrato, dpi, confi
         });
       }
 
-      // Funciones auxiliares para obtener datos de cliente, asesor, configuración y cuotas
+      // ? Funciones auxiliares para obtener datos de cliente, asesor, configuración y cuotas
       function getCliente(dpi) {
         return new Promise((resolve, reject) => {
           redisClient.get(`cliente_${dpi}`, (err, data) => {
@@ -139,7 +139,7 @@ function generarReportePagos(response, redisClient, asesor, contrato, dpi, confi
         });
       }
 
-      // Obtener todas las claves que coincidan
+      // ? Obtener todas las claves que coincidan
       redisClient.keys(pattern, async function (err, keys) {
         if (err) {
           console.error('Error buscando claves en Redis:', err);
@@ -148,7 +148,7 @@ function generarReportePagos(response, redisClient, asesor, contrato, dpi, confi
           return reject(err);
         }
 
-        // Normalizar keys a arreglo por seguridad
+        // ? Normalizar keys a arreglo por seguridad
         if (!keys) {
           response.writeHead(404, { 'Content-Type': 'application/json' });
           response.end(JSON.stringify({ error: 'No se encontraron pagos con esos datos' }));
@@ -176,7 +176,7 @@ function generarReportePagos(response, redisClient, asesor, contrato, dpi, confi
 
         try {
 
-          // Obtener datos del cliente, asesor, configuración y cuotas
+          // ? Obtener datos del cliente, asesor, configuración y cuotas
           const [clienteData, asesorData, configData, cuotasData] = await Promise.all([
             getCliente(dpi).catch(err => {
               console.error('Error obteniendo datos del cliente:', err);
@@ -196,7 +196,7 @@ function generarReportePagos(response, redisClient, asesor, contrato, dpi, confi
             })
           ]);
 
-          // Procesar cada clave de pagos
+          // * Procesar cada clave de pagos
           const pagos = keys.map((key) => {
             const partes = ('' + key).split('_');
             return {
@@ -210,7 +210,7 @@ function generarReportePagos(response, redisClient, asesor, contrato, dpi, confi
             };
           });
 
-          // Ordenar por fecha descendente
+          // *Ordenar por fecha descendente
           pagos.sort((a, b) => {
             if (a.fecha && b.fecha) {
               return new Date(b.fecha) - new Date(a.fecha);
@@ -218,13 +218,13 @@ function generarReportePagos(response, redisClient, asesor, contrato, dpi, confi
             return 0;
           });
 
-          // Crear el PDF
+          // * Crear el PDF
           const doc = new PDFDocument({ margins: {top: 40, bottom: 45, left: 40, right: 40}, bufferPages: true });
           const filePath = `reporte_${asesor}_${contrato}_${dpi}.pdf`;
           const stream = fs.createWriteStream(filePath);
           doc.pipe(stream);
 
-          // INFORMACIÓN DEL NEGOCIO (desde configuración)
+          // ? INFORMACIÓN DEL NEGOCIO (desde configuración)
           
           let nombreNegocio = 'NOMBRE DEL NEGOCIO';
           let direccionNegocio = 'DIRECCIÓN DEL NEGOCIO';
@@ -236,7 +236,7 @@ function generarReportePagos(response, redisClient, asesor, contrato, dpi, confi
             nombreNegocio = configData[13] || 'NOMBRE DEL NEGOCIO';
             direccionNegocio = configData[14] || 'DIRECCIÓN DEL NEGOCIO';
             nitNegocio = configData[15] || 'NIT DEL NEGOCIO';
-            // Índice 21 contiene la URL del logo (si existe)
+            // ? Índice 21 contiene la URL del logo (si existe)
             try {
               logoUrl = configData[21] || null;
             } catch (e) {
@@ -244,7 +244,7 @@ function generarReportePagos(response, redisClient, asesor, contrato, dpi, confi
             }
           }
 
-          // Intentar descargar el logo (si existe). No bloqueante: si falla, seguimos sin logo.
+          // ? Intentar descargar el logo (si existe). No bloqueante: si falla, seguimos sin logo.
           if (logoUrl) {
             try {
               logoBuffer = await fetchImageBuffer(logoUrl);
@@ -255,27 +255,27 @@ function generarReportePagos(response, redisClient, asesor, contrato, dpi, confi
           }
           
           if (logoBuffer) {
-              // Dibujar logo en la esquina izquierda
+              // * Dibujar logo en la esquina izquierda
               const logoWidth = 70; // px
               doc.image(logoBuffer, 40, 15, { width: logoWidth });
               
           }
 
-          // Escribir los textos del encabezado (centrados)
+          // *Escribir los textos del encabezado (centrados)
           doc.fontSize(13).font('Helvetica-Bold').text(nombreNegocio, { align: 'center' });
           doc.fontSize(11).font('Helvetica').text(direccionNegocio, { align: 'center' });
           doc.text(`NIT: ${nitNegocio}`, { align: 'center' });
           doc.moveDown(0.5);
           
-          // Línea separadora
+          // * Línea separadora
           doc.moveTo(40, doc.y).lineTo(doc.page.width - 40, doc.y).strokeColor('#9f9f9f').lineWidth(1).stroke();
           doc.moveDown(1);
 
-          // Encabezado principal del reporte
+          // * Encabezado principal del reporte
           doc.fontSize(12).font('Helvetica-Bold').text('Historial de Pagos', { align: 'center' });
           doc.moveDown(1);
 
-          // Preparar datos para mostrar en dos columnas
+          // * Preparar datos para mostrar en dos columnas
           let nombreCliente = 'No disponible';
           let direccionCliente = 'No disponible';
           let telefonoCliente = 'No disponible';
@@ -328,10 +328,10 @@ function generarReportePagos(response, redisClient, asesor, contrato, dpi, confi
             align: 'right' 
           });
 
-          // Ajustar posición Y después de las dos columnas
+          // * Ajustar posición Y después de las dos columnas
           doc.y = startY + 70;
 
-          // REINICIAR POSICIÓN X ANTES DE CONTINUAR
+          // * REINICIAR POSICIÓN X ANTES DE CONTINUAR
           doc.x = 40;
           
           doc.text('', 40, doc.y + 20); // Espacio extra
@@ -340,13 +340,13 @@ function generarReportePagos(response, redisClient, asesor, contrato, dpi, confi
           doc.font('Helvetica');
 
           doc.fontSize(10);
-          // Tabla de pagos
+          // * Tabla de pagos
           const headers = ['Fecha', 'Hora', 'Monto (Q)'];
           
           function formatFecha(fechaStr) {
             if (!fechaStr) return '-';
             const s = String(fechaStr).trim();
-            // Parse local date to avoid timezone shifts for YYYY-MM-DD
+            // ? Parse local date to avoid timezone shifts for YYYY-MM-DD
             const m = s.match(/^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})(?:[ T](\d{1,2}):(\d{2})(?::(\d{2}))?)?/);
             let d;
             if (m) {
@@ -427,7 +427,7 @@ function generarReportePagos(response, redisClient, asesor, contrato, dpi, confi
               return null;
             }
 
-            // Función para calcular días de atraso (usa parseLocalDate)
+            // * Función para calcular días de atraso (usa parseLocalDate)
             function calcularDiasAtraso(fechaEstablecida, fechaPago) {
               if (!fechaEstablecida) return 0;
               const fechaEst = parseLocalDate(fechaEstablecida) || getUtcMinus6Now();
@@ -443,7 +443,7 @@ function generarReportePagos(response, redisClient, asesor, contrato, dpi, confi
               return 0;
             }
 
-            // Función para formatear fecha corta (DD/MM/YYYY) usando parseLocalDate
+            // * Función para formatear fecha corta (DD/MM/YYYY) usando parseLocalDate
             function formatFechaCorta(fechaStr) {
               if (!fechaStr) return '';
               const d = parseLocalDate(fechaStr);
@@ -451,7 +451,7 @@ function generarReportePagos(response, redisClient, asesor, contrato, dpi, confi
               return `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getFullYear()}`;
             }
 
-            // Preparar datos para la tabla de cuotas
+            // * Preparar datos para la tabla de cuotas
             const headersCuotas = ['No.', 'Fecha establecida', 'Fecha pago', 'Días Atraso', 'Cuota', 'Abono', 'Pendiente', 'Pagado'];
             
             let totalCuota = 0;
