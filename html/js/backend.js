@@ -5,7 +5,7 @@ backend.dev =  true;
 if(!backend.dev){
 	backend.usuando = "apicrediemprendedor.supersistemas.com.gt";
 } else {
-	backend.usuando = "192.168.1.27:3335";
+	backend.usuando = "192.168.1.26:3335";
 }
 
 backend.conexionEnvio = function (datos,callback){
