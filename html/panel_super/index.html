@@ -1333,7 +1333,7 @@
             <ul class="nav metismenu" id="side-menu">
                 <li class="nav-header">
                     <div class="dropdown profile-element">
-                        <img alt="image" src="../img/profile_small.png"
+                        <img id="foto_sidebar" alt="image" src="../img/profile_small.png"
                              style="margin-top: -24px; width: 120px;height: 75px; margin-left: 8%"/>
                         <a data-toggle="dropdown" class="dropdown-toggle" href="index.html">
                             <span class="block m-t-xs font-bold" style="margin-left: 6%;">Super administrador</span>
@@ -1397,7 +1397,6 @@
                     </ul>
                 </li>
 
-
                 <li>
                     <a href="javascript:asig_configuracion();"><i class="fa fa-cogs"></i> <span
                             class="nav-label">Configuración</span></a>
@@ -1423,7 +1422,7 @@
                     </a>
                     <form role="search" class="navbar-form-custom">                
                         <div class="form-group pull-right">
-                        	<p style="text-align: center; "><img alt="image" src="../img/logos.png" style="width: 183px;margin-top: 0px;border-radius: 67px 36% 3% -9%; height: 50px; background: #448ed300; position: absolute; bottom: 9px;"/>
+                        	<p style="text-align: center; "><img alt="image" id="foto_panel" src="../img/logos.png" style="width: 183px;margin-top: 0px;border-radius: 67px 36% 3% -9%; height: 50px; background: #448ed300; position: absolute; bottom: 9px;"/>
                         </div> 
                     </form>
                 </div>
@@ -2138,28 +2137,31 @@
                 <div class="col-lg-12" id="configuracion_general">
                     <div class="ibox ">
                         <div class="ibox-title">
-                            <h5>Configuración principal de credito</h5>
+                            <h5>Configuración principal de crédito</h5>
                         </div>
                         <div class="ibox-content row" style="margin-right: 0px;margin-left: 0px;">
-
-                            <div class="col-sm-6 col-md-6 col-xs-12">
+                            <div class="col-sm-6 col-md-4 col-xs-12" align="center">
+                                <img id="su_foto_configuracion" src="../img/default.jpg" style="width:200px;height:250px;cursor:pointer;">
+                            </div>
+                            <div class="col-sm-6 col-md-4 col-xs-12">
                                 <form role="form">
                                     <div class="form-group"><label>Prestamo minimo <strong id="prestamo_principal_ini">Q1.000</strong></label>
                                         <input id="prestamo_principal"
                                                type="range"
-                                               class="form-control" disabled min="1000" max="50000"></div>
+                                               class="form-control" disabled min="1000" max="50000">
+                                    </div>
                                 </form>
                                 <form role="form">
                                     <div class="form-group"><label>Prestamo minimo </label> <input
                                             id="monto_num_prestamo"
                                             type="number" min="1000" max="50000"
                                             placeholder="" maxlength="8"
-                                            class="form-control"></div>
+                                            class="form-control">
+                                    </div>
                                 </form>
-
                             </div>
 
-                            <div class="col-sm-6 col-md-6 col-xs-12">
+                            <div class="col-sm-6 col-md-4 col-xs-12">
                                 <form role="form">
                                     <div class="form-group"><label>Prestamo maximo <strong id="prestamo_principal_ini2">Q50.000</strong></label>
                                         <input id="prestamo_principal2"
@@ -2173,7 +2175,6 @@
                                             placeholder="" maxlength="8"
                                             class="form-control"></div>
                                 </form>
-
                             </div>
 
                             <div class="col-sm-6 col-md-4 col-xs-12">
@@ -3463,6 +3464,7 @@
             <input type="file" id="foto1" accept="image/*" capture="camera" style="display:none;">
             <input type="file" id="foto2" accept="image/*" capture="camera" style="display:none;">
             <input type="file" id="foto3" accept="image/*" capture="camera" style="display:none;">
+            <input type="file" id="foto_configuracion" accept="image/*" capture="camera" style="display:none;">
 
             <input type="file" id="foto1m" accept="image/*" capture="camera" style="display:none;">
             <input type="file" id="foto2m" accept="image/*" capture="camera" style="display:none;">
@@ -4243,6 +4245,50 @@
         });
     };
 
+    block.fileinConfiguracion = document.querySelector("#foto_configuracion");
+    block.fileinConfiguracion.onchange = function (e) {
+        block.files = e.target.files;
+        block.file = block.files[0];
+
+        // ? Validar formatos permitidos
+        if (!["image/jpeg", "image/png", "image/jpg"].includes(block.file.type)) {
+            toastr.warning("Formato no permitido. Solo JPG, JPEG o PNG", "Atención!");
+            return;
+        }
+
+        // Validar tamaño
+        if (block.file.size > 5 * 1024 * 1024) {
+            toastr.warning("La imagen no puede superar 5MB", "Atención!");
+            return;
+        }
+
+        // Si quieres mantener el resize que usabas con ImageTools
+        ImageTools.resize(block.file, { width: 200, height: 350 }, function (blob, didItResize) {
+            const formData = new FormData();
+            formData.append("file", blob);
+            formData.append("puerto", PORT);
+            formData.append("image", perfil);
+
+            fetch(`${URL_API}/imagenes/upload`, {
+                method: "POST",
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.url) {
+                    $("#foto_configuracion1").attr("src", data.url);
+                    $("#su_foto_configuracion").attr("src", data.url);
+                    block.blo = 2;                    
+                } else {
+                    toastr.error("Error en la subida: " + JSON.stringify(data), "Atención!");
+                }
+            })
+            .catch(err => {
+                toastr.error("Error de conexión: " + err.message, "Atención!");
+            });
+        });
+    };
+
 	$("#su_consultar_registra").click(function(){
 
 		function navegador() {
@@ -4280,7 +4326,6 @@
                         toastr.error('El documento a consultar no existe', 'Atención!');
 
                     } else {
-
                         block.antece = block.todo[1];
                         block.porque = block.todo[2];
 
@@ -4330,18 +4375,14 @@
                             block.seguApe = "";
                         }
 
-
                         $("#su_nombre_id1").val(block.primNom);
                         $("#su_nombre_id2").val(block.seguNom);
                         $("#su_apellido_id1").val(block.primApe);
                         $("#su_apellido_id2").val(block.seguApe);
                         $("#su_numero_id").prop("disabled", true);
                         $("#su_tipo_letra").prop("disabled", true);
-
                     }
-
                 }else{
-
 					if(valor.d[1]=="r"){
                         toastr.warning('Esta persona esta registrada en otra empresa', 'Atención!');
                         swal({
@@ -5862,6 +5903,14 @@ function extraer_cobros_cierre(id_asesor, id_tabla) {
 
 	$("#su_foto_m1").click(function () {
         $("#foto1").click();
+    });
+
+    $("#foto_configuracion1").click(function () {
+        $("#foto_configuracion").click();
+    });
+
+	$("#su_foto_configuracion").click(function () {
+        $("#foto_configuracion").click();
     });
 
     $("#su_foto_m2").click(function () {
@@ -8672,6 +8721,7 @@ function extraer_cobros_cierre(id_asesor, id_tabla) {
         block.normal = window.sessionStorage.getItem("Money-vars-foto-id-normalm");
         block.perfil = window.sessionStorage.getItem("Money-vars-foto-idm");
         block.fronatls = window.sessionStorage.getItem("Money-vars-foto-frontal");
+
         if ($("#pais_selecionadom").val() == "1") {
             block.tipo = "C";
         } else {
@@ -10223,6 +10273,7 @@ function extraer_cobros_cierre(id_asesor, id_tabla) {
         block.ubicacionesObligatorias = $("#mostrar_obligatoriedad_ubicaciones").val();
         block.ocultarTarjetas = $("#ocultar_tarjetas_pago").val();
         block.contratoMultiplesAsesores = $("#contratos-multiples-asesores").val();
+        block.imagenEmpresa = $("#su_foto_configuracion").attr("src");
         block.is_color_lunes = $("#valor_lunes").css('background-color');
         block.is_color_martes = $("#valor_martes").css('background-color');
         block.is_color_miercoles = $("#valor_miercoles").css('background-color');
@@ -10236,8 +10287,8 @@ function extraer_cobros_cierre(id_asesor, id_tabla) {
         } else {
             block.tokens = JSON.parse(window.sessionStorage.getItem("Money-vars-token"));
         }        
-        block.arrays = [ block.tokens[1], block.min, block.max, block.demora, block.is_color_lunes, block.is_color_martes, block.is_color_miercoles, block.is_color_jueves, block.is_color_viernes, block.is_color_sabado, block.is_color_domingo, block.sobrePrestamo, block.refinanciacioinCoun, block.nombremp, block.direcccion, block.nit_empresa, block.cantidadContrato, block.horaCierre, block.ubicacionesObligatorias, block.ocultarTarjetas, block.contratoMultiplesAsesores ];
-        block.obj = {"r": "load_configuracion", "d": block.arrays};
+        block.arrays = [ block.tokens[1], block.min, block.max, block.demora, block.is_color_lunes, block.is_color_martes, block.is_color_miercoles, block.is_color_jueves, block.is_color_viernes, block.is_color_sabado, block.is_color_domingo, block.sobrePrestamo, block.refinanciacioinCoun, block.nombremp, block.direcccion, block.nit_empresa, block.cantidadContrato, block.horaCierre, block.ubicacionesObligatorias, block.ocultarTarjetas, block.contratoMultiplesAsesores, block.imagenEmpresa ];
+        block.obj = { "r": "load_configuracion", "d": block.arrays };
         backend.conexionEnvio(JSON.stringify(block.obj), function (salida) {
             var valor = JSON.parse(salida);
             if (!valor.e) {
@@ -10295,6 +10346,11 @@ function extraer_cobros_cierre(id_asesor, id_tabla) {
                 $("#mostrar_obligatoriedad_ubicaciones").val(block.lista[18]);
                 $("#ocultar_tarjetas_pago").val(block.lista[19]);
                 $("#contratos-multiples-asesores").val(block.lista[20]);
+                if(block.lista[21] != ""){
+                    $("#su_foto_configuracion").attr("src", block.lista[21]);
+                    $("#foto_sidebar").attr("src", block.lista[21]);
+                    $("#foto_panel").attr("src", block.lista[21]);
+                }
 
                 block.contratoMultiplesAsesores = block.lista[20];
                 NombreEmpresa = block.lista[13];

@@ -27,13 +27,13 @@ eje = function(arrays,origen,redisClient) {
 							if(reply.length>0){
 								
 								/*
-									al tener los registros los intero etilo kanban usando recursividad
+									? al tener los registros los intero etilo kanban usando recursividad
 								*/								
 								var lista = [];
 								function recurso(ind,arrs){
 									if(ind==arrs.length){										
 										/*
-											revuelvo
+											? revuelvo
 										*/										
 										resolve([true,lista]);										
 									}else{
@@ -43,7 +43,7 @@ eje = function(arrays,origen,redisClient) {
 												var infeos = JSON.parse(daxtse);
 												
 												/*
-													extraigo informacion de cliente
+													? extraigo informacion de cliente
 												*/
 												redisClient.get("cliente_"+inus[1],function(errs,datse){													
 													if( datse!==null && datse !== undefined ) {
@@ -54,12 +54,13 @@ eje = function(arrays,origen,redisClient) {
 															direc  = infes[12],
 															tele   = infes[17];
 															lat    = infes[20];
-															lon    = infes[21];													
+															lon    = infes[21];
+															cod    = infes[23];
 														/*
-															tomo la direccion y la reuno en un array
+															* tomo la direccion y la reuno en un array
 														*/	
 														
-														lista.push({"u":uno+" "+tres,"c":cedua,"a":lat,"o":lon,"d":direc,"e":tele,"id":inus[5],"m":infeos[3],"f":infeos[5]});
+														lista.push({"u":uno+" "+tres,"c":cedua,"a":lat,"o":lon,"d":direc,"e":tele,"id":inus[5],"m":infeos[3],"f":infeos[5],"cod": cod});
 														ind++;
 														recurso(ind, arrs);														
 													}else{

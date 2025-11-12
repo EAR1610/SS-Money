@@ -206,7 +206,11 @@
             doc.setFont('Helvetica', 'bold');
             imprimir_texto(doc,'F. Vencimiento: ',10 ,65 ,12 ,'black' ,'left');
             doc.setFont('Helvetica', 'normal');
-            imprimir_texto(doc, ticketClienteImpresion.fechaCulminacion, 45, 65, 12 ,'black' ,'left');
+
+            // Damos formato a la fechad de Culminacion del contrato (dd-mm-yyyy);
+            let partesFecha = block.ticketClienteImpresion.cuotas[13][ticketClienteImpresion.cuotas[13].length - 1].fe.split('-');
+            block.fechaCulminacion = `${ partesFecha[2] }-${ partesFecha[1] }-${ partesFecha[0] }`;
+            imprimir_texto(doc, block.fechaCulminacion, 45, 65, 12 ,'black' ,'left');
         }
 
         doc.setFont('Helvetica', 'bold');
@@ -900,6 +904,7 @@
                                         <!-- <option value="5">FRECUENCIA 25 DIAS 10% EN 4 PAGOS</option>
                                         <option value="6">FRECUENCIA 30 DIAS 10% CON INTERES - CAPITAL</option> -->
                                         <option value="8">Mensual según intereses</option>
+                                        <option value="9">Mensual único pago 25 dias</option>
                                     </select>
                                 </form>
                             </div>
@@ -1136,6 +1141,7 @@
                                         <!-- <option value="5">FRECUENCIA 25 DIAS 10% EN 4 PAGOS</option>
                                         <option value="6">FRECUENCIA 30 DIAS 10% CON INTERES - CAPITAL</option>  -->
                                         <option value="8">Mensual según intereses</option>
+                                        <option value="9">Mensual único pago 25 dias</option>
                                     </select>
                                 </form>
                             </div>
@@ -1350,12 +1356,9 @@
                             <span class="pull-right" style="font-size: medium;" id="queda_debiendo">Q0</span>
                         </div>
                         <div class="ibox-content row" style="margin-right: 0px;margin-left: 0px;">
-
-
-                            <div class="col-sm-6 col-md-2 col-xs-12 profile-image">
+                            <!-- <div class="col-sm-6 col-md-2 col-xs-12 profile-image">
                                 <img src="../img/default.jpg" id="foto_user_clien2" class="rounded-circle circle-border m-b-md" alt="profile">
-                            </div>
-
+                            </div> -->
 
                             <div class="col-sm-6 col-md-4 col-xs-12">
                                 <form role="form">
@@ -1364,6 +1367,15 @@
                                             type="text" disabled
                                             placeholder=""
                                             class="form-control"></div>
+                                </form>
+                            </div>
+
+                            <div class="col-sm-6 col-md-2 col-xs-12">
+                                <form role="form">
+                                    <div class="form-group">
+                                        <label>Información del cliente</label> 
+                                        <input id="info_cliente_personal" type="text" disabled placeholder="" class="form-control">
+                                    </div>
                                 </form>
                             </div>
 
@@ -1396,7 +1408,6 @@
 
 
                             <div class="col-sm-6 col-md-2 col-xs-12" style="margin-top: 3%;" >
-
                                 <button class="btn btn-primary btn-block" id="status_prestamo"
                                         type="button">Procesar pago
                                 </button>
@@ -1405,8 +1416,7 @@
                                 </form>
                             </div>
 							
-							<div class="col-sm-12 col-md-12 col-xs-12" id="cedula_elecion" align="center" style="display:none; margin-top:2%">
-							
+							<div class="col-sm-12 col-md-12 col-xs-12" id="cedula_elecion" align="center" style="display:none; margin-top:2%">							
 							</div>
 
                             <div class="col-sm-6 col-md-2 col-xs-12" style=" text-align: center;font-size: x-large;margin-bottom: 4%; margin-top: 4%;">
@@ -1439,7 +1449,6 @@
                                     <div id="calendar"></div>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -2134,7 +2143,7 @@
                 window.localStorage.setItem("Money-vars-tarjetas_old",JSON.stringify(valor.d[1]));
                                          
                 for(var q=0; q< block.listao.length; q++){                   
-                    block.tarjetero = block.tarjetero + '<div><div class="ibox-content"><p><button class="btn btn-primary btn-block" onclick="javascript:monto_meter('+String.fromCharCode(39)+block.listao[q].c+String.fromCharCode(39)+');" type="button">Insertar monto</button></p><p> Nombre: '+block.listao[q].u+'</p><p> Monto: '+block.listao[q].m+'</p><p> Fecha: '+block.listao[q].f+'</p><p> DPI: '+block.listao[q].c+'</p><p> Celular: '+block.listao[q].e+'</p><p> Dirección: '+block.listao[q].d+'</p><p><button class="btn btn-warning btn-block" onclick="javascript:renovar_contrato('+String.fromCharCode(39)+block.listao[q].c+String.fromCharCode(39)+','+String.fromCharCode(39)+block.listao[q].id+String.fromCharCode(39)+')">Renovar Contrato</button></p></div></div>';
+                    block.tarjetero = block.tarjetero + '<div><div class="ibox-content"><p><button class="btn btn-primary btn-block" onclick="javascript:monto_meter('+String.fromCharCode(39)+block.listao[q].c+String.fromCharCode(39)+');" type="button">Insertar monto</button></p><p> Nombre: '+block.listao[q].u+'</p><p> Monto: '+block.listao[q].m+'</p><p> Fecha: '+block.listao[q].f+'</p><p> DPI: '+block.listao[q].c+'</p><p> Celular: '+block.listao[q].e+'</p><p> Dirección: '+block.listao[q].d+'</p><p> Código: '+block.listao[q].cod+'</p><p><button class="btn btn-warning btn-block" onclick="javascript:renovar_contrato('+String.fromCharCode(39)+block.listao[q].c+String.fromCharCode(39)+','+String.fromCharCode(39)+block.listao[q].id+String.fromCharCode(39)+')">Renovar Contrato</button></p></div></div>';
 
                     // block.tarjetero = block.tarjetero + '<div><div class="ibox-content"><p><button class="btn btn-primary btn-block" onclick="javascript:monto_meter('+String.fromCharCode(39)+block.listao[q].c+String.fromCharCode(39)+');" type="button">Insertar monto</button></p><p> Nombre: '+block.listao[q].u+'</p><p> Monto: '+block.listao[q].m+'</p><p> Fecha: '+block.listao[q].f+'</p><p> DPI: '+block.listao[q].c+'</p><p> Celular: '+block.listao[q].e+'</p><p> Dirección: '+block.listao[q].d+'</p></div></div>';
                 }
@@ -3701,6 +3710,7 @@
                 $("#dias_prestame").text(block.contador_cuotas); //Número de cuotas
                 $("#descuento_prestame").text("0");
                 $("#text_nombre_cliente2").val(block.extraer[8]+" "+block.extraer[9]+" "+block.extraer[10]+" "+block.extraer[11]);
+                $("#info_cliente_personal").val("Código: "+block.extraer[23]+" Teléfono: "+block.extraer[16]);
                 $("#entregado_prestame").text(block.cuotas[3]); //Prestamo otorgado
 
                 if (block.cuotas[10] == '8'){
@@ -5324,11 +5334,6 @@
 
                 if (block.cuotas[10] == idContratoPlanMensualIndefinido){
                         block.fechaCulminacion = 'FECHA NO ESTABLECIDA'
-                } else{
-                    // Damos formato a la fechad de Culminacion del contrato (dd-mm-yyyy);
-                    block.fechaSinFormatoCulminacion = block.cuotas[13][block.cuotas[13].length - 1].fe;
-                    let partesFecha = block.fechaSinFormatoCulminacion.split('-');
-                    block.fechaCulminacion = `${ partesFecha[2] }-${ partesFecha[1] }-${ partesFecha[0] }`;                    
                 }
 
 				if(block.valoes-block.acumo == 0){
@@ -5362,8 +5367,9 @@
                 }
 
 				$("#entregado_prestame").text(block.cuotas[3]); //Saldo entregado
-				$("#descuento_prestame").text("0"); 
-				$("#text_nombre_cliente2").val(block.extraer[8]+" "+block.extraer[9]+" "+block.extraer[10]+" "+block.extraer[11]); //Nombre1, Nombre2, Apellido1, Apellido2
+				$("#descuento_prestame").text("0");
+				$("#text_nombre_cliente2").val(block.extraer[8]+" "+block.extraer[9]+" "+block.extraer[10]+" "+block.extraer[11]); //Nombre1, Nombre2, Apellido1, Apellido2, identificador, teléfono
+                $("#info_cliente_personal").val("Código: "+block.extraer[23]+" Teléfono: "+block.extraer[16]);
 				
 				recargarCalendar(block.todosCal);
 				
