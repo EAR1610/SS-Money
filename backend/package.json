@@ -7,6 +7,7 @@
     "jspdf": "^2.5.1",
     "moment": "^2.20.1",
     "moment-timezone": "^0.5.43",
+    "pdfkit": "^0.17.2",
     "redis": "^2.8.0",
     "request": "^2.88.0",
     "selenium-webdriver": "^4.0.0-alpha.1",

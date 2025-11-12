@@ -1,5 +1,6 @@
 var redis = require('redis');
 var dev = false;
+const { generarReportePagos } = require('./reportes/estado_cuenta_contrato');
 
 /*
 	? Este codigo es el core del sistema
@@ -10,8 +11,8 @@ var dev = false;
 */
 
 if(!dev){
-	var redisClient = redis.createClient({ host : 'redis-16451.c57.us-east-1-4.ec2.redns.redis-cloud.com:', port : 16451 });
-	redisClient.auth('du9Vx8mIqxIVn5ZxRPjihcW7hT8AAbfC',function(err,reply) {
+	var redisClient = redis.createClient({ host : 'redis-10495.c83.us-east-1-2.ec2.redns.redis-cloud.com', port : 10495 });
+	redisClient.auth('RAABKOGsZg1BXOrmvyKyjgY6xfMV6QfX',function(err,reply) {
 		console.log(err);
 		if(!err) {
 			console.log("Bien: Verificando la seguridad del sistema redis "+reply+" "+ Date());
@@ -51,10 +52,31 @@ redisClient.set("usuario_admin@pruebas.com_1000000",JSON.stringify(arrays),funct
 var WebSocketServer = require('websocket').server;
 var http = require('http');
 
-var server = http.createServer(function(request, response) {
-	response.writeHead(200);
-	response.write("Online:active:3335");
-	response.end();
+// Modificar el servidor HTTP para manejar solicitudes específicas
+var server = http.createServer(async function(request, response) {
+  const url = new URL(request.url, `http://${request.headers.host}`);
+
+  // Endpoint ejemplo: /reporte?asesor=2809258&contrato=1&dpi=2222222222222
+  if (url.pathname === '/reporte' && request.method === 'GET') {
+    const asesor = url.searchParams.get('asesor');
+    const contrato = url.searchParams.get('contrato');
+    const dpi = url.searchParams.get('dpi');
+	const configuracion = url.searchParams.get('configuracion');
+
+    if (!asesor || !contrato || !dpi || !configuracion) {
+      response.writeHead(400, { 'Content-Type': 'application/json' });
+      response.end(JSON.stringify({ error: 'Faltan parámetros: asesor, contrato, dpi o configuracion' }));
+      return;
+    }
+
+    await generarReportePagos(response, redisClient, asesor, contrato, dpi, configuracion);
+    return;
+  }
+
+  // Respuesta por defecto
+  response.writeHead(200);
+  response.write("Online:active:3335");
+  response.end();
 });
 /*
 	Conexion escucho ws en el puerto 3330
