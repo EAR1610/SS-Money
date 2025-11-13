@@ -32,7 +32,7 @@ if(!dev){
 }
 
 /*
-	Conexion buena o no mediantes estos eventos en redis
+	* Conexion buena o no mediantes estos eventos en redis
 */
 redisClient.on('ready',function() {
 	console.log("Bien: Redis is ready... OK "+ Date());
@@ -42,7 +42,7 @@ redisClient.on('error',function() {
 	console.log("Mal: Error in Redis "+Date());
 });
 /*
-	Siempre asiganre la clave de acceso del root
+	* Siempre asignaré la clave de acceso del root
 */
 var arrays = [ "admin@pruebas.com","123","2019-04-15 00:53:46",true,0,"1000000","Super Admin" ];
 redisClient.set("usuario_admin@pruebas.com_1000000",JSON.stringify(arrays),function(err2,reply2){
@@ -52,11 +52,11 @@ redisClient.set("usuario_admin@pruebas.com_1000000",JSON.stringify(arrays),funct
 var WebSocketServer = require('websocket').server;
 var http = require('http');
 
-// Modificar el servidor HTTP para manejar solicitudes específicas
+// * Modificar el servidor HTTP para manejar solicitudes específicas
 var server = http.createServer(async function(request, response) {
   const url = new URL(request.url, `http://${request.headers.host}`);
 
-  // Endpoint ejemplo: /reporte?asesor=2809258&contrato=1&dpi=2222222222222
+  // ? Endpoint ejemplo: /reporte?asesor=2809258&contrato=1&dpi=2222222222222
   if (url.pathname === '/reporte' && request.method === 'GET') {
     const asesor = url.searchParams.get('asesor');
     const contrato = url.searchParams.get('contrato');
@@ -73,13 +73,13 @@ var server = http.createServer(async function(request, response) {
     return;
   }
 
-  // Respuesta por defecto
+  // * Respuesta por defecto
   response.writeHead(200);
   response.write("Online:active:3335");
   response.end();
 });
 /*
-	Conexion escucho ws en el puerto 3330
+	* Conexion escucho ws en el puerto 3330
 */
 server.listen(3335, function() {
 	console.log("Online:active:3335");
@@ -98,7 +98,7 @@ wsServer.on('request', function(request) {
 		if( message.type === 'utf8' ) {
 			try {				
 				/*
-					Recibo un array lo parseo y lo redirigo a la funcion que se necesite
+					* Recibo un array lo parseo y lo redirigo a la funcion que se necesite
 				*/
 				var text = JSON.parse(message.utf8Data.toString());
 				var ejecucion = require('./modelos/'+text.r+'');

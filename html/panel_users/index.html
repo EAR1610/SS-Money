@@ -97,6 +97,11 @@
         // doc.output('dataurlnewwindow');
         doc.save('PAGARE DE ' + nombre +'.pdf');   
     }    
+
+    function generarEstadoCuentaCliente(){
+        const url = `http://localhost:3335/reporte?asesor=${ticketClienteImpresion.cuotas[2]}&contrato=${ticketClienteImpresion.idContrato}&dpi=${ticketClienteImpresion.cuotas[1]}&configuracion=${ticketClienteImpresion.configuracion[0]}`;
+        window.open(url, '_blank');
+    }
     
     function generarPDFPago() {
         var doc = new window.jspdf.jsPDF({
@@ -246,6 +251,10 @@
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('boton_pdff').addEventListener('click', function() {
             generarPDFPago();                  
+        });
+
+        document.getElementById('boton_estado_cuenta_pdf').addEventListener('click', function() {
+            generarEstadoCuentaCliente();
         });
     });
 
@@ -648,7 +657,7 @@
             <ul class="nav metismenu" id="side-menu">
                 <li class="nav-header">
                     <div class="dropdown profile-element">
-                        <img alt="image" src="../img/profile_small.png"
+                        <img alt="image" id="img_asesor" src="../img/profile_small.png"
                              style="margin-top: -24px;width: 120px; height: 75px; margin-left: 8%"/>
                         <a data-toggle="dropdown" class="dropdown-toggle" href="index.html">
                             <span class="block m-t-xs font-bold" style="margin-left: 30%;">Asesor</span>
@@ -721,7 +730,7 @@
                     <form role="search" class="navbar-form-custom">
                         
                         <div class="form-group pull-right">
-                            <p style="text-align: center; "><img alt="image" src="../img/logos.png" style="width: 183px; margin-top: 0px; border-radius: 67px 36% 3% -9%; height: 50px; background: #448ed300; position: absolute; bottom: 9px;"/>
+                            <p style="text-align: center; "><img alt="image" id="img_logo" src="../img/logos.png" style="width: 183px; margin-top: 0px; border-radius: 67px 36% 3% -9%; height: 50px; background: #448ed300; position: absolute; bottom: 9px;"/>
                         </div>
                     </form>
                 </center>
@@ -1407,12 +1416,15 @@
                             </div> -->
 
 
-                            <div class="col-sm-6 col-md-2 col-xs-12" style="margin-top: 3%;" >
+                            <div class="col-sm-6 col-md-2 col-xs-12" style="margin-top: -1%;" >
                                 <button class="btn btn-primary btn-block" id="status_prestamo"
                                         type="button">Procesar pago
                                 </button>
                                 <form role="form" style="margin-top: 24px;display:grid;">
                                     <button type="button" class="btn btn-danger" id="boton_pdff"><i class="fa fa-file-pdf"></i></button>
+                                </form>
+                                <form role="form" style="margin-top: 24px;display:grid;">
+                                    <button type="button" class="btn btn-success" id="boton_estado_cuenta_pdf"><i class="fa fa-file-pdf"></i></button>
                                 </form>
                             </div>
 							
@@ -2108,6 +2120,11 @@
             block.configuracion = JSON.parse(window.localStorage.getItem("Configuracion"));
         } else {
             block.configuracion = JSON.parse(window.sessionStorage.getItem("Configuracion"));
+        }
+
+        if(block.configuracion[21] != ""){
+            $("#img_asesor").attr("src", block.configuracion[21]);
+            $("#img_logo").attr("src", block.configuracion[21]);
         }
                 
         if ( block.configuracion[19] == "1" ) block.obj = { "r": "down_geo2", "d": block.arrays };
@@ -5265,7 +5282,7 @@
 		} else {
 			block.tokens = JSON.parse(window.sessionStorage.getItem("Money-vars-token"));
 		}
-						
+		block.idContrato = id;				
 		block.arrays = [ block.tokens[1], block.tokens[5], "", id, cedula ];
 		block.obj = { "r": "buscar_cliente2", "d": block.arrays };        
 		backend.conexionEnvio(JSON.stringify(block.obj), function (salida) {

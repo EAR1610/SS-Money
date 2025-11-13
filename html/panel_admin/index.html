@@ -769,7 +769,7 @@
             <ul class="nav metismenu" id="side-menu">
                 <li class="nav-header">
                     <div class="dropdown profile-element">
-                        <img alt="image" src="../img/profile_small.png"
+                        <img alt="image" id="img_asesor" src="../img/profile_small.png"
                              style="margin-top: -24px; width: 120px; height: 75px; margin-left: 8%"/>
                         <a data-toggle="dropdown" class="dropdown-toggle" href="index.html">
                             <span class="block m-t-xs font-bold" style="margin-left: 21%;">Supervisor</span>
@@ -826,7 +826,7 @@
                     </a>
                     <form role="search" class="navbar-form-custom">
                         <div class="form-group pull-right">
-                            <p style="text-align: center; "><img alt="image" src="../img/logos.png" style="width: 183px; margin-top: 0px; border-radius: 67px 36% 3% -9%; height: 50px; background: #448ed300; position: absolute; bottom: 9px;"/>
+                            <p style="text-align: center; "><img alt="image" id="img_logo" src="../img/logos.png" style="width: 183px; margin-top: 0px; border-radius: 67px 36% 3% -9%; height: 50px; background: #448ed300; position: absolute; bottom: 9px;"/>
                         </div>
                     </form>
                 </div>
@@ -6637,7 +6637,7 @@
     }
 
     $("#btn_buscar_cierre_supervisor").click(function(){
-        $("#lista_gastos_exeAsesor").empty();                     
+        $("#lista_gastos_exeAsesor").empty();
         $("#lista_renovaciones_exeAsesor").empty();
         if($("#id_asesor_cierre").val() !== "" || $("#fecha_busqueda_cobros_supervisor").val() !== "") {
             block.ase = $("#id_asesor_cierre").val().split("_");
@@ -7315,7 +7315,6 @@
     $("#result2").val(block.actuesli);
 
     function myMap() {
-        
         if (window.localStorage.getItem("Money-vars-token") !== null) {
             block.tokens = JSON.parse(window.localStorage.getItem("Money-vars-token"));
         } else {
@@ -7374,6 +7373,12 @@
                     this.setZoom(18);
                     google.maps.event.removeListener(boundsListener);
                 });
+
+                if( window.sessionStorage.getItem("Configuracion") !== null ) block.configuracion = JSON.parse(window.sessionStorage.getItem("Configuracion"));                
+                if(block.configuracion[21] != ""){
+                    $("#img_asesor").attr("src", block.configuracion[21]);
+                    $("#img_logo").attr("src", block.configuracion[21]);
+                }
 
             }else{
                 toastr.warning('No posee contratos para generar ruta', 'Atención!');
