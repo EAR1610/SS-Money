@@ -220,6 +220,10 @@ function generarReportePagos(response, redisClient, asesor, contrato, dpi, confi
 
           // Crear el PDF
           const doc = new PDFDocument({ margins: {top: 40, bottom: 45, left: 40, right: 40}, bufferPages: true });
+          
+          // Preparar nombre del archivo con nombre del cliente (se obtendrá más adelante)
+          let nombreArchivoCliente = dpi; // fallback si no hay nombre
+          
           const filePath = `reporte_${asesor}_${contrato}_${dpi}.pdf`;
           const stream = fs.createWriteStream(filePath);
           doc.pipe(stream);
@@ -288,6 +292,8 @@ function generarReportePagos(response, redisClient, asesor, contrato, dpi, confi
             nombreCliente = `${clienteData[8] || ''} ${clienteData[9] || ''} ${clienteData[10] || ''} ${clienteData[11] || ''}`.trim();
             direccionCliente = `${clienteData[12] || ''} ${clienteData[13] || ''} ${clienteData[14] || ''} ${clienteData[15] || ''}`.trim();
             telefonoCliente = clienteData[17] || 'No disponible';
+            // Preparar nombre para archivo (sin espacios ni caracteres especiales)
+            nombreArchivoCliente = nombreCliente.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 50) || dpi;
           }
 
           if (asesorData) {
@@ -613,7 +619,7 @@ function generarReportePagos(response, redisClient, asesor, contrato, dpi, confi
           stream.on('finish', function () {
             response.writeHead(200, {
               'Content-Type': 'application/pdf',
-              'Content-Disposition': `inline; filename="reporte_${asesor}_${contrato}.pdf"`,
+              'Content-Disposition': `inline; filename="reporte_${nombreArchivoCliente}_${dpi}_${telefonoCliente}.pdf"`,
             });
 
             const fileStream = fs.createReadStream(filePath);
