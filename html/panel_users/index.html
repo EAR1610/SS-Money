@@ -2624,14 +2624,29 @@
                 let partesFechaRegistroContrato = block.fechaSinFormatoRegistro.split('-');
                 block.fechaRegistro = `${ partesFechaRegistroContrato[2] }-${ partesFechaRegistroContrato[1] }-${ partesFechaRegistroContrato[0] }`;
 
-                //Damos formato a la fechad de Culminacion del contrato (dd-mm-yyyy);
-                block.fechaSinFormatoCulminacion = block.calsulo[block.calsulo.length - 1].fe;
-                let partesFecha = block.fechaSinFormatoCulminacion.split('-');
-                block.fechaCulminacion = `${ partesFecha[2] }-${ partesFecha[1] }-${ partesFecha[0] }`;
+                if (block.unox[10] == idContratoPlanMensualIndefinido){
+                        block.sumas = block.unox[8].toString();
+                        block.fechaCulminacion = 'FECHA NO ESTABLECIDA'
+                } else{
+                    // Damos formato a la fechad de Culminacion del contrato (dd-mm-yyyy);
+                    block.fechaSinFormatoCulminacion = block.calsulo[block.calsulo.length - 1].fe;
+                    let partesFecha = block.fechaSinFormatoCulminacion.split('-');
+                    block.fechaCulminacion = `${ partesFecha[2] }-${ partesFecha[1] }-${ partesFecha[0] }`;
 
-                block.sumas = block.sumas.toString().split('').reverse().join('').replace(/(?=\d*\.?)(\d{3})/g,'$1.');
-                block.sumas = block.sumas.split('').reverse().join('').replace(/^[\.]/,'');  
-                block.infoCliente = JSON.parse(valor.d[1][0][3]);                
+                    for(var u= 0; u<block.calsulo.length; u++){                            
+                        if(!block.calsulo[u].ct && block.calsulo[u].pe==0){
+                            block.sumas = block.sumas + parseInt(block.calsulo[u].cp.replace(/\./g, ""));
+                        }else if(block.calsulo[u].pe!==0){
+                            block.sumas = block.sumas + parseInt(block.calsulo[u].cp.replace(/\./g, "")) - parseInt(block.calsulo[u].pe);
+                        }
+                    }
+
+                    block.sumas = block.sumas.toString().split('').reverse().join('').replace(/(?=\d*\.?)(\d{3})/g,'$1.');
+                    block.sumas = block.sumas.split('').reverse().join('').replace(/^[\.]/,'');
+                }
+                
+                block.infoCliente = JSON.parse(valor.d[1][0][3]);
+
                 block.oso = block.oso + '<tr><td>'+block.fechaRegistro+'</td><td>'+block.infoCliente[23]+'</td><td>'+block.sumas+'</td><td>'+block.cuatrosx[7]+'</td> <td>'+block.cuatrosx[8]+' '+block.cuatrosx[10]+'</td><td>'+block.unox[3]+'</td><td>'+block.unox[7]+'%</td><td>'+block.unox[8]+'</td><td>'+block.fechaCulminacion+'<td><button class="btn btn-primary btn-block" onclick="javascript:interes_meter('+String.fromCharCode(39)+block.cuatrosx[7]+String.fromCharCode(39)+','+String.fromCharCode(39)+block.cuatrosx[8]+' '+block.cuatrosx[10]+String.fromCharCode(39)+","+String.fromCharCode(39)+block.unox[5]+String.fromCharCode(39)+","+String.fromCharCode(39)+block.unox[3]+String.fromCharCode(39)+');" type="button">Aplicar Interes</button></td></tr>';
                 block.unico++;
 
