@@ -1,6 +1,6 @@
 eje = function(arrays,origen,redisClient) {
 	return new Promise(function(resolve, reject) {
-	
+		
 		var textos = /^[A-Za-z\s]{0,100}/;
 		var coment = /^[A-Za-z0-9\-\_\.\;\#\$\%\s]{0,100}/;
 		var numero = /^[0-9\.\,]{0,10}/;
@@ -11,6 +11,7 @@ eje = function(arrays,origen,redisClient) {
 			0		1		2		    3				4				5					6						7						8			9			10			       11	       12   13 14  15  16 
 	recibo tokens, dpi ,idasesor ,monto a prestar ,cicloendiad, fecha_prestamoNoSEUSA, descontarCUOTADEuNA, porcentajeDEPRESTAMO ,quedo_cuotauNICA, IDEMPRESA, dIARIOSEMANALMENSUAL, UltimaCuota,  C1, C2, C3, C4, contratosMultiplesAsesores]
 		*/
+		console.log(arrays)
 		if ( arrays.length == 17 ){
 			var jwt = require('jsonwebtoken');
 			jwt.verify(arrays[0], 'clWve-G*-9)1', function(err, decoded) {
@@ -21,7 +22,28 @@ eje = function(arrays,origen,redisClient) {
 						function randomIntFromInterval(min,max){
 							return Math.floor(Math.random()*(max-min+1)+min);
 						}
-						var ids = randomIntFromInterval(1000000,9999999);
+						// var ids = randomIntFromInterval(1000000,9999999);
+
+						function generateUUID() {
+							try {
+								// ? Intentar usar crypto.randomUUID() si está disponible (Node.js 14.17+)
+								if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+									return crypto.randomUUID();
+								}
+								
+								// ? Fallback: generar UUID manualmente
+								return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+									var r = Math.random() * 16 | 0,
+										v = c == 'x' ? r : (r & 0x3 | 0x8);
+									return v.toString(16);
+								});
+							} catch (error) {
+								// Si falla todo, usar timestamp + random
+								return Date.now().toString(36) + Math.random().toString(36).substr(2);
+							}
+						}
+
+						var idContrato = generateUUID();
 
 						/*
 							? agrego otros valores al array principal y verifico la configuracion que tengo a crear el contrato
@@ -29,7 +51,7 @@ eje = function(arrays,origen,redisClient) {
 
 						arrays[0] = decoded.d;
 						arrays.push(0);
-						arrays.push(ids);						
+						arrays.push(idContrato);						
 						redisClient.get("configuracion_" + arrays[9], function (err, reply) {
 							if( reply!==null && reply !== undefined ){
 								var info = JSON.parse(reply);
@@ -43,12 +65,12 @@ eje = function(arrays,origen,redisClient) {
 									/*
 										? verifiquo si tiene otros contratos
 									*/
-									redisClient.keys("registry_"+arrays[1]+"_contrato_*",function(erxsr,replxsy) {	
+									redisClient.keys("registry_"+arrays[1]+"_contrato_*",function(erxsr,replxsy) {
 										const contratosAsesoresDiferentes = replxsy.filter( registro => {
 											let partes = registro.split('_');
 											let id = partes[4];
 											return id != arrays[2];
-										});										
+										});
 
 										if( contratosAsesoresDiferentes.length > 0 ){
 											var otrasEmpresa = replxsy.length - miEmpresa;
@@ -286,7 +308,7 @@ eje = function(arrays,origen,redisClient) {
 												
 												console.log("Modalidad según intereses - Capital:", capitalInicial, "Interés:", porcentajeInteres + "%");
 												
-												// Calcular el monto total objetivo (capital + interés total)
+												// * Calcular el monto total objetivo (capital + interés total)
 												let montoTotalObjetivo = capitalInicial + (capitalInicial * porcentajeInteres / 100);
 												let saldoPendiente = capitalInicial;
 												let totalPagado = 0;
@@ -344,7 +366,7 @@ eje = function(arrays,origen,redisClient) {
 												}
 											}
 
-											if(fes.length > 0){
+											if( fes.length > 0 ){
 												/**
 												 * ? Si tiene cuotas a descontar
 												 */	
@@ -373,19 +395,18 @@ eje = function(arrays,origen,redisClient) {
 														return;
 													}
 													
-													let maxNum = 0;
-
-													keys.forEach(key => {
-														const parts = key.split('_');
-														const num = parseInt(parts[parts.length - 1]); // * Último segmento es el número
-														if(!isNaN(num) && num > maxNum) maxNum = num;
-													});
+													// let maxNum = 0;
+													// keys.forEach(key => {
+													// 	const parts = key.split('_');
+													// 	const num = parseInt(parts[parts.length - 1]); //* Último segmento es el número
+													// 	if(!isNaN(num) && num > maxNum) maxNum = num;
+													// });
+													// const idContrato = maxNum + 1;
 													
-													const consecutivo = maxNum + 1;
-													const oriegn = "registry_" + arrays[1] + "_contrato_" + arrays[0] + "_" + arrays[2] + "_" + consecutivo;
+													const oriegn = "registry_" + arrays[1] + "_contrato_" + arrays[0] + "_" + arrays[2] + "_" + idContrato;
 													console.log("oriegn")
 													console.log(oriegn)
-													const arraysDB = arrays.slice(0, 11).concat(arrays.slice(17)); // Cambié 15+1 por 16
+													const arraysDB = arrays.slice(0, 11).concat(arrays.slice(17)); // ? Se ajusta los elementos del array del contrato. 
 													console.log("arraysDB")
 													console.log(arraysDB)
 													

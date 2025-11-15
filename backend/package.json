@@ -13,6 +13,7 @@
     "selenium-webdriver": "^4.0.0-alpha.1",
     "tesseract.js": "^2.0.0-alpha.7",
     "unirest": "^0.6.0",
+    "uuid": "^13.0.0",
     "webdriver-manager": "^12.1.6",
     "websocket": "^1.0.25",
     "xlsx": "^0.14.3"
