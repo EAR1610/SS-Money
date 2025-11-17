@@ -99,7 +99,7 @@
     }    
 
     function generarEstadoCuentaCliente(){
-        const url = `http://localhost:3335/reporte?asesor=${ticketClienteImpresion.cuotas[2]}&contrato=${ticketClienteImpresion.idContrato}&dpi=${ticketClienteImpresion.cuotas[1]}&configuracion=${ticketClienteImpresion.configuracion[0]}`;
+        const url = `http://localhost:3335/reporte?asesor=${ticketClienteImpresion.cuotas[2]}&contrato=${ticketClienteImpresion.idContrato}&dpi=${ticketClienteImpresion.cuotas[1]}&configuracion=${ticketClienteImpresion.configuracion[0]}&plan=${ticketClienteImpresion.cuotas[10]}`;
         window.open(url, '_blank');
     }
     

@@ -3,7 +3,7 @@ const PDFDocument = require('pdfkit');
 const fs = require('fs');
 const https = require('https');
 
-function generarReportePagos(response, redisClient, asesor, contrato, dpi, configuracion) {
+function generarReportePagos(response, redisClient, asesor, contrato, dpi, configuracion, plan) {
   return new Promise((resolve, reject) => {
     try {
       const pattern = `monto_${asesor}_*_*_*_*_*_${contrato}_${dpi}`;
