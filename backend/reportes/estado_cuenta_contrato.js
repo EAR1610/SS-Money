@@ -655,7 +655,7 @@ function generarReportePagos(response, redisClient, asesor, contrato, dpi, confi
           stream.on('finish', function () {
             response.writeHead(200, {
               'Content-Type': 'application/pdf',
-              'Content-Disposition': `inline; filename="reporte_${nombreArchivoCliente}_${dpi}_${telefonoCliente}.pdf"`,
+              'Content-Disposition': `attachment; filename="REPORTE_ESTADO_CUENTA_CONTRATO_${nombreArchivoCliente}_DPI_${dpi}_Telefono_${telefonoCliente}.pdf"`,
             });
 
             const fileStream = fs.createReadStream(filePath);
