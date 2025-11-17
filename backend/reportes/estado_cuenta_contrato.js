@@ -120,28 +120,7 @@ function generarReportePagos(response, redisClient, asesor, contrato, dpi, confi
 
       function getCuotas(dpi, configId, asesorId, contratoId) {
         return new Promise((resolve, reject) => {
-          // Si el plan es 8, solo consultar old_registry
-          if (plan === '8') {
-            const oldCuotasKey = `old_registry_${dpi}_contrato_${configId}_${asesorId}_${contratoId}`;
-            redisClient.get(oldCuotasKey, (err, data) => {
-              if (err) {
-                reject(err);
-              } else if (!data) {
-                resolve(null);
-              } else {
-                try {
-                  const cuotasData = JSON.parse(data);
-                  resolve(cuotasData);
-                } catch (parseError) {
-                  console.error('[DEBUG] Error al parsear cuotas desde old_registry:', parseError);
-                  reject(parseError);
-                }
-              }
-            });
-            return;
-          }
-
-          // Para otros planes, consultar registry primero
+          // Para todos los planes (incluido 8), consultar registry primero
           const cuotasKey = `registry_${dpi}_contrato_${configId}_${asesorId}_${contratoId}`;
           redisClient.get(cuotasKey, (err, data) => {
             if (err) {
@@ -462,13 +441,16 @@ function generarReportePagos(response, redisClient, asesor, contrato, dpi, confi
           // si la tabla (incluyendo el título) cabe en la página actual. Esto asegura
           // que el título no se quede al final de una página y la tabla empiece en la siguiente.
 
-          // Si el plan es 8, mostrar mensaje de no disponible
-          if (plan === '8') {
+          // Si el plan es 8 y no hay datos, mostrar mensaje
+          if (plan === '8' && (!cuotasData || !Array.isArray(cuotasData) || !Array.isArray(cuotasData[13]) || cuotasData[13].length === 0)) {
             doc.moveDown(3);
             doc.fontSize(12).font('Helvetica-Bold').text('Listado de Cuotas', { align: 'center' });
             doc.moveDown(0.5);
             doc.fontSize(10).font('Helvetica').text('No hay información disponible', { align: 'center' });
-          } else if (cuotasData && Array.isArray(cuotasData) && Array.isArray(cuotasData[13])) {
+          }
+          
+          // Renderizar tabla de cuotas si hay datos
+          if (cuotasData && Array.isArray(cuotasData) && Array.isArray(cuotasData[13]) && cuotasData[13].length > 0) {
             const cuotas = cuotasData[13];
             
             // Helper: parsear fecha como local (evita el problema de "YYYY-MM-DD" tratado como UTC)
@@ -592,7 +574,7 @@ function generarReportePagos(response, redisClient, asesor, contrato, dpi, confi
             }
 
             // Escribir el título ahora, ya que garantizamos que quedará unido a la tabla
-            doc.moveDown(3);
+            doc.moveDown(1);
             doc.fontSize(titleFontSize).font('Helvetica-Bold').text('Listado de Cuotas', { align: 'center' });
             doc.fontSize(10).font('Helvetica');
             doc.moveDown(0.5);
