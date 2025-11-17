@@ -62,14 +62,15 @@ var server = http.createServer(async function(request, response) {
     const contrato = url.searchParams.get('contrato');
     const dpi = url.searchParams.get('dpi');
 	const configuracion = url.searchParams.get('configuracion');
+	const plan = url.searchParams.get('plan');
 
-    if (!asesor || !contrato || !dpi || !configuracion) {
+    if (!asesor || !contrato || !dpi || !configuracion || !plan) {
       response.writeHead(400, { 'Content-Type': 'application/json' });
-      response.end(JSON.stringify({ error: 'Faltan parámetros: asesor, contrato, dpi o configuracion' }));
+      response.end(JSON.stringify({ error: 'Faltan parámetros: asesor, contrato, dpi, configuracion o plan' }));
       return;
     }
 
-    await generarReportePagos(response, redisClient, asesor, contrato, dpi, configuracion);
+    await generarReportePagos(response, redisClient, asesor, contrato, dpi, configuracion, plan);
     return;
   }
 
