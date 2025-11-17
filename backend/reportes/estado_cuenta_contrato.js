@@ -125,11 +125,47 @@ function generarReportePagos(response, redisClient, asesor, contrato, dpi, confi
             if (err) {
               reject(err);
             } else if (!data) {
-              resolve(null);
+              // Si no hay datos en registry, intentar con old_registry
+              const oldCuotasKey = `old_registry_${dpi}_contrato_${configId}_${asesorId}_${contratoId}`;
+              redisClient.get(oldCuotasKey, (err2, data2) => {
+                if (err2) {
+                  reject(err2);
+                } else if (!data2) {
+                  resolve(null);
+                } else {
+                  try {
+                    const cuotasData = JSON.parse(data2);
+                    resolve(cuotasData);
+                  } catch (parseError) {
+                    console.error('[DEBUG] Error al parsear cuotas desde old_registry:', parseError);
+                    reject(parseError);
+                  }
+                }
+              });
             } else {
               try {
                 const cuotasData = JSON.parse(data);
-                resolve(cuotasData);
+                // Si el array de cuotas está vacío, intentar con old_registry
+                if (Array.isArray(cuotasData) && cuotasData.length > 13 && Array.isArray(cuotasData[13]) && cuotasData[13].length === 0) {
+                  const oldCuotasKey = `old_registry_${dpi}_contrato_${configId}_${asesorId}_${contratoId}`;
+                  redisClient.get(oldCuotasKey, (err2, data2) => {
+                    if (err2) {
+                      reject(err2);
+                    } else if (!data2) {
+                      resolve(cuotasData); // Devolver el array vacío original
+                    } else {
+                      try {
+                        const oldCuotasData = JSON.parse(data2);
+                        resolve(oldCuotasData);
+                      } catch (parseError) {
+                        console.error('[DEBUG] Error al parsear cuotas desde old_registry:', parseError);
+                        resolve(cuotasData); // Devolver el array vacío original si falla
+                      }
+                    }
+                  });
+                } else {
+                  resolve(cuotasData);
+                }
               } catch (parseError) {
                 console.error('[DEBUG] Error al parsear cuotas:', parseError);
                 reject(parseError);
@@ -409,7 +445,7 @@ function generarReportePagos(response, redisClient, asesor, contrato, dpi, confi
           // si la tabla (incluyendo el título) cabe en la página actual. Esto asegura
           // que el título no se quede al final de una página y la tabla empiece en la siguiente.
 
-          if (cuotasData && Array.isArray(cuotasData) && cuotasData.length > 13 && Array.isArray(cuotasData[13])) {
+          if (cuotasData && Array.isArray(cuotasData) && Array.isArray(cuotasData[13])) {
             const cuotas = cuotasData[13];
             
             // Helper: parsear fecha como local (evita el problema de "YYYY-MM-DD" tratado como UTC)
