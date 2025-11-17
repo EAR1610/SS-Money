@@ -186,28 +186,16 @@ function generarReportePagos(response, redisClient, asesor, contrato, dpi, confi
 
         // ? Normalizar keys a arreglo por seguridad
         if (!keys) {
-          response.writeHead(404, { 'Content-Type': 'application/json' });
-          response.end(JSON.stringify({ error: 'No se encontraron pagos con esos datos' }));
-          return resolve();
-        }
-
-        if (!Array.isArray(keys)) {
+          keys = [];
+        } else if (!Array.isArray(keys)) {
           if (typeof keys === 'string') {
             keys = [keys];
           } else if (typeof keys === 'object' && keys !== null && typeof keys.length === 'number') {
             keys = Array.prototype.slice.call(keys);
           } else {
             console.warn('WARN: keys no es array ni string. keys:', keys);
-            response.writeHead(404, { 'Content-Type': 'application/json' });
-            response.end(JSON.stringify({ error: 'No se encontraron pagos con esos datos' }));
-            return resolve();
+            keys = [];
           }
-        }
-
-        if (keys.length === 0) {
-          response.writeHead(404, { 'Content-Type': 'application/json' });
-          response.end(JSON.stringify({ error: 'No se encontraron pagos con esos datos' }));
-          return resolve();
         }
 
         try {
@@ -312,7 +300,7 @@ function generarReportePagos(response, redisClient, asesor, contrato, dpi, confi
           doc.moveDown(1);
 
           // * Encabezado principal del reporte
-          doc.fontSize(12).font('Helvetica-Bold').text('Historial de Pagos', { align: 'center' });
+          doc.fontSize(12).font('Helvetica-Bold').text('Estado de cuenta', { align: 'center' });
           doc.moveDown(1);
 
           // * Preparar datos para mostrar en dos columnas
@@ -423,17 +411,24 @@ function generarReportePagos(response, redisClient, asesor, contrato, dpi, confi
             formatMonto(p.monto),
           ]);
 
-          doc.table({
-            columnStyles: (i) => {
-              if (i === 0) return { width: "*", align: 'center', border: [1, 0, 1, 0], borderColor: 'black' };
-              if (i === 1) return { width: "*", align: 'center', border: [1, 0, 1, 0], borderColor: 'black' };
-              if (i === 2) return { width: "*", align: 'right', border: [1, 0, 1, 0], borderColor: 'black' };
-            },
-            rowStyles(i) {
-              if (i === 0) return { textStroke: 0.5 };
-            },
-            data: [headers, ...dataRows],
-          });
+          // Si no hay pagos, mostrar mensaje directamente
+          if (dataRows.length === 0) {
+            doc.moveDown(0.5);
+            doc.font('Helvetica').fontSize(10).text('No hay pagos registrados para este contrato', { align: 'center' });
+            doc.moveDown(0.5);
+          } else {
+            doc.table({
+              columnStyles: (i) => {
+                if (i === 0) return { width: "*", align: 'center', border: [1, 0, 1, 0], borderColor: 'black' };
+                if (i === 1) return { width: "*", align: 'center', border: [1, 0, 1, 0], borderColor: 'black' };
+                if (i === 2) return { width: "*", align: 'right', border: [1, 0, 1, 0], borderColor: 'black' };
+              },
+              rowStyles(i) {
+                if (i === 0) return { textStroke: 0.5 };
+              },
+              data: [headers, ...dataRows],
+            });
+          }
           
           // Total general
           const total = pagos.reduce((sum, p) => sum + (parseFloat(p.monto) || 0), 0);
