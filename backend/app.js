@@ -1,6 +1,7 @@
 var redis = require('redis');
 var dev = false;
 const { generarReportePagos } = require('./reportes/estado_cuenta_contrato');
+const { generarTicketPago } = require('./ticket_pago/ticket_pago');
 
 /*
 	? Este codigo es el core del sistema
@@ -71,6 +72,26 @@ var server = http.createServer(async function(request, response) {
     }
 
     await generarReportePagos(response, redisClient, asesor, contrato, dpi, configuracion, plan);
+    return;
+  } else if (url.pathname === '/ticket' && request.method === 'GET') {
+    // Ruta para ticket de pago
+    const fecha = url.searchParams.get('fecha');
+    const asesor = url.searchParams.get('asesor');
+    const cliente = url.searchParams.get('cliente');
+    const numeroCuota = url.searchParams.get('numeroCuota');
+    const montoPagado = url.searchParams.get('montoPagado');
+    const saldoPendiente = url.searchParams.get('saldoPendiente');
+    const saldoAnterior = url.searchParams.get('saldoAnterior');
+    const fechaVencimiento = url.searchParams.get('fechaVencimiento');
+    const configId = url.searchParams.get('configId');
+
+    if (!fecha || !asesor || !cliente || !numeroCuota || !montoPagado || !saldoPendiente || !saldoAnterior || !fechaVencimiento || !configId) {
+      response.writeHead(400, { 'Content-Type': 'application/json' });
+      response.end(JSON.stringify({ error: 'Faltan parámetros requeridos para el ticket' }));
+      return;
+    }
+
+    await generarTicketPago(response, redisClient, fecha, asesor, cliente, numeroCuota, montoPagado, saldoPendiente, saldoAnterior, fechaVencimiento, configId);
     return;
   }
 
