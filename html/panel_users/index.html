@@ -122,12 +122,12 @@
 
         let nombreCliente = ticketClienteImpresion.extraer[8] + ' ' +ticketClienteImpresion.extraer[9];
         let apellidoCliente = ticketClienteImpresion.extraer[10] + ' ' +ticketClienteImpresion.extraer[11];
-        let NoCuota = ticketClienteImpresion.contador_cuotas;        
+        let NoCuota = ticketClienteImpresion.contador_cuotas;
         let montoAPagar = parseInt(window.sessionStorage.getItem("monto-pagado"));
         let infoSesion = JSON.parse(sessionStorage.getItem('Money-vars-token'));
         let infoSeparada = infoSesion[6].split(" ");
         let nombreAsesor = infoSeparada.slice(0, 2).join(" ");
-        let apellidoAsesor = infoSeparada.slice(2).join(" ");        
+        let apellidoAsesor = infoSeparada.slice(2).join(" ");
 
         doc.setFontSize(18);
         doc.addFont('Helvetica', 'bold');
