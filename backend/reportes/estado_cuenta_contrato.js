@@ -120,7 +120,28 @@ function generarReportePagos(response, redisClient, asesor, contrato, dpi, confi
 
       function getCuotas(dpi, configId, asesorId, contratoId) {
         return new Promise((resolve, reject) => {
-          // Para todos los planes (incluido 8), consultar registry primero
+          // Si el plan es 8, SOLO consultar old_registry
+          if (plan === '8') {
+            const oldCuotasKey = `old_registry_${dpi}_contrato_${configId}_${asesorId}_${contratoId}`;
+            redisClient.get(oldCuotasKey, (err, data) => {
+              if (err) {
+                reject(err);
+              } else if (!data) {
+                resolve(null);
+              } else {
+                try {
+                  const cuotasData = JSON.parse(data);
+                  resolve(cuotasData);
+                } catch (parseError) {
+                  console.error('[DEBUG] Error al parsear cuotas desde old_registry:', parseError);
+                  reject(parseError);
+                }
+              }
+            });
+            return;
+          }
+
+          // Para otros planes, consultar registry primero
           const cuotasKey = `registry_${dpi}_contrato_${configId}_${asesorId}_${contratoId}`;
           redisClient.get(cuotasKey, (err, data) => {
             if (err) {
