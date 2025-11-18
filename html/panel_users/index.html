@@ -104,14 +104,8 @@
     }
     
     function generarPDFPago() {
-        var doc = new window.jspdf.jsPDF({
-            unit: 'mm',
-            format: [80,Infinity],
-            format: [80, 100]
-        });
 
         let fecha = new Date().toLocaleString();
-
         if(ticketClienteImpresion == undefined){ 
             toastr.warning("No hay datos para generar un ticket", "Atención");
             return;
@@ -128,118 +122,29 @@
         let infoSeparada = infoSesion[6].split(" ");
         let nombreAsesor = infoSeparada.slice(0, 2).join(" ");
         let apellidoAsesor = infoSeparada.slice(2).join(" ");
-
-        doc.setFontSize(18);
-        doc.addFont('Helvetica', 'bold');
-        doc.setFont('Helvetica', 'bold')
-        imprimir_texto(doc, 'TICKET DE PAGO', doc.internal.pageSize.getWidth() / 2, 10, 12, 'black', 'center');
-
-        doc.setLineWidth(0.5);
-        doc.setDrawColor(0, 0, 0);
-        doc.setLineDash([3, 3], 0);
-        doc.line(10, 15, doc.internal.pageSize.getWidth() - 10, 15); 
-
-        doc.setFont('Helvetica', 'bold');
-        imprimir_texto(doc, 'Fecha: ', 10, 20, 12, 'black', 'left');
-        doc.setFont('Helvetica', 'normal');
-        imprimir_texto(doc, fecha.toString(), 25, 20, 12, 'black', 'left');
-
-        doc.setFont('Helvetica', 'bold');
-        imprimir_texto(doc, 'Asesor: ', 10, 25, 12, 'black', 'left');
-        doc.setFont('Helvetica', 'normal');
-        imprimir_texto(doc, nombreAsesor, 27, 25, 12, 'black', 'left');
-        imprimir_texto(doc, apellidoAsesor, 10, 30, 12, 'black', 'left');
-
-        doc.setFont('Helvetica', 'bold');
-        imprimir_texto(doc, 'Cliente: ', 10, 35, 12, 'black', 'left');
-        doc.setFont('Helvetica', 'normal');
-        imprimir_texto(doc, nombreCliente, 28 ,35 ,12 ,'black' ,'left');
-        imprimir_texto(doc, apellidoCliente, 10, 40, 12, 'black', 'left');
-
-        doc.setFont('Helvetica', 'bold');
-        imprimir_texto(doc, 'No cuota: ', 10, 45, 12, 'black', 'left');
-        doc.setFont('Helvetica', 'normal');
-        imprimir_texto(doc,NoCuota.toString() ,30 ,45 ,12 ,'black' ,'left');
-
-        doc.setFont('Helvetica', 'bold');
-        imprimir_texto(doc,'Monto a pagar: ',10 ,50 ,12 ,'black' ,'left');
-        doc.setFont('Helvetica', 'normal');
-        imprimir_texto(doc,'Q' + montoAPagar.toString() ,45 ,50 ,12 ,'black' ,'left');
-
+        
         if (montoAPagar == parseInt(ticketClienteImpresion.cuotas[8].toString().replace(".","")) && ticketClienteImpresion.cuotas[10] == idContratoPlanMensualIndefinido){
             saldoPendiente = 0
-            saldoAnterior = 0
-
-            doc.setFont('Helvetica', 'bold');
-            imprimir_texto(doc,'Valor contrato: ',10 ,55 ,12 ,'black' ,'left');
-            doc.setFont('Helvetica', 'normal');
-            imprimir_texto(doc,'Q' + saldoPendiente.toString() ,47 ,55 ,12 ,'black' ,'left');
-    
-            doc.setFont('Helvetica', 'bold');
-            imprimir_texto(doc,'Total a Pagar: ',10 ,60 ,12 ,'black' ,'left');
-            doc.setFont('Helvetica', 'normal');
-            imprimir_texto(doc,'Q' + saldoAnterior.toString() ,45 ,60 ,12 ,'black' ,'left');
+            saldoAnterior = 0            
         } else if (ticketClienteImpresion.cuotas[10] == idContratoPlanMensualIndefinido) {
-            saldoPendiente = parseInt(ticketClienteImpresion.cuotas[3].toString().replace(".",""));
+            saldoPendiente = parseInt(ticketClienteImpresion.cuotas[3].toString().replace(".","")); 
             saldoAnterior = parseInt(ticketClienteImpresion.cuotas[8].toString().replace(".",""));
-
-            doc.setFont('Helvetica', 'bold');
-            imprimir_texto(doc,'Valor contrato: ',10 ,55 ,12 ,'black' ,'left');
-            doc.setFont('Helvetica', 'normal');
-            imprimir_texto(doc,'Q' + saldoPendiente.toString() ,47 ,55 ,12 ,'black' ,'left');
-    
-            doc.setFont('Helvetica', 'bold');
-            imprimir_texto(doc,'Total a Pagar: ',10 ,60 ,12 ,'black' ,'left');
-            doc.setFont('Helvetica', 'normal');
-            imprimir_texto(doc,'Q' + saldoAnterior.toString() ,45 ,60 ,12 ,'black' ,'left');            
         } else {
             saldoPendiente = Math.ceil(parseInt(ticketClienteImpresion.valoes - ticketClienteImpresion.acumo));
             saldoAnterior = montoAPagar + saldoPendiente;
-
-            doc.setFont('Helvetica', 'bold');
-            imprimir_texto(doc,'Saldo pendiente: ',10 ,55 ,12 ,'black' ,'left');
-            doc.setFont('Helvetica', 'normal');
-            imprimir_texto(doc,'Q' + saldoPendiente.toString() ,47 ,55 ,12 ,'black' ,'left');
-    
-            doc.setFont('Helvetica', 'bold');
-            imprimir_texto(doc,'Saldo anterior: ',10 ,60 ,12 ,'black' ,'left');
-            doc.setFont('Helvetica', 'normal');
-            imprimir_texto(doc,'Q' + saldoAnterior.toString() ,45 ,60 ,12 ,'black' ,'left');
         }
-
-        if (ticketClienteImpresion.cuotas[10] != idContratoPlanMensualIndefinido){
-            doc.setFont('Helvetica', 'bold');
-            imprimir_texto(doc,'F. Vencimiento: ',10 ,65 ,12 ,'black' ,'left');
-            doc.setFont('Helvetica', 'normal');
-
+        
+        
+        if (ticketClienteImpresion.cuotas[10] != idContratoPlanMensualIndefinido) {
             // Damos formato a la fechad de Culminacion del contrato (dd-mm-yyyy);
             let partesFecha = block.ticketClienteImpresion.cuotas[13][ticketClienteImpresion.cuotas[13].length - 1].fe.split('-');
             block.fechaCulminacion = `${ partesFecha[2] }-${ partesFecha[1] }-${ partesFecha[0] }`;
-            imprimir_texto(doc, block.fechaCulminacion, 45, 65, 12 ,'black' ,'left');
+        } else {
+            block.fechaCulminacion = 'FECHA NO ESTABLECIDA';
         }
 
-        doc.setFont('Helvetica', 'bold');
-        imprimir_texto(doc, '¡Gracias por Su pago!', doc.internal.pageSize.getWidth() / 2, 80, 12, 'black', 'center');
-
-        doc.autoPrint(); 
-        doc.output('dataurlnewwindow');
-        //doc.save('Boleta de pago de ' + fechaFormateada + ' Hora:' + hora +' de '+nombreCliente+'.pdf');   
-        
-        swal({
-            title: "¿Ya ha entregado el ticket?",
-            text: 'Es necesaria su confirmación, para cargar los nuevos datos al sistema',
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: "¡Si, Ya!",
-            cancelButtonText: 'No, aún no',
-            closeOnConfirm: true
-        }, function () {
-            setTimeout(function(){
-                location.reload();
-                window.sessionStorage.setItem("monto-pagado", "0");
-            }, 1000);
-        });
+        const url = `http://localhost:3335/ticket?fecha=${fecha},%20a.%20m.&asesor=${nombreAsesor}%20${apellidoAsesor}&cliente=${ticketClienteImpresion.extraer[8]}%20${ticketClienteImpresion.extraer[9]}%20${ticketClienteImpresion.extraer[10]}%20${ticketClienteImpresion.extraer[11]}&numeroCuota=${NoCuota}&montoPagado=${montoAPagar}&saldoPendiente=${saldoPendiente.toString()}&saldoAnterior=${saldoAnterior.toString()}&fechaVencimiento=${block.fechaCulminacion}&configId=${block.configuracion[0]}&plan=${ticketClienteImpresion.cuotas[10]}`;        
+        window.open(url, '_blank');
     }
 
     function imprimir_texto(doc, texto, x, y, size, color, align) {

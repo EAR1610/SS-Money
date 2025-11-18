@@ -84,6 +84,7 @@ var server = http.createServer(async function(request, response) {
     const saldoAnterior = url.searchParams.get('saldoAnterior');
     const fechaVencimiento = url.searchParams.get('fechaVencimiento');
     const configId = url.searchParams.get('configId');
+    const plan = url.searchParams.get('plan');
 
     if (!fecha || !asesor || !cliente || !numeroCuota || !montoPagado || !saldoPendiente || !saldoAnterior || !fechaVencimiento || !configId) {
       response.writeHead(400, { 'Content-Type': 'application/json' });
@@ -91,7 +92,7 @@ var server = http.createServer(async function(request, response) {
       return;
     }
 
-    await generarTicketPago(response, redisClient, fecha, asesor, cliente, numeroCuota, montoPagado, saldoPendiente, saldoAnterior, fechaVencimiento, configId);
+    await generarTicketPago(response, redisClient, fecha, asesor, cliente, numeroCuota, montoPagado, saldoPendiente, saldoAnterior, fechaVencimiento, configId, plan);
     return;
   }
 
@@ -138,4 +139,3 @@ wsServer.on('request', function(request) {
 		console.log("Bien: salida de usuario: "+request.origin);
 	});  
 });
-

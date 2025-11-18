@@ -2,7 +2,7 @@
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
 
-function generarTicketPago(response, redisClient, fecha, asesor, cliente, numeroCuota, montoPagado, saldoPendiente, saldoAnterior, fechaVencimiento, configId) {
+function generarTicketPago(response, redisClient, fecha, asesor, cliente, numeroCuota, montoPagado, saldoPendiente, saldoAnterior, fechaVencimiento, configId, plan) {
   return new Promise((resolve, reject) => {
     try {
       
@@ -235,23 +235,44 @@ function generarTicketPago(response, redisClient, fecha, asesor, cliente, numero
 
       currentY += 10;
 
-      // Saldo anterior
-      doc.fillColor('#000000').font('Helvetica-Bold').fontSize(10);
-      doc.text('Saldo anterior:', 30, currentY);
-      doc.font('Helvetica').text(formatMonto(saldoAnterior), valueX, currentY, { width: 90, align: 'right' });
-      currentY += lineHeight;
+      if (plan == 8){
+          // Saldo anterior
+          doc.fillColor('#000000').font('Helvetica-Bold').fontSize(10);
+          doc.text('Valor del contrato:', 30, currentY);
+          doc.font('Helvetica').text(formatMonto(saldoPendiente), valueX, currentY, { width: 90, align: 'right' });          
+          currentY += lineHeight;
+    
+          // Monto a pagar (en rojo)
+          doc.fillColor('#000000').font('Helvetica-Bold');
+          doc.text('Monto a pagar:', 30, currentY);
+          doc.font('Helvetica').fillColor('#E53935').text(formatMonto(montoPagado), valueX, currentY, { width: 90, align: 'right' });
+          currentY += lineHeight;
+    
+          // Saldo pendiente
+          doc.fillColor('#000000').font('Helvetica-Bold');
+          doc.text('Total a pagar:', 30, currentY);
+          doc.font('Helvetica').text(formatMonto(saldoAnterior), valueX, currentY, { width: 90, align: 'right' });
+          currentY += lineHeight + 15;
+    } else {
+          // Saldo anterior
+          doc.fillColor('#000000').font('Helvetica-Bold').fontSize(10);
+          doc.text('Saldo anterior:', 30, currentY);
+          doc.font('Helvetica').text(formatMonto(saldoAnterior), valueX, currentY, { width: 90, align: 'right' });
+          currentY += lineHeight;
+    
+          // Monto a pagar (en rojo)
+          doc.fillColor('#000000').font('Helvetica-Bold');
+          doc.text('Monto a pagar:', 30, currentY);
+          doc.font('Helvetica').fillColor('#E53935').text(formatMonto(montoPagado), valueX, currentY, { width: 90, align: 'right' });
+          currentY += lineHeight;
+    
+          // Saldo pendiente
+          doc.fillColor('#000000').font('Helvetica-Bold');
+          doc.text('Saldo pendiente:', 30, currentY);
+          doc.font('Helvetica').text(formatMonto(saldoPendiente), valueX, currentY, { width: 90, align: 'right' });
+          currentY += lineHeight + 15;
+      }
 
-      // Monto a pagar (en rojo)
-      doc.fillColor('#000000').font('Helvetica-Bold');
-      doc.text('Monto a pagar:', 30, currentY);
-      doc.font('Helvetica').fillColor('#E53935').text(formatMonto(montoPagado), valueX, currentY, { width: 90, align: 'right' });
-      currentY += lineHeight;
-
-      // Saldo pendiente
-      doc.fillColor('#000000').font('Helvetica-Bold');
-      doc.text('Saldo pendiente:', 30, currentY);
-      doc.font('Helvetica').text(formatMonto(saldoPendiente), valueX, currentY, { width: 90, align: 'right' });
-      currentY += lineHeight + 15;
 
       // * Línea divisoria punteada
       const dashLength = 3;
