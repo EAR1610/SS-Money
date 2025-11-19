@@ -185,17 +185,17 @@ function generarTicketPago(response, redisClient, fecha, asesor, cliente, numero
       const valueX = 180;
       const lineHeight = 25;
 
-      doc.fontSize(10).font('Helvetica-Bold');
+      doc.fontSize(12).font('Helvetica-Bold');
 
       // Fecha
       doc.text('Fecha:', labelX, currentY);
-      doc.font('Helvetica').fillColor('#000000').text(formatFechaTicket(fecha), valueX - 20, currentY, { width: 120, align: 'right' });
+      doc.font('Helvetica').fillColor('#000000').text(formatFechaTicket(fecha), valueX - 33, currentY, { width: 145, align: 'left' });
       currentY += lineHeight;
 
       // Asesor (con altura dinámica para nombres largos)
       doc.fillColor('#000000').font('Helvetica-Bold');
       doc.text('Asesor:', labelX, currentY);
-      doc.font('Helvetica').fillColor('#000000').text(asesorText, valueX, currentY, { width: 100, align: 'right' });
+      doc.font('Helvetica').fillColor('#000000').text(asesorText, valueX - 33, currentY, { width: 150, align: 'left' });
       
       // Ajustar currentY según la altura real del texto (mínimo lineHeight)
       const asesorSpacing = Math.max(asesorHeight, lineHeight);
@@ -206,7 +206,7 @@ function generarTicketPago(response, redisClient, fecha, asesor, cliente, numero
       doc.text('Cliente:', labelX, currentY);
       
       // Calcular altura del texto del cliente usando las variables ya definidas
-      doc.font('Helvetica').fillColor('#000000').text(clienteText, valueX, currentY, { width: 100, align: 'right' });
+      doc.font('Helvetica').fillColor('#000000').text(clienteText, valueX - 33, currentY, { width: 150, align: 'left' });
       
       // Ajustar currentY según la altura real del texto (mínimo lineHeight)
       const clienteSpacing = Math.max(clienteHeight, lineHeight);
@@ -215,13 +215,13 @@ function generarTicketPago(response, redisClient, fecha, asesor, cliente, numero
       // No. cuota
       doc.fillColor('#000000').font('Helvetica-Bold');
       doc.text('No. cuota:', labelX, currentY);
-      doc.font('Helvetica').fillColor('#000000').text(numeroCuota || '1', valueX, currentY, { width: 100, align: 'right' });
+      doc.font('Helvetica').fillColor('#000000').text(numeroCuota || '1', valueX - 33, currentY, { width: 100, align: 'left' });
       currentY += lineHeight;
 
       // F. Vencimiento
       doc.fillColor('#000000').font('Helvetica-Bold');
       doc.text('F. Vencimiento:', labelX, currentY);
-      doc.font('Helvetica').fillColor('#000000').text(formatFechaVencimiento(fechaVencimiento), valueX, currentY, { width: 100, align: 'right' });
+      doc.font('Helvetica').fillColor('#000000').text(formatFechaVencimiento(fechaVencimiento), valueX - 33, currentY, { width: 100, align: 'left' });
       currentY += lineHeight;
 
       // * Línea divisoria
@@ -235,7 +235,7 @@ function generarTicketPago(response, redisClient, fecha, asesor, cliente, numero
 
       if (plan == 8){
           // Saldo anterior
-          doc.fillColor('#000000').font('Helvetica-Bold').fontSize(10);
+          doc.fillColor('#000000').font('Helvetica-Bold').fontSize(12);
           doc.text('Valor del contrato:', 30, currentY);
           doc.font('Helvetica').text(formatMonto(saldoPendiente), valueX, currentY, { width: 90, align: 'right' });          
           currentY += lineHeight;
@@ -253,7 +253,7 @@ function generarTicketPago(response, redisClient, fecha, asesor, cliente, numero
           currentY += lineHeight + 15;
     } else {
           // Saldo anterior
-          doc.fillColor('#000000').font('Helvetica-Bold').fontSize(10);
+          doc.fillColor('#000000').font('Helvetica-Bold').fontSize(12);
           doc.text('Saldo anterior:', 30, currentY);
           doc.font('Helvetica').text(formatMonto(saldoAnterior), valueX, currentY, { width: 90, align: 'right' });
           currentY += lineHeight;
