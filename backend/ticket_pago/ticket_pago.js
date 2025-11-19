@@ -293,7 +293,7 @@ function generarTicketPago(response, redisClient, fecha, asesor, cliente, numero
       stream.on('finish', function () {
         response.writeHead(200, {
           'Content-Type': 'application/pdf',
-          'Content-Disposition': `attachment; filename="TICKET_PAGO_${numeroCuota}_${Date.now()}.pdf"`,
+          'Content-Disposition': `attachment; filename="TICKET_PAGO_${numeroCuota}_${cliente}.pdf"`,
         });
 
         const fileStream = fs.createReadStream(filePath);
