@@ -189,13 +189,13 @@ function generarTicketPago(response, redisClient, fecha, asesor, cliente, numero
 
       // Fecha
       doc.text('Fecha:', labelX, currentY);
-      doc.font('Helvetica').fillColor('#2c5986').text(formatFechaTicket(fecha), valueX - 20, currentY, { width: 120, align: 'right' });
+      doc.font('Helvetica').fillColor('#000000').text(formatFechaTicket(fecha), valueX - 20, currentY, { width: 120, align: 'right' });
       currentY += lineHeight;
 
       // Asesor (con altura dinámica para nombres largos)
       doc.fillColor('#000000').font('Helvetica-Bold');
       doc.text('Asesor:', labelX, currentY);
-      doc.font('Helvetica').fillColor('#2c5986').text(asesorText, valueX, currentY, { width: 100, align: 'right' });
+      doc.font('Helvetica').fillColor('#000000').text(asesorText, valueX, currentY, { width: 100, align: 'right' });
       
       // Ajustar currentY según la altura real del texto (mínimo lineHeight)
       const asesorSpacing = Math.max(asesorHeight, lineHeight);
@@ -229,9 +229,7 @@ function generarTicketPago(response, redisClient, fecha, asesor, cliente, numero
       currentY += 15;
 
       // * Sección de montos con fondo celeste y bordes redondeados
-      doc.fillColor('#d5ebfb')
-         .roundedRect(20, currentY, 260, 80, 10)
-         .fill();
+      doc.fillColor('#d5ebfb').roundedRect(20, currentY, 260, 80, 10).fill();
 
       currentY += 10;
 
@@ -245,7 +243,7 @@ function generarTicketPago(response, redisClient, fecha, asesor, cliente, numero
           // Monto a pagar (en rojo)
           doc.fillColor('#000000').font('Helvetica-Bold');
           doc.text('Monto a pagar:', 30, currentY);
-          doc.font('Helvetica').fillColor('#E53935').text(formatMonto(montoPagado), valueX, currentY, { width: 90, align: 'right' });
+          doc.font('Helvetica').fillColor('#000000').text(formatMonto(montoPagado), valueX, currentY, { width: 90, align: 'right' });
           currentY += lineHeight;
     
           // Saldo pendiente
@@ -263,7 +261,7 @@ function generarTicketPago(response, redisClient, fecha, asesor, cliente, numero
           // Monto a pagar (en rojo)
           doc.fillColor('#000000').font('Helvetica-Bold');
           doc.text('Monto a pagar:', 30, currentY);
-          doc.font('Helvetica').fillColor('#E53935').text(formatMonto(montoPagado), valueX, currentY, { width: 90, align: 'right' });
+          doc.font('Helvetica').fillColor('#000000').text(formatMonto(montoPagado), valueX, currentY, { width: 90, align: 'right' });
           currentY += lineHeight;
     
           // Saldo pendiente
@@ -286,12 +284,8 @@ function generarTicketPago(response, redisClient, fecha, asesor, cliente, numero
       currentY += 15;
 
       // * Mensaje de agradecimiento
-      doc.fontSize(12).font('Helvetica-Bold').fillColor('#41a444')
+      doc.fontSize(12).font('Helvetica-Bold').fillColor('#000000')
         .text('¡Gracias por Su Pago!', 20, currentY, { align: 'center', width: 260 });
-      
-      currentY += 20;
-      doc.fontSize(9).font('Helvetica').fillColor('#757575')
-        .text(`Sistema de Pagos - ${nombreEmpresa}`, 20, currentY, { align: 'center', width: 260 });
 
       doc.end();
 
