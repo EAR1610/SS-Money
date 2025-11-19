@@ -149,12 +149,17 @@
             doc.setTextColor(color);
             doc.text(texto, x, y,{align: align});
         }
-
+                
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('boton_Reporte_Cobros').addEventListener('click', function() {
                 generarPDFCobros();
             });
         });
+
+        function consultar_estado_cuenta(idAsesor, idContrato, dpiCliente, configuracion, plan){
+            const url = `http://localhost:3335/reporte?asesor=${idAsesor}&contrato=${idContrato}&dpi=${dpiCliente}&configuracion=${configuracion}&plan=${plan}`;
+            window.open(url, '_blank');
+        }
     
     </script>
 
@@ -2902,6 +2907,7 @@
                                         <th>Fecha de culminación</th>
                                         <th>Ver Contrato</th>
                                         <th>Opción</th>
+                                        <th>Estado de cuenta</th>
                                     </tr>
                                     </thead>
                                     <tbody id="lista_enorme">
@@ -6358,7 +6364,16 @@ function extraer_cobros_cierre(id_asesor, id_tabla) {
                     block.contratoInfo = '<td><button class="btn btn-primary" onclick="javascript:fijar_monto('+String.fromCharCode(39)+block.cliente[7]+String.fromCharCode(39)+','+String.fromCharCode(39)+block.cliente[8]+String.fromCharCode(39)+","+String.fromCharCode(39)+block.contrato[5]+String.fromCharCode(39)+","+String.fromCharCode(39)+block.contrato[3]+String.fromCharCode(39)+');">Ver Contrato</button></td></tr>';
 
                     block.contratoInfoAEliminar = '<td><button class="btn btn-danger" onclick="javascript:eliminar_contrato('+String.fromCharCode(39)+block.cliente[7]+String.fromCharCode(39)+','+String.fromCharCode(39)+block.contrato[0]+String.fromCharCode(39)+","+String.fromCharCode(39)+block.contrato[2]+String.fromCharCode(39)+","+String.fromCharCode(39)+block.numContratoCliente+String.fromCharCode(39)+');">Eliminar Contrato</button></td></tr>';
-                    // String.fromCharCode(39)+frutos[k].id+String.fromCharCode(39)+','+String.fromCharCode(39)+frutos[k].c+String.fromCharCode(39)+
+
+                    block.configuracion = JSON.parse(window.sessionStorage.getItem("Configuracion"));
+
+                    let idAsesor = $("#lista_asesores_general3").val();
+                    let idContrato = block.contrato[12].toString();
+                    let dpiCliente = block.cliente[7].toString();
+                    let configuracion = block.configuracion[0].toString();
+                    let plan = block.contrato[10].toString();
+
+                    block.contratoEstadoCuenta = '<td><button class="btn btn-info" onclick="javascript:consultar_estado_cuenta('+String.fromCharCode(39)+idAsesor+String.fromCharCode(39)+','+String.fromCharCode(39)+idContrato+String.fromCharCode(39)+","+String.fromCharCode(39)+dpiCliente+String.fromCharCode(39)+","+String.fromCharCode(39)+configuracion+String.fromCharCode(39)+','+String.fromCharCode(39)+plan+String.fromCharCode(39)+');">Ver Estado de Cuenta</button></td></tr>';
 
                     block.oso = block.oso + '<tr><td>'+block.fechaRegistro+'</td> <td>'+block.sumas+'</td><td>'+block.cliente[23]+'</td><td>'+block.cliente[7]+'</td> <td>'+block.cliente[8]+' '+block.cliente[10]+'</td> <td>'+block.tesq[0]+'</td><td>'+block.contrato[3]+'</td><td>'+block.contrato[7]+'%</td><td>'+block.contrato[8]+'</td><td>'+block.fechaCulminacion+'</td><td><button class="btn btn-primary" ">Ver Contrato</button></td></tr>'; 
                     
@@ -6375,7 +6390,8 @@ function extraer_cobros_cierre(id_asesor, id_tabla) {
                         block.contrato[8],
                         block.fechaCulminacion,
                         block.contratoInfo,
-                        block.contratoInfoAEliminar
+                        block.contratoInfoAEliminar,
+                        block.contratoEstadoCuenta
                     ]);
                 }
 
