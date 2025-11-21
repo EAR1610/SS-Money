@@ -6365,7 +6365,7 @@ function extraer_cobros_cierre(id_asesor, id_tabla) {
 
                     block.contratoInfoAEliminar = '<td><button class="btn btn-danger" onclick="javascript:eliminar_contrato('+String.fromCharCode(39)+block.cliente[7]+String.fromCharCode(39)+','+String.fromCharCode(39)+block.contrato[0]+String.fromCharCode(39)+","+String.fromCharCode(39)+block.contrato[2]+String.fromCharCode(39)+","+String.fromCharCode(39)+block.numContratoCliente+String.fromCharCode(39)+');">Eliminar Contrato</button></td></tr>';
 
-                    block.configuracion = JSON.parse(window.sessionStorage.getItem("Configuracion"));
+                    block.configuracion = JSON.parse(block.lista[0]);
 
                     let idAsesor = $("#lista_asesores_general3").val();
                     let idContrato = block.contrato[12].toString();
