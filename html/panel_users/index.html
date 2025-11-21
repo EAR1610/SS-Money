@@ -51,6 +51,22 @@
     function generarEstadoCuentaCliente(){
         const url = `http://localhost:3335/reporte?asesor=${ticketClienteImpresion.cuotas[2]}&contrato=${ticketClienteImpresion.idContrato}&dpi=${ticketClienteImpresion.cuotas[1]}&configuracion=${ticketClienteImpresion.configuracion[0]}&plan=${ticketClienteImpresion.cuotas[10]}`;
         window.open(url, '_blank');
+
+        swal({
+            title: "¿Ya ha descargado el estado de cuenta?",
+            text: 'Es necesaria su confirmación, para cargar los nuevos datos al sistema',
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "¡Si, Ya!",
+            cancelButtonText: 'No, aún no',
+            closeOnConfirm: true
+        }, function () {
+            setTimeout(function(){
+                location.reload();
+                window.sessionStorage.setItem("monto-pagado", "0");
+            }, 1000);
+        });
     }
     
     function generarPDFPago() {
@@ -95,11 +111,27 @@
 
         const url = `http://localhost:3335/ticket?fecha=${fecha},%20a.%20m.&asesor=${nombreAsesor}%20${apellidoAsesor}&cliente=${ticketClienteImpresion.extraer[8]}%20${ticketClienteImpresion.extraer[9]}%20${ticketClienteImpresion.extraer[10]}%20${ticketClienteImpresion.extraer[11]}&numeroCuota=${NoCuota}&montoPagado=${montoAPagar}&saldoPendiente=${saldoPendiente.toString()}&saldoAnterior=${saldoAnterior.toString()}&fechaVencimiento=${block.fechaCulminacion}&configId=${block.configuracion[0]}&plan=${ticketClienteImpresion.cuotas[10]}`;        
         window.open(url, '_blank');
+        
+        swal({
+            title: "¿Ya ha entregado el ticket?",
+            text: 'Es necesaria su confirmación, para cargar los nuevos datos al sistema',
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "¡Si, Ya!",
+            cancelButtonText: 'No, aún no',
+            closeOnConfirm: true
+        }, function () {
+            setTimeout(function(){
+                location.reload();
+                window.sessionStorage.setItem("monto-pagado", "0");
+            }, 1000);
+        });
     }   
 
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('boton_pdff').addEventListener('click', function() {
-            generarPDFPago();                  
+            generarPDFPago();
         });
 
         document.getElementById('boton_estado_cuenta_pdf').addEventListener('click', function() {
