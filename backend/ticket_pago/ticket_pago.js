@@ -153,9 +153,7 @@ function generarTicketPago(response, redisClient, fecha, asesor, cliente, numero
       doc.pipe(stream);
 
       // * Encabezado oscuro con nombre de empresa
-      doc.fillColor('#2C3E50')
-         .rect(0, 0, 300, 110)
-         .fill();
+      doc.fillColor('#2C3E50').rect(0, 0, 300, 110).fill();
 
       // Logo (si existe)
       if (logoBuffer) {
@@ -167,13 +165,9 @@ function generarTicketPago(response, redisClient, fecha, asesor, cliente, numero
       }
 
       // Texto del encabezado
-      doc.fillColor('#FFFFFF')
-         .fontSize(14)
-         .font('Helvetica-Bold')
-         .text(nombreEmpresa, 20, logoBuffer ? 75 : 15, { align: 'center', width: 260 });
+      doc.fillColor('#FFFFFF').fontSize(14).font('Helvetica-Bold').text(nombreEmpresa, 20, logoBuffer ? 75 : 15, { align: 'center', width: 260 });
       
-      doc.fontSize(12)
-         .text('TICKET DE PAGO', 20, logoBuffer ? 95 : 40, { align: 'center', width: 260 });
+      doc.fontSize(12).text('TICKET DE PAGO', 20, logoBuffer ? 95 : 40, { align: 'center', width: 260 });
 
       // Resetear color y posición
       doc.fillColor('#000000');
@@ -271,7 +265,6 @@ function generarTicketPago(response, redisClient, fecha, asesor, cliente, numero
           currentY += lineHeight + 15;
       }
 
-
       // * Línea divisoria punteada
       const dashLength = 3;
       const gapLength = 2;
@@ -329,7 +322,7 @@ function generarTicketPago(response, redisClient, fecha, asesor, cliente, numero
           response.end(JSON.stringify({ error: 'Error procesando datos' }));
           return reject(asyncError);
         }
-      })();
+      });
 
     } catch (ex) {
       console.error('Excepción en generarTicketPago:', ex);

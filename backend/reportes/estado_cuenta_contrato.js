@@ -264,6 +264,24 @@ function generarReportePagos(response, redisClient, asesor, contrato, dpi, confi
             return 0;
           });
 
+          // * Validar fecha del contrato (índice 5 de cuotasData)
+          let mostrarDatos = true;
+          const fechaLimite = new Date('2025-11-24');
+          
+          if (cuotasData && Array.isArray(cuotasData) && cuotasData[5]) {
+            const fechaContratoStr = String(cuotasData[5]).trim();
+            const fechaContrato = new Date(fechaContratoStr);
+            
+            console.log('Fecha del contrato:', fechaContratoStr);
+            console.log('Fecha límite:', '2025-11-24');
+            console.log('Fecha contrato < Fecha límite:', fechaContrato < fechaLimite);
+            
+            if (!isNaN(fechaContrato.getTime()) && fechaContrato < fechaLimite) {
+              mostrarDatos = false;
+              console.log('El contrato es anterior a la fecha límite. No se mostrarán datos.');
+            }
+          }
+
           // * Crear el PDF
           const doc = new PDFDocument({ margins: {top: 40, bottom: 45, left: 40, right: 40}, bufferPages: true });
           
@@ -433,8 +451,16 @@ function generarReportePagos(response, redisClient, asesor, contrato, dpi, confi
             formatMonto(p.monto),
           ]);
 
-          // Si no hay pagos, mostrar mensaje directamente
-          if (dataRows.length === 0) {
+          // Si no hay pagos o la fecha del contrato es anterior a la fecha límite, mostrar mensaje
+          if(dataRows.length === 0 && !mostrarDatos) {
+            doc.moveDown(0.5);
+            doc.font('Helvetica').fontSize(10).text('No es posible obtener los pagos registrados para este contrato', { align: 'center' });
+            doc.moveDown(0.5);
+          } else if(!mostrarDatos){
+            doc.moveDown(0.5);
+            doc.font('Helvetica').fontSize(10).text('No es posible obtener los pagos registrados para este contrato', { align: 'center' });
+            doc.moveDown(0.5);
+          } else if (dataRows.length === 0 ) {
             doc.moveDown(0.5);
             doc.font('Helvetica').fontSize(10).text('No hay pagos registrados para este contrato', { align: 'center' });
             doc.moveDown(0.5);
@@ -453,7 +479,7 @@ function generarReportePagos(response, redisClient, asesor, contrato, dpi, confi
           }
           
           // Total general
-          const total = pagos.reduce((sum, p) => sum + (parseFloat(p.monto) || 0), 0);
+          const total = mostrarDatos ? pagos.reduce((sum, p) => sum + (parseFloat(p.monto) || 0), 0) : 0;
           doc.moveDown(0.8);
           doc.font('Helvetica-Bold').text(`Total Pagado: ${formatMonto(total)}`, { align: 'right' });
 
@@ -462,16 +488,16 @@ function generarReportePagos(response, redisClient, asesor, contrato, dpi, confi
           // si la tabla (incluyendo el título) cabe en la página actual. Esto asegura
           // que el título no se quede al final de una página y la tabla empiece en la siguiente.
 
-          // Si el plan es 8 y no hay datos, mostrar mensaje
-          if (plan === '8' && (!cuotasData || !Array.isArray(cuotasData) || !Array.isArray(cuotasData[13]) || cuotasData[13].length === 0)) {
+          // Si el plan es 8 y no hay datos, o si la fecha es anterior al límite, mostrar mensaje
+          if (!mostrarDatos || (plan === '8' && (!cuotasData || !Array.isArray(cuotasData) || !Array.isArray(cuotasData[13]) || cuotasData[13].length === 0))) {
             doc.moveDown(3);
             doc.fontSize(12).font('Helvetica-Bold').text('Listado de Cuotas', { align: 'center' });
             doc.moveDown(0.5);
             doc.fontSize(10).font('Helvetica').text('No hay información disponible', { align: 'center' });
           }
           
-          // Renderizar tabla de cuotas si hay datos
-          if (cuotasData && Array.isArray(cuotasData) && Array.isArray(cuotasData[13]) && cuotasData[13].length > 0) {
+          // Renderizar tabla de cuotas si hay datos y la fecha es válida
+          if (mostrarDatos && cuotasData && Array.isArray(cuotasData) && Array.isArray(cuotasData[13]) && cuotasData[13].length > 0) {
             const cuotas = cuotasData[13];
             
             // Helper: parsear fecha como local (evita el problema de "YYYY-MM-DD" tratado como UTC)

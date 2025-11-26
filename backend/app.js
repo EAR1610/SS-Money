@@ -2,6 +2,7 @@ var redis = require('redis');
 var dev = false;
 const { generarReportePagos } = require('./reportes/estado_cuenta_contrato');
 const { generarTicketPago } = require('./ticket_pago/ticket_pago');
+const { generarReporteCierre } = require('./reportes/reporte_cierre');
 
 /*
 	? Este codigo es el core del sistema
@@ -93,6 +94,21 @@ var server = http.createServer(async function(request, response) {
     }
 
     await generarTicketPago(response, redisClient, fecha, asesor, cliente, numeroCuota, montoPagado, saldoPendiente, saldoAnterior, fechaVencimiento, configId, plan);
+    return;
+  } else if (url.pathname === '/reporte-cierre' && request.method === 'GET') {
+    // Ruta para reporte de cierre
+    const token = url.searchParams.get('token');
+    const idAsesor = url.searchParams.get('idAsesor');
+    const idConfiguracion = url.searchParams.get('idConfiguracion');
+    const fecha = url.searchParams.get('fecha');
+
+    if (!token || !idAsesor || !idConfiguracion || !fecha) {
+      response.writeHead(400, { 'Content-Type': 'application/json' });
+      response.end(JSON.stringify({ error: 'Faltan parámetros: token, idAsesor, idConfiguracion o fecha' }));
+      return;
+    }
+
+    await generarReporteCierre(response, redisClient, token, idAsesor, idConfiguracion, fecha);
     return;
   }
 
