@@ -442,7 +442,7 @@ function generarReporteCierre(response, redisClient, token, idAsesor, idConfigur
 
         // * Tabla de cobros
         doc.moveDown(1);
-        doc.fontSize(11).font('Helvetica-Bold').text('Cobros Registrados:', { align: 'center' });
+        doc.fontSize(11).font('Helvetica-Bold').text('Cobros Registrados', { align: 'center' });
         doc.moveDown(0.5);
 
         let listaCobros = [];
@@ -453,8 +453,9 @@ function generarReporteCierre(response, redisClient, token, idAsesor, idConfigur
         if (listaCobros.length === 0) {
           doc.fontSize(9).font('Helvetica').text('No hay cobros registrados para este periodo', { align: 'center' });
         } else {
-          const headersCobros = ['DPI', 'Nombre Cliente', 'Dirección', 'Monto', 'Hora'];
-          const dataRowsCobros = listaCobros.map((cobro) => [
+          const headersCobros = ['No.', 'DPI', 'Nombre Cliente', 'Dirección', 'Monto', 'Hora'];
+          const dataRowsCobros = listaCobros.map((cobro, index) => [
+            (index + 1).toString(),
             cobro.dpi || '',
             cobro.nombre || '',
             cobro.direccion || '',
@@ -465,12 +466,12 @@ function generarReporteCierre(response, redisClient, token, idAsesor, idConfigur
           doc.fontSize(10).font('Helvetica');
           doc.table({
             columnStyles: (i) => {
-              if (i === 0) return { width: 100, align: 'center', border: [1, 0, 1, 0], borderColor: 'black' };
-              if (i === 1) return { width: 150, align: 'center', border: [1, 0, 1, 0], borderColor: 'black' };
-              if (i === 2) return { width: 130, align: 'center', border: [1, 0, 1, 0], borderColor: 'black' };
-              if (i === 3) return { width: 80, align: 'center', border: [1, 0, 1, 0], borderColor: 'black' };
-              if (i === 4) return { width: "*", align: 'center', border: [1, 0, 1, 0], borderColor: 'black' };
-              if (i === 0) return { textStroke: 0.5 }
+              if (i === 0) return { width: 25, align: 'center', border: [1, 0, 1, 0], borderColor: 'black' };
+              if (i === 1) return { width: 100, align: 'center', border: [1, 0, 1, 0], borderColor: 'black' };
+              if (i === 2) return { width: 150, align: 'center', border: [1, 0, 1, 0], borderColor: 'black' };
+              if (i === 3) return { width: 100, align: 'center', border: [1, 0, 1, 0], borderColor: 'black' };
+              if (i === 4) return { width: 100, align: 'center', border: [1, 0, 1, 0], borderColor: 'black' };
+              if (i === 5) return { width: "*", align: 'center', border: [1, 0, 1, 0], borderColor: 'black' };
             },
             rowStyles(i){
                 if (i === 0) return { textStroke: 0.5, backgroundColor: '#b0cbfd' }; // Encabezados en negrita
@@ -486,7 +487,7 @@ function generarReporteCierre(response, redisClient, token, idAsesor, idConfigur
 
         // * Tabla de gastos
         doc.moveDown(1.5);
-        doc.fontSize(11).font('Helvetica-Bold').text('Motivo de gasto', { align: 'center' });
+        doc.fontSize(11).font('Helvetica-Bold').text('Gastos', { align: 'center' });
         doc.moveDown(0.5);
 
         let listaGastos = [];
@@ -504,8 +505,9 @@ function generarReporteCierre(response, redisClient, token, idAsesor, idConfigur
         if (listaGastos.length === 0) {
           doc.fontSize(9).font('Helvetica').text('No hay gastos registrados para este periodo', { align: 'center' });
         } else {
-          const headersGastos = ['Motivo', 'Monto'];
-          const dataRowsGastos = listaGastos.map((gasto) => [
+          const headersGastos = ['No.', 'Motivo', 'Monto'];
+          const dataRowsGastos = listaGastos.map((gasto, index) => [
+            (index + 1).toString(),
             gasto[1] || '',
             formatMonto(parseMonto(gasto[2]))
           ]);
@@ -513,8 +515,9 @@ function generarReporteCierre(response, redisClient, token, idAsesor, idConfigur
           doc.fontSize(10).font('Helvetica');
           doc.table({
             columnStyles: (i) => {
-              if (i === 0) return { width: 420, border: [1, 0, 1, 0], borderColor: 'black' };
-              if (i === 1) return { width: "*", border: [1, 0, 1, 0], align: 'right' };
+              if (i === 0) return { width: 25, border: [1, 0, 1, 0], borderColor: 'black', align: 'center' };
+              if (i === 1) return { width: 380, border: [1, 0, 1, 0], borderColor: 'black' };
+              if (i === 2) return { width: "*", border: [1, 0, 1, 0], align: 'right' };
             },
             rowStyles(i){
                 if (i === 0) return { textStroke: 0.5, backgroundColor: '#b0cbfd' }; // Encabezados en negrita
@@ -531,7 +534,14 @@ function generarReporteCierre(response, redisClient, token, idAsesor, idConfigur
 
         // * Tabla de renovaciones
         doc.moveDown(1.5);
-        doc.fontSize(11).font('Helvetica-Bold').text('Motivo de renovación', { align: 'center' });
+        
+        // Verificar si hay espacio suficiente en la página actual
+        const espacioRestante = doc.page.height - doc.y - doc.page.margins.bottom;
+        if (espacioRestante < 150) {
+          doc.addPage();
+        }
+        
+        doc.fontSize(11).font('Helvetica-Bold').text('Renovaciones', { align: 'center' });
         doc.moveDown(0.5);
 
         let listaRenovaciones = [];
@@ -549,8 +559,9 @@ function generarReporteCierre(response, redisClient, token, idAsesor, idConfigur
         if (listaRenovaciones.length === 0) {
           doc.fontSize(9).font('Helvetica').text('No hay renovaciones registradas para este periodo', { align: 'center' });
         } else {
-          const headersRenovaciones = ['Motivo', 'Monto'];
-          const dataRowsRenovaciones = listaRenovaciones.map((renovacion) => [
+          const headersRenovaciones = ['No.', 'Motivo', 'Monto'];
+          const dataRowsRenovaciones = listaRenovaciones.map((renovacion, index) => [
+            (index + 1).toString(),
             renovacion[1] || '',
             formatMonto(parseMonto(renovacion[2]))
           ]);
@@ -558,8 +569,9 @@ function generarReporteCierre(response, redisClient, token, idAsesor, idConfigur
           doc.fontSize(10).font('Helvetica');
           doc.table({
             columnStyles: (i) => {
-              if (i === 0) return { width: 420, border: [1, 0, 1, 0], borderColor: 'black' };
-              if (i === 1) return { width: "*", border: [1, 0, 1, 0], align: 'right', borderColor: 'black' };
+              if (i === 0) return { width: 25, border: [1, 0, 1, 0], borderColor: 'black', align: 'center' };
+              if (i === 1) return { width: 380, border: [1, 0, 1, 0], borderColor: 'black' };
+              if (i === 2) return { width: "*", border: [1, 0, 1, 0], align: 'right', borderColor: 'black' };
             },
             rowStyles(i){
                 if (i === 0) return { textStroke: 0.5, backgroundColor: '#b0cbfd' }; // Encabezados en negrita
