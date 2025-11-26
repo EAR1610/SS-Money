@@ -962,7 +962,7 @@
                         </div>
                         <div class="ibox-content row" style="margin-right: 0px;margin-left: 0px;">
 
-                            <div class="col-sm-6 col-md-3 col-xs-12">
+                            <div class="col-sm-6 col-md-2 col-xs-12">
                                 <form role="form">
                                     <div class="form-group"><label>Total de prestamo</label> <input onkeyup="format(this)" onchange="format(this)"
                                         id="monto_prestar_ya_admin_ampliacion"
@@ -971,9 +971,7 @@
                                         class="form-control">
                                     </div>
                                 </form>
-                            </div>
-                            
-                            
+                            </div>                                                
                             
                             <div class="col-sm-6 col-md-3 col-xs-12">
                                 <form role="form">
@@ -1025,7 +1023,7 @@
                                 </form>
                             </div>
 
-                            <div class="col-sm-6 col-md-4 col-xs-12">
+                            <div class="col-sm-6 col-md-2 col-xs-12">
                                 <form role="form">
                                     <label>Frecuencia de pago</label>
                                     <select class="form-control m-b" id="selector_frecuencia_ampliacion">
@@ -1043,9 +1041,9 @@
                                 </form>
                             </div>
 
-                            <div class="col-sm-6 col-md-2 col-xs-12" style="display:none;">
+                            <div class="col-sm-6 col-md-2 col-xs-12">
                                 <form role="form">
-                                    <div class="form-group"><label>Fecha</label> <input
+                                    <div class="form-group"><label>Fecha de Inicio</label> <input
                                             id="fechaActual2"
                                             type="date"
                                             placeholder=""
@@ -1053,6 +1051,14 @@
                                 </form>
                             </div>
 
+                             <div class="col-sm-6 col-md-1 col-xs-12">
+                                <form role="form">
+                                    <div class="form-group"><label>Código contrato</label> <input
+                                        id="codigo_contrato2"
+                                        placeholder=""
+                                        class="form-control"></div>
+                                </form>
+                            </div>
 
                             <div class="col-sm-6 col-md-2 col-xs-12">
                                 <form role="form">
@@ -3614,7 +3620,7 @@
         });		
     }
 
-    function procesarDescuentoAmpliacion( Numcuota, cedula ) {        
+    function procesarDescuentoAmpliacion( Numcuota, cedula ) {
         if ( window.localStorage.getItem("Money-vars-token") !== null ) {
             block.tokens = JSON.parse(window.localStorage.getItem("Money-vars-token"));
         } else {
@@ -3655,17 +3661,18 @@
                         block.descontar = parseInt($("#cuota_descontar_sistema").val());
                         block.porcentaje = $("#utilidad_prestada_ampliacion").html();
                         block.quedo_cuota = $("#utilidad_cuota_ampliacion").html();
-                        block.dias = block.dias - block.descontar;                        
+                        block.dias = block.dias - block.descontar;
+                        block.codigoContrato2 = $("#codigo_contrato2").val();
+
                         // 1
-                        if( block.dias >= block.descontar ){
-            
+                        if( block.dias >= block.descontar ){            
                             if (window.localStorage.getItem("Money-vars-token") !== null) {
                                 block.tokens = JSON.parse(window.localStorage.getItem("Money-vars-token"));
                             } else {
                                 block.tokens = JSON.parse(window.sessionStorage.getItem("Money-vars-token"));
                             }
                             
-                            block.arrays = [ block.tokens[1], window.sessionStorage.getItem("Money-vars-registrado"), block.tokens[5], block.monto_prestar, block.dias, block.fecha_prestamo, block.descontar, block.porcentaje, block.quedo_cuota, block.tokens[4], block.frecuencia, block.ultima_cuota, $("#PrimeraCuotaAmpliacion").val(), $("#SegundaCuotaAmpliacion").val(), $("#TerceraCuotaAmpliacion").val(), $("#CuartaCuotaAmpliacion").val(), block.configuracion[20] ];
+                            block.arrays = [ block.tokens[1], window.sessionStorage.getItem("Money-vars-registrado"), block.tokens[5], block.monto_prestar, block.dias, block.fecha_prestamo, block.descontar, block.porcentaje, block.quedo_cuota, block.tokens[4], block.frecuencia, block.ultima_cuota, $("#PrimeraCuotaAmpliacion").val(), $("#SegundaCuotaAmpliacion").val(), $("#TerceraCuotaAmpliacion").val(), $("#CuartaCuotaAmpliacion").val(), block.configuracion[20], block.codigoContrato2 ];
                             
                             block.obj = { "r": "crear_contrato", "d": block.arrays };
                             backend.conexionEnvio(JSON.stringify(block.obj), function (salida) {
@@ -3869,7 +3876,7 @@
                     
                     block.arrays = [ block.tokens[1], window.sessionStorage.getItem("Money-vars-registrado"), block.tokens[5], block.monto_prestar, block.dias, block.fecha_prestamo, block.descontar, block.porcentaje, block.quedo_cuota, block.tokens[4], block.frecuencia, block.ultima_cuota, $("#PrimeraCuota").val(), $("#SegundaCuota").val(), $("#TerceraCuota").val(), $("#CuartaCuota").val(), block.configuracion[20], block.codigo_contrato ];
                     var datosFecha = block.fecha_prestamo.split("-");
-                    var fecha = datosFecha[1] + "/" + datosFecha[2] + "/" + datosFecha[0];
+                    var fecha = datosFecha[1] + "/" + datosFecha[2] + "/" + datosFecha[0];                    
                     
                     block.obj = { "r": "crear_contrato", "d": block.arrays };
                     backend.conexionEnvio(JSON.stringify(block.obj), function (salida) {
