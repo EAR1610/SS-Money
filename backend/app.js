@@ -114,14 +114,14 @@ var server = http.createServer(async function(request, response) {
 
   // * Respuesta por defecto
   response.writeHead(200);
-  response.write("Online:active:3335");
+  response.write("Online:active:3330");
   response.end();
 });
 /*
 	* Conexion escucho ws en el puerto 3330
 */
-server.listen(3335, function() {
-	console.log("Online:active:3335");
+server.listen(3330, function() {
+	console.log("Online:active:3330");
 });
 
 wsServer = new WebSocketServer({
