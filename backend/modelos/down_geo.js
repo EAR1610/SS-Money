@@ -38,7 +38,7 @@ eje = function(arrays,origen,redisClient) {
 										resolve([true,lista]);										
 									}else{
 										var inus = arrs[ind].split("_");
-										redisClient.get(arrs[ind],function(exrrs,daxtse){
+										redisClient.get(arrs[ind],function(exrrs,daxtse) {
 											if( daxtse !== null && daxtse !== undefined ) {
 												var infeos = JSON.parse(daxtse);
 												
@@ -55,7 +55,7 @@ eje = function(arrays,origen,redisClient) {
 															tele   = infes[17];
 															lat    = infes[20];
 															lon    = infes[21];
-															cod    = infes[23];
+															cod    = infeos[14] ? infeos[14] : 'Sin código';
 														/*
 															* tomo la direccion y la reuno en un array
 														*/	
@@ -63,7 +63,7 @@ eje = function(arrays,origen,redisClient) {
 														lista.push({"u":uno+" "+tres,"c":cedua,"a":lat,"o":lon,"d":direc,"e":tele,"id":inus[5],"m":infeos[3],"f":infeos[5],"cod": cod});
 														ind++;
 														recurso(ind, arrs);														
-													}else{
+													} else {
 														ind++;
 														recurso(ind, arrs);
 													}

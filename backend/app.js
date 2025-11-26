@@ -12,8 +12,8 @@ const { generarTicketPago } = require('./ticket_pago/ticket_pago');
 */
 
 if(!dev){
-	var redisClient = redis.createClient({ host : 'redis-11352.c256.us-east-1-2.ec2.redns.redis-cloud.com', port : 11352 });
-	redisClient.auth('GwkNfnNsiJW3ehbn6jzk4L17LGdG8zCz',function(err,reply) {
+	var redisClient = redis.createClient({ host : 'redis-10495.c83.us-east-1-2.ec2.redns.redis-cloud.com', port : 10495 });
+	redisClient.auth('RAABKOGsZg1BXOrmvyKyjgY6xfMV6QfX',function(err,reply) {
 		console.log(err);
 		if(!err) {
 			console.log("Bien: Verificando la seguridad del sistema redis "+reply+" "+ Date());
@@ -45,8 +45,8 @@ redisClient.on('error',function() {
 /*
 	* Siempre asignaré la clave de acceso del root
 */
-var arrays = [ "admin@financieracapitalservice.com","123","2019-04-15 00:53:46",true,0,"1000000","Super Admin" ];
-redisClient.set("usuario_admin@financieracapitalservice.com_1000000",JSON.stringify(arrays),function(err2,reply2){
+var arrays = [ "admin@pruebas.com","123","2019-04-15 00:53:46",true,0,"1000000","Super Admin" ];
+redisClient.set("usuario_admin@pruebas.com_1000000",JSON.stringify(arrays),function(err2,reply2){
 	console.log("Asignacion de cuenta admin");
 });
 

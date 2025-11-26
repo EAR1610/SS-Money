@@ -705,7 +705,7 @@
 
                             <div class="col-sm-6 col-md-2 col-xs-12">
                                 <form role="form">
-                                    <div class="form-group"><label>Total de prestamo</label> <input onkeyup="format(this)" onchange="format(this)"
+                                    <div class="form-group"><label>Total prestamo</label> <input onkeyup="format(this)" onchange="format(this)"
                                         id="monto_prestar_ya_admin"
                                         type="text"
                                         placeholder="" maxlength="10"
@@ -714,7 +714,7 @@
                                 </form>
                             </div>
                                                 
-                            <div class="col-sm-6 col-md-4 col-xs-12">
+                            <div class="col-sm-6 col-md-3 col-xs-12">
                                 <form role="form">
                                     <label>Cuota a aplicar</label>
                                     <select class="form-control m-b" id="selector_cuotas_selec">
@@ -798,8 +798,7 @@
                                     </select>
                                 </form>
                             </div>
-
-                            <!-- ESTO AGREGUE PARA ESTUARDO HERRERA -->
+                            
                             <div class="col-sm-6 col-md-2 col-xs-12">
                                 <form role="form">
                                     <div class="form-group"><label>Fecha de inicio</label> <input
@@ -810,6 +809,14 @@
                                 </form>
                             </div>
 
+                            <div class="col-sm-6 col-md-1 col-xs-12">
+                                <form role="form">
+                                    <div class="form-group"><label>Código contrato</label> <input
+                                        id="codigo_contrato"
+                                        placeholder=""
+                                        class="form-control"></div>
+                                </form>
+                            </div>
 
                             <div class="col-sm-6 col-md-2 col-xs-12">
                                 <form role="form">
@@ -3833,6 +3840,7 @@
                 block.asesor = $("#selector_asesores_lista").val();
                 block.monto_prestar = $("#monto_prestar_ya_admin").val();
                 block.frecuencia = $("#selector_frecuencia").val();
+                block.codigo_contrato = $("#codigo_contrato").val();
 
                 if (block.frecuencia == "5" || block.frecuencia == 5){ //Pago personalizado (25 días en 4 pagos)
                     block.fechasCorrectas = validarRangoFechas( $("#PrimeraCuota").val(), $("#SegundaCuota").val(), $("#TerceraCuota").val(), $("#CuartaCuota").val() );
@@ -3843,10 +3851,12 @@
                 } else {
                     block.dias = parseInt($("#selector_cuotas_selec").val());
                 }
+                
                 block.fecha_prestamo = $("#fechaActual").val();
                 block.descontar = parseInt( $("#cuota_descontar_sistema").val() != "" ? $("#cuota_descontar_sistema").val() : 0 );
                 block.porcentaje = $("#utilidad_prestada").html();
                 block.quedo_cuota = $("#utilidad_cuota").html();
+                
                 
                 // 2              
                 if( block.dias > block.descontar ){
@@ -3857,7 +3867,7 @@
                         block.tokens = JSON.parse(window.sessionStorage.getItem("Money-vars-token"));
                     }
                     
-                    block.arrays = [ block.tokens[1], window.sessionStorage.getItem("Money-vars-registrado"), block.tokens[5], block.monto_prestar, block.dias, block.fecha_prestamo, block.descontar, block.porcentaje, block.quedo_cuota, block.tokens[4], block.frecuencia, block.ultima_cuota, $("#PrimeraCuota").val(), $("#SegundaCuota").val(), $("#TerceraCuota").val(), $("#CuartaCuota").val(), block.configuracion[20] ];
+                    block.arrays = [ block.tokens[1], window.sessionStorage.getItem("Money-vars-registrado"), block.tokens[5], block.monto_prestar, block.dias, block.fecha_prestamo, block.descontar, block.porcentaje, block.quedo_cuota, block.tokens[4], block.frecuencia, block.ultima_cuota, $("#PrimeraCuota").val(), $("#SegundaCuota").val(), $("#TerceraCuota").val(), $("#CuartaCuota").val(), block.configuracion[20], block.codigo_contrato ];
                     var datosFecha = block.fecha_prestamo.split("-");
                     var fecha = datosFecha[1] + "/" + datosFecha[2] + "/" + datosFecha[0];
                     
@@ -3865,15 +3875,17 @@
                     backend.conexionEnvio(JSON.stringify(block.obj), function (salida) {
                         var valor = JSON.parse(salida);                        
                         $("#text_cedula_cliente").prop("disabled",false);
-                        if (!valor.e) {                        
+                        if (!valor.e) {
                             if(valor.d[1] == "4" ){
                                 toastr.warning('El cliente ha superado el número máximo de contratos vigentes', 'Atención!');
                             } else if( valor.d[1] == "5" ){
                                 toastr.warning('El cliente tiene contrato con otro asesor', 'Atención!');
+                            } else if ( valor.d[1] == "9" ){
+                                toastr.warning(valor.d[2], 'Atención!');
                             } else {
                                 toastr.success('Creado con éxito el contrato', 'Atención!');
                             }
-                            if( parseInt( block.descontar ) > 0 ){
+                            if ( parseInt( block.descontar ) > 0 ){
                                 window.sessionStorage.setItem("Money-vars-descontar-cuota",block.quedo_cuota);
                                 block.teaa = window.sessionStorage.getItem("Money-vars-registrado");
                                 $("#text_cedula_cliente2").val(block.teaa);
@@ -3888,12 +3900,11 @@
                                     $("#status_prestamo").click();
                                     $("#limpiar_contrato").click();
                                     descontar_cuotax();
-                                },1000);
+                                }, 1000);
     
-                            }else{
+                            } else {
                                 $("#limpiar_contrato").click();
-                            }
-    
+                            }    
                             setTimeout(function(){
                                 location.reload();
                             }, 1000);
@@ -5237,7 +5248,7 @@
 				$("#entregado_prestame").text(block.cuotas[3]); //Saldo entregado
 				$("#descuento_prestame").text("0");
 				$("#text_nombre_cliente2").val(block.extraer[8]+" "+block.extraer[9]+" "+block.extraer[10]+" "+block.extraer[11]); //Nombre1, Nombre2, Apellido1, Apellido2, identificador, teléfono
-                $("#info_cliente_personal").val("Código: "+block.extraer[23]+" Teléfono: "+block.extraer[16]);
+                $("#info_cliente_personal").val("Cód: "+(block.cuotas[14] ? block.cuotas[14] : 'Sin código')+" Tel: "+block.extraer[16]);
 				
 				recargarCalendar(block.todosCal);
 				
