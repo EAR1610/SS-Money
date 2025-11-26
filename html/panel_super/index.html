@@ -160,6 +160,15 @@
             const url = `https://api-financieracapitalservices.supersistemas.com.gt/reporte?asesor=${idAsesor}&contrato=${idContrato}&dpi=${dpiCliente}&configuracion=${configuracion}&plan=${plan}`;
             window.open(url, '_blank');
         }
+
+        function generar_cierre_asesor(){
+            let fecha = $("#fecha_cierre").val();
+            let idAsesor = $('#id_asesor_cierre').val();
+            let datosEmpresa = JSON.parse(window.sessionStorage.getItem("Money-vars-token"))
+
+            const url = `http://localhost:3330/reporte-cierre?token=${datosEmpresa[1]}&idAsesor=${idAsesor}&idConfiguracion=${datosEmpresa[4]}&fecha=${fecha}`;            
+            window.open(url, '_blank');
+        }
     
     </script>
 
@@ -345,246 +354,7 @@
 
     </script>
 
-    <script>
-        
-        function generarPDFCierre(){
-
-            var doc = new window.jspdf.jsPDF();
-            var fecha = $("#fecha_cierre").val();
-            var fechaFormateada = moment(fecha).format('DD/MM/YYYY');
-
-
-            var baseDiaria = document.getElementById('text_baseAsesor').textContent;
-            var totalRecaudado = document.getElementById('text_recolectadoAsesor').textContent;
-            var totalGastos = document.getElementById('text_gastosAsesor').textContent;
-            var totalRenovaciones = document.getElementById('text_renovacionesAsesor').textContent;
-            var totalSistema = document.getElementById('text_total_sistema').textContent;
-            var totalAsesor = document.getElementById('text_total_asesor').value;
-            var totalDiferencia = document.getElementById('text_diferencia_cierre').textContent;
-            var selectElement = document.getElementById('id_asesor_cierre');
-            var datosAsesor = selectElement.options[selectElement.selectedIndex].text;
-            var nombreAsesorReportee = datosAsesor.match(/^(.*?)\sID:/)[1];
-
-            //Gastos
-            var tabla = document.getElementById('lista_gastos_exeAsesor');
-            var filas = tabla.getElementsByTagName('tr');
-            var datos = [];
-            var total = 0;
-
-            //Cobros
-            var tabla1 = document.getElementById('listado_cobros_cierre');
-            var datos2 = [];
-            var total2 = 0; 
-
-            //Renovaciones
-            var tabla2 = document.getElementById('lista_renovaciones_exeAsesor');
-            var filas2 = tabla2.getElementsByTagName('tr');
-            var datos3 = [];
-            var total3 = 0;
-
-            doc.setFontSize(18);
-            doc.setFont("Helvetica","bold")
-            doc.text(NombreEmpresa,105,10,null,null,"center");
-            doc.text("Reporte de Cierre",105,20,null,null,"center")
-            doc.setFontSize(10);
-
-
-            doc.text("Fecha: "+ fechaFormateada,10,30);
-            doc.text("Nombre de asesor: " + nombreAsesorReportee,10,50);
-            doc.setFillColor(200, 200, 200);
-            doc.rect(0, 55, 210,10, "F");
-            doc.text("Base diaria: " + baseDiaria,10,60);
-            doc.text("Total recaudado: "+ totalRecaudado, 47, 60);
-            doc.text("Total gastos: " + totalGastos, 95,60);
-            doc.text("Total renovaciones: " + totalRenovaciones, 140,60);
-
-            doc.text("Total sistema: " + totalSistema,10,70);
-            doc.text("Total asesor: Q" + totalAsesor,70,70);
-            doc.text("Diferencia: " + totalDiferencia, 140, 70);
-
-            doc.setFillColor(200,200,200);
-            doc.rect(0,95,210,10,"F");
-            doc.text("DPI", 10,100);
-            doc.text("Nombre Cliente",35,100);
-            doc.text("Dirección",100,100);
-            doc.text("Monto",170,100);
-            doc.text("Hora",190,100);
-
-            /*  IMPLEMENTACIÓN DE COBROS   */
-            for (var i = 0; i < tabla1.rows.length; i++) {
-                var dpi = tabla1.rows[i].cells[0].innerText;
-                var nombre = tabla1.rows[i].cells[1].innerText;
-                var direccion = tabla1.rows[i].cells[2].innerText;
-                var montoTexto = tabla1.rows[i].cells[3].innerText;
-                var montoNumero = parseFloat( ( montoTexto.replace ("Q", "") ).replace(/\./g,'') );
-                var hora = tabla1.rows[i].cells[4].innerText;
-                if (!isNaN(montoNumero)) {
-                    datos2.push({
-                        dpi: dpi,
-                        nombre: nombre,
-                        direccion: direccion,
-                        monto: montoNumero,
-                        hora: hora
-                    });
-                    total2 += montoNumero; 
-                    }
-                }
-
-            var y1 = 110;
-            var maxPageHeight = doc.internal.pageSize.height -20;
-
-            for(var i = 0; i < datos2.length; i++){
-                if (y > maxPageHeight) {
-                        doc.addPage();
-                        y=20; 
-                        doc.setTextColor(0 ,0 ,0);
-                        doc.text('DPI',10,y);
-                        doc.text('Nombre Cliente',50,y1);
-                        doc.text('Dirección',130,y1);
-                        doc.text('Monto',170,y1);
-                        doc.text('Hora',190,y1);
-                        y +=10; 
-                    }
-                doc.setTextColor(0, 0, 0); 
-                doc.setFont("bold");
-                doc.setFontSize(10)
-                doc.text(datos2[i].dpi.toString(), 10, y1);
-                doc.text(datos2[i].nombre.toString(), 35, y1);
-                doc.text(datos2[i].direccion.toString(), 100, y1);
-                doc.text("Q"+datos2[i].monto.toString(), 170, y1);
-                doc.text(datos2[i].hora.toString(), 190, y1);
-                doc.setFont("normal");
-                doc.setFontSize(12);
-
-                if (i < datos2.length - 1) {
-                     if (y1 + 15 > maxPageHeight) {
-                        doc.addPage();
-                        y1 = 20;
-                    }
-                     doc.line(10, y1 + 5, 200, y1 + 5);
-                    }
-                 y1 += 10; 
-            }
-            
-            if(y1 > maxPageHeight){
-                doc.addPage();
-                y1 = 20
-            }
-
-            doc.setTextColor(0,0,0)
-            doc.setFont("Helvetica","bold");
-            doc.text("Total:                                                                                                                            Q"+ total2.toString(),10,y1);
-
-            /*  IMPLEMENTACIÓN DE GASTOS   */
-            var datos = [];
-            var total = 0;
-
-            for(var i = 0; i < filas.length; i++){
-                var celdas = filas[i].getElementsByTagName("td");
-                if(celdas.length === 2){
-                    var motivo = celdas[0].textContent;
-                    var monto = parseFloat( ( celdas[1].textContent.replace("Q","") ).replace(/\./g,'') );
-                    datos.push({motivo: motivo, monto: monto});
-                    total += monto;
-                }
-            }
-
-            var y = y1 + 20;
-
-            doc.setFillColor(200,200,200);
-            doc.rect(0,y -10, 210,10, "F");
-            doc.setTextColor(0,0,0);
-            doc.text("Motivo de gasto",10, y -4);
-            doc.text("Monto",170, y -4);
-            y += 10;
-
-            for(var i = 0; i < datos.length; i ++){
-                if(y > maxPageHeight){
-                    doc.addPage();
-                    y = 20;
-                    doc.setTextColor(0,0,0);
-                    doc.text("Motivo de gasto",10, y);
-                    doc.text("Monto",170,y);
-                    y += 10;
-                }
-                doc.setTextColor(0, 0, 0);
-                doc.setFont("bold");
-                doc.setFontSize(10);
-                doc.text(datos[i].motivo.toString(), 10, y);
-                doc.text("Q" + datos[i].monto.toString(), 170, y);
-                doc.setFont("normal");
-                doc.setFontSize(12);
-                if (i < datos.length - 1) {
-                    doc.line(10, y + 5, 200, y + 5);
-                }
-                y += 10;
-            }
-
-            if(y > maxPageHeight){
-                doc.addPage();
-                y = 20;
-            }
-
-            doc.setTextColor(0,0,0)
-            doc.setFont("Helvetica", "bold");
-            doc.text("Total:                                                                                                                              Q"+ total.toString(),10,y);
-
-            /*  IMPLEMENTACIÓN DE RENOVACIONES   */
-            var datosR = [];
-            var totalR = 0;
-            for(var i = 0; i < filas2.length; i++){
-                var celdas = filas2[i].getElementsByTagName("td");
-                if(celdas.length === 2){
-                    var motivo = celdas[0].textContent;                    
-                    var monto = parseFloat( ( celdas[1].textContent.replace("Q","") ).replace(/\./g,'') );
-                    datosR.push( { motivo: motivo, monto: monto } );
-                    totalR += monto;
-                }
-            }
-
-            var y2 = y + 20;
-
-            doc.setFillColor(200,200,200);
-            doc.rect(0,y2 -10, 210,10, "F");
-            doc.setTextColor(0,0,0);
-            doc.text("Motivo de renovación",10, y2 -4);
-            doc.text("Monto",170, y2 -4);
-            y2 += 10;
-
-            for(var i = 0; i < datosR.length; i ++){
-                if(y2 > maxPageHeight){
-                    doc.addPage();
-                    y2 = 20;
-                    doc.setTextColor(0,0,0);
-                    doc.text("Motivo de renovación",10, y2);
-                    doc.text("Monto",170,y2);
-                    y2 += 10;
-                }
-                doc.setTextColor(0, 0, 0);
-                doc.setFont("bold");
-                doc.setFontSize(10);
-                doc.text(datosR[i].motivo.toString(), 10, y2);
-                doc.text("Q" + datosR[i].monto.toString(), 170, y2);
-                doc.setFont("normal");
-                doc.setFontSize(12);
-                if (i < datosR.length - 1) {
-                    doc.line(10, y2 + 5, 200, y2 + 5);
-                }
-                y2 += 10;
-            }
-
-            if(y2 > maxPageHeight){
-                doc.addPage();
-                y2 = 20;
-            }
-
-            doc.setTextColor(0,0,0)
-            doc.setFont("Helvetica", "bold");
-            doc.text("Total:                                                                                                                              Q"+ totalR.toString(),10,y2);
-                         
-            doc.save('Reporte Cierre de Fecha: ' + fechaFormateada + ' Hora:' + hora + '.pdf'); 
-        }
-
+    <script>           
         function imprimir_texto(doc, texto, x, y, size, color, align) {
             doc.setFontSize(size);
             doc.setTextColor(color);
@@ -593,7 +363,7 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('boton_Reporte_Cierre').addEventListener('click', function() {
-                generarPDFCierre();
+                generar_cierre_asesor();
             });
         });
     </script>
