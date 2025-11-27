@@ -3,9 +3,9 @@ var backend = this;
 backend.dev =  true;
 
 if(!backend.dev){
-	backend.usuando = "api-financieracapitalservices.supersistemas.com.gt";
+	backend.usuando = "apicrediemprendedor.supersistemas.com.gt";
 } else {
-	backend.usuando = "192.168.1.27:3330";
+	backend.usuando = "192.168.1.27:3335";
 }
 
 backend.conexionEnvio = function (datos,callback){

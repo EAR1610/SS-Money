@@ -37,9 +37,9 @@
     <script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
     <script>       
     
-    const cloudName = "dfp8ka39x";
+    const cloudName = "de5n5ntss";
     const URL_API = 'https://serviceimages.supersistemas.com.gt';
-    const PORT = '11352'
+    const PORT = '11353'
     
     let reversomd = ""
     let normalmd = ""
@@ -49,7 +49,7 @@
     let idContratoPlanMensualIndefinido = "8"    
 
     function generarEstadoCuentaCliente(){
-        const url = `https://api-financieracapitalservices.supersistemas.com.gt/reporte?asesor=${ticketClienteImpresion.cuotas[2]}&contrato=${ticketClienteImpresion.idContrato}&dpi=${ticketClienteImpresion.cuotas[1]}&configuracion=${ticketClienteImpresion.configuracion[0]}&plan=${ticketClienteImpresion.cuotas[10]}`;
+        const url = `https://apicrediemprendedor.supersistemas.com.gt/reporte?asesor=${ticketClienteImpresion.cuotas[2]}&contrato=${ticketClienteImpresion.idContrato}&dpi=${ticketClienteImpresion.cuotas[1]}&configuracion=${ticketClienteImpresion.configuracion[0]}&plan=${ticketClienteImpresion.cuotas[10]}`;
         window.open(url, '_blank');
 
         swal({
@@ -109,7 +109,7 @@
             block.fechaCulminacion = 'FECHA NO ESTABLECIDA';
         }
 
-        const url = `https://api-financieracapitalservices.supersistemas.com.gt/ticket?fecha=${fecha},%20a.%20m.&asesor=${nombreAsesor}%20${apellidoAsesor}&cliente=${ticketClienteImpresion.extraer[8]}%20${ticketClienteImpresion.extraer[9]}%20${ticketClienteImpresion.extraer[10]}%20${ticketClienteImpresion.extraer[11]}&numeroCuota=${NoCuota}&montoPagado=${montoAPagar}&saldoPendiente=${saldoPendiente.toString()}&saldoAnterior=${saldoAnterior.toString()}&fechaVencimiento=${block.fechaCulminacion}&configId=${block.configuracion[0]}&plan=${ticketClienteImpresion.cuotas[10]}`;        
+        const url = `https://apicrediemprendedor.supersistemas.com.gt/ticket?fecha=${fecha},%20a.%20m.&asesor=${nombreAsesor}%20${apellidoAsesor}&cliente=${ticketClienteImpresion.extraer[8]}%20${ticketClienteImpresion.extraer[9]}%20${ticketClienteImpresion.extraer[10]}%20${ticketClienteImpresion.extraer[11]}&numeroCuota=${NoCuota}&montoPagado=${montoAPagar}&saldoPendiente=${saldoPendiente.toString()}&saldoAnterior=${saldoAnterior.toString()}&fechaVencimiento=${block.fechaCulminacion}&configId=${block.configuracion[0]}&plan=${ticketClienteImpresion.cuotas[10]}`;        
         window.open(url, '_blank');
         
         swal({

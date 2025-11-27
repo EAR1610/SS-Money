@@ -322,7 +322,7 @@ function generarTicketPago(response, redisClient, fecha, asesor, cliente, numero
           response.end(JSON.stringify({ error: 'Error procesando datos' }));
           return reject(asyncError);
         }
-      });
+      })();
 
     } catch (ex) {
       console.error('Excepción en generarTicketPago:', ex);
