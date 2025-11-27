@@ -349,7 +349,6 @@ function generarReportePagos(response, redisClient, asesor, contrato, dpi, confi
           let telefonoCliente = 'No disponible';
           
           let nombreAsesor = 'No disponible';
-          let direccionAsesor = 'No disponible';
           let telefonoAsesor = 'No disponible';
 
           if (clienteData) {
@@ -362,7 +361,6 @@ function generarReportePagos(response, redisClient, asesor, contrato, dpi, confi
 
           if (asesorData) {
             nombreAsesor = `${asesorData[7] || ''} ${asesorData[8] || ''} ${asesorData[9] || ''} ${asesorData[10] || ''}`.trim();
-            direccionAsesor = `${asesorData[11] || ''} ${asesorData[12] || ''} ${asesorData[13] || ''} ${asesorData[14] || ''}`.trim();
             telefonoAsesor = asesorData[16] || 'No disponible';
           }
 
@@ -371,47 +369,84 @@ function generarReportePagos(response, redisClient, asesor, contrato, dpi, confi
           const pageWidth = doc.page.width - 80;
           const colWidth = pageWidth / 2;
 
+          // Función auxiliar para calcular altura de texto
+          function calcularAlturaTexto(texto, ancho) {
+            return doc.heightOfString(texto, { width: ancho });
+          }
+
           // Columna izquierda - Información del cliente
           doc.fontSize(11).font('Helvetica-Bold').text('INFORMACIÓN DEL CLIENTE:', 40, startY);
+          
+          let currentYCliente = startY + 15;
           doc.font('Helvetica');
-          doc.text(`Nombre: ${nombreCliente}`, 40, startY + 20);
-          doc.text(`DPI: ${dpi}`, 40, startY + 35);
-          doc.text(`Dirección: ${direccionCliente}`, 40, startY + 50);
-          doc.text(`Teléfono: ${telefonoCliente}`, 40, startY + 65);
+          
+          // Nombre del cliente
+          const nombreClienteTexto = `Nombre: ${nombreCliente}`;
+          doc.text(nombreClienteTexto, 40, currentYCliente, { width: colWidth - 10 });
+          const alturaNombreCliente = calcularAlturaTexto(nombreClienteTexto, colWidth - 10);
+          currentYCliente += alturaNombreCliente + 3;
+          
+          // DPI del cliente
+          const dpiTexto = `DPI: ${dpi}`;
+          doc.text(dpiTexto, 40, currentYCliente, { width: colWidth - 10 });
+          const alturaDPI = calcularAlturaTexto(dpiTexto, colWidth - 10);
+          currentYCliente += alturaDPI + 3;
+          
+          // Dirección del cliente
+          const direccionClienteTexto = `Dirección: ${direccionCliente}`;
+          doc.text(direccionClienteTexto, 40, currentYCliente, { width: colWidth - 10 });
+          const alturaDireccionCliente = calcularAlturaTexto(direccionClienteTexto, colWidth - 10);
+          currentYCliente += alturaDireccionCliente + 3;
+          
+          // Teléfono del cliente
+          const telefonoClienteTexto = `Teléfono: ${telefonoCliente}`;
+          doc.text(telefonoClienteTexto, 40, currentYCliente, { width: colWidth - 10 });
+          const alturaTelefonoCliente = calcularAlturaTexto(telefonoClienteTexto, colWidth - 10);
+          currentYCliente += alturaTelefonoCliente;
 
           // Columna derecha - Información del asesor
-          doc.font('Helvetica-Bold').text('INFORMACIÓN DEL ASESOR:', 40 + colWidth, startY, { 
+          let currentYAsesor = startY;
+          doc.fontSize(11).font('Helvetica-Bold').text('INFORMACIÓN DEL ASESOR:', 40 + colWidth, currentYAsesor, { 
             width: colWidth, 
             align: 'right' 
           });
+          
+          currentYAsesor += 15;
           doc.font('Helvetica');
-          doc.text(`Nombre: ${nombreAsesor}`, 40 + colWidth, startY + 20, { 
+          
+          // Nombre del asesor
+          const nombreAsesorTexto = `Nombre: ${nombreAsesor}`;
+          doc.text(nombreAsesorTexto, 40 + colWidth, currentYAsesor, { 
             width: colWidth, 
             align: 'right' 
           });
-          doc.text(`Dirección: ${direccionAsesor}`, 40 + colWidth, startY + 35, { 
+          const alturaNombreAsesor = calcularAlturaTexto(nombreAsesorTexto, colWidth);
+          currentYAsesor += alturaNombreAsesor + 3;
+          
+          // Teléfono del asesor
+          const telefonoAsesorTexto = `Teléfono: ${telefonoAsesor}`;
+          doc.text(telefonoAsesorTexto, 40 + colWidth, currentYAsesor, { 
             width: colWidth, 
             align: 'right' 
           });
-          doc.text(`Teléfono: ${telefonoAsesor}`, 40 + colWidth, startY + 50, { 
-            width: colWidth, 
-            align: 'right' 
-          });
+          const alturaTelefonoAsesor = calcularAlturaTexto(telefonoAsesorTexto, colWidth);
+          currentYAsesor += alturaTelefonoAsesor;
 
-          // * Ajustar posición Y después de las dos columnas
-          doc.y = startY + 70;
+          // * Ajustar posición Y después de las dos columnas (usar la mayor de las dos alturas)
+          const alturaMaxima = Math.max(currentYCliente, currentYAsesor);
+          doc.y = alturaMaxima + 5;
 
           // * REINICIAR POSICIÓN X ANTES DE CONTINUAR
           doc.x = 40;
           
           doc.text('', 40, doc.y + 20); // Espacio extra
-          doc.font('Helvetica-Bold').text('Pagos Registrados:');
+          doc.font('Helvetica-Bold').text('Pagos Registrados', { align: 'center' });
           doc.moveDown(0.5);
           doc.font('Helvetica');
 
           doc.fontSize(10);
           // * Tabla de pagos
-          const headers = ['Fecha', 'Hora', 'Monto (Q)'];
+          const headers = ['No.', 'Fecha', 'Hora', 'Monto (Q)'];
           
           function formatFecha(fechaStr) {
             if (!fechaStr) return '-';
@@ -445,7 +480,8 @@ function generarReportePagos(response, redisClient, asesor, contrato, dpi, confi
             return `Q ${formatted}`;
           }
 
-          const dataRows = pagos.map((p) => [
+          const dataRows = pagos.map((p, index) => [
+            (index + 1).toString(),
             formatFecha(p.fecha),
             p.hora || '-',
             formatMonto(p.monto),
@@ -467,9 +503,10 @@ function generarReportePagos(response, redisClient, asesor, contrato, dpi, confi
           } else {
             doc.table({
               columnStyles: (i) => {
-                if (i === 0) return { width: "*", align: 'center', border: [1, 0, 1, 0], borderColor: 'black' };
+                if (i === 0) return { width: 30, align: 'center', border: [1, 0, 1, 0], borderColor: 'black' };
                 if (i === 1) return { width: "*", align: 'center', border: [1, 0, 1, 0], borderColor: 'black' };
-                if (i === 2) return { width: "*", align: 'right', border: [1, 0, 1, 0], borderColor: 'black' };
+                if (i === 2) return { width: "*", align: 'center', border: [1, 0, 1, 0], borderColor: 'black' };
+                if (i === 3) return { width: "*", align: 'right', border: [1, 0, 1, 0], borderColor: 'black' };
               },
               rowStyles(i) {
                 if (i === 0) return { textStroke: 0.5 };

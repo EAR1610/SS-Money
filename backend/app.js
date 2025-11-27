@@ -87,7 +87,7 @@ var server = http.createServer(async function(request, response) {
     const configId = url.searchParams.get('configId');
     const plan = url.searchParams.get('plan');
 
-    if (!fecha || !asesor || !cliente || !numeroCuota || !montoPagado || !saldoPendiente || !saldoAnterior || !fechaVencimiento || !configId) {
+    if (!fecha || !asesor || !cliente || !numeroCuota || !montoPagado || !saldoPendiente || !saldoAnterior || !fechaVencimiento || !configId || !plan) {
       response.writeHead(400, { 'Content-Type': 'application/json' });
       response.end(JSON.stringify({ error: 'Faltan parámetros requeridos para el ticket' }));
       return;
