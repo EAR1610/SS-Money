@@ -1,11 +1,11 @@
 var backend = this;
 
-backend.dev =  true;
+backend.dev =  false;
 
 if(!backend.dev){
-	backend.usuando = "apicrediemprendedor.supersistemas.com.gt";
+	backend.usuando = "api-prestamoselamigo.supersistemas.com.gt";
 } else {
-	backend.usuando = "192.168.1.27:3335";
+	backend.usuando = "192.168.1.27:3016";
 }
 
 backend.conexionEnvio = function (datos,callback){

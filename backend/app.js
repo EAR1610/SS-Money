@@ -13,8 +13,8 @@ const { generarReporteCierre } = require('./reportes/reporte_cierre');
 */
 
 if(!dev){
-	var redisClient = redis.createClient({ host : 'redis-10495.c83.us-east-1-2.ec2.redns.redis-cloud.com', port : 10495 });
-	redisClient.auth('RAABKOGsZg1BXOrmvyKyjgY6xfMV6QfX',function(err,reply) {
+	var redisClient = redis.createClient({ host : 'redis-16566.c93.us-east-1-3.ec2.cloud.redislabs.com', port : 16566 });
+	redisClient.auth('PU2IjRUHNswzeFRGQ99dohjNZvOkzqrB',function(err,reply) {
 		console.log(err);
 		if(!err) {
 			console.log("Bien: Verificando la seguridad del sistema redis "+reply+" "+ Date());
@@ -46,8 +46,8 @@ redisClient.on('error',function() {
 /*
 	* Siempre asignaré la clave de acceso del root
 */
-var arrays = [ "admin@pruebas.com","123","2019-04-15 00:53:46",true,0,"1000000","Super Admin" ];
-redisClient.set("usuario_admin@pruebas.com_1000000",JSON.stringify(arrays),function(err2,reply2){
+var arrays = [ "admin@prestamoselamigo.com","123","2019-04-15 00:53:46",true,0,"1000000","Super Admin" ];
+redisClient.set("usuario_admin@prestamoselamigo.com_1000000",JSON.stringify(arrays),function(err2,reply2){
 	console.log("Asignacion de cuenta admin");
 });
 
@@ -118,10 +118,10 @@ var server = http.createServer(async function(request, response) {
   response.end();
 });
 /*
-	* Conexion escucho ws en el puerto 3335
+	* Conexion escucho ws en el puerto 3016
 */
-server.listen(3335, function() {
-	console.log("Online:active:3335");
+server.listen(3016, function() {
+	console.log("Online:active:3016");
 });
 
 wsServer = new WebSocketServer({

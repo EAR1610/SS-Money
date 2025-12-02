@@ -49,7 +49,7 @@
     let idContratoPlanMensualIndefinido = "8"    
 
     function generarEstadoCuentaCliente(){
-        const url = `https://apicrediemprendedor.supersistemas.com.gt/reporte?asesor=${ticketClienteImpresion.cuotas[2]}&contrato=${ticketClienteImpresion.idContrato}&dpi=${ticketClienteImpresion.cuotas[1]}&configuracion=${ticketClienteImpresion.configuracion[0]}&plan=${ticketClienteImpresion.cuotas[10]}`;
+        const url = `https://api-prestamoselamigo.supersistemas.com.gt/reporte?asesor=${ticketClienteImpresion.cuotas[2]}&contrato=${ticketClienteImpresion.idContrato}&dpi=${ticketClienteImpresion.cuotas[1]}&configuracion=${ticketClienteImpresion.configuracion[0]}&plan=${ticketClienteImpresion.cuotas[10]}`;
         window.open(url, '_blank');
 
         swal({
@@ -109,7 +109,7 @@
             block.fechaCulminacion = 'FECHA NO ESTABLECIDA';
         }
 
-        const url = `https://apicrediemprendedor.supersistemas.com.gt/ticket?fecha=${fecha},%20a.%20m.&asesor=${nombreAsesor}%20${apellidoAsesor}&cliente=${ticketClienteImpresion.extraer[8]}%20${ticketClienteImpresion.extraer[9]}%20${ticketClienteImpresion.extraer[10]}%20${ticketClienteImpresion.extraer[11]}&numeroCuota=${NoCuota}&montoPagado=${montoAPagar}&saldoPendiente=${saldoPendiente.toString()}&saldoAnterior=${saldoAnterior.toString()}&fechaVencimiento=${block.fechaCulminacion}&configId=${block.configuracion[0]}&plan=${ticketClienteImpresion.cuotas[10]}`;        
+        const url = `https://api-prestamoselamigo.supersistemas.com.gt/ticket?fecha=${fecha},%20a.%20m.&asesor=${nombreAsesor}%20${apellidoAsesor}&cliente=${ticketClienteImpresion.extraer[8]}%20${ticketClienteImpresion.extraer[9]}%20${ticketClienteImpresion.extraer[10]}%20${ticketClienteImpresion.extraer[11]}&numeroCuota=${NoCuota}&montoPagado=${montoAPagar}&saldoPendiente=${saldoPendiente.toString()}&saldoAnterior=${saldoAnterior.toString()}&fechaVencimiento=${block.fechaCulminacion}&configId=${block.configuracion[0]}&plan=${ticketClienteImpresion.cuotas[10]}`;
         window.open(url, '_blank');
         
         swal({
@@ -2223,7 +2223,7 @@
                     block.resa2 = block.resa.replace(".","");
                     block.nuevomonto = parseInt(block.resa2);
 
-					if(block.nuevomonto >= block.min && block.nuevomonto <= block.max  && block.nuevomonto > parseInt($("#valor_restante_anterior").text())) {
+					if( block.nuevomonto >= block.min && block.nuevomonto <= block.max  && block.nuevomonto >= parseInt($("#valor_restante_anterior").text()) ) {
                         for (var w = 0; w < block.cuotas.length; w++) {                            
                             if (block.cuotas[w][2] == $("#selector_cuotas_selec_ampliacion").val() &&  block.cuotas[w][1] == $("#selector_cuotas_selec_ampliacion").find("option:selected").text()) { //cantidad de cuotas
 
@@ -2257,7 +2257,7 @@
                                 obtener_Ultima_Cuota_ampliacion(block.resul);
                             } 
                         }
-                    }else{
+                    } else {
                         $("#ampliar_contrato").prop("disabled",true);
                         toastr.warning("El prestamo no está en el rango permitido y/o el pago del contrato nuevo, no alcanza para pagar la deuda pendiente.", "Atención");
                     }
@@ -4288,7 +4288,7 @@
                     block.resa2 = block.resa.replace(".","");
                     block.nuevomonto = parseInt(block.resa2);                 
 
-					if(block.nuevomonto >= block.min && block.nuevomonto <= block.max && block.nuevomonto > parseInt($("#valor_restante_anterior").text())) {                         
+					if(block.nuevomonto >= block.min && block.nuevomonto <= block.max && block.nuevomonto >= parseInt($("#valor_restante_anterior").text())) {
                         if (block.minRenovar > parseInt($("#cuota_anterior").text())){
                             swal({
                                 title: "Las cuotas finalizadas no cumplen con el mínimo de cuotas para renovar el contrato, ¿Desea continuar?",
@@ -4391,7 +4391,7 @@
                                     }
                                 }                                    
                             } 
-                    }else{
+                    } else {
                         $("#ampliar_contrato").prop("disabled",true);
                         toastr.warning("El prestamo no está en el rango permitido y/o el pago del contrato nuevo, no alcanza para pagar la deuda pendiente.", "Atención");
                     }
