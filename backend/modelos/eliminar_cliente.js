@@ -9,43 +9,31 @@ eje = function(arrays,origen,redisClient) {
 		var correo = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/;
 		
 		/*
-			recibe token, cedula, idEmpresa, idAsesor y numContrato
+		    * recibe token, cedula
 		*/
 		
-		if ( arrays.length == 5 ){
+		if ( arrays.length == 2 ){
 		
 			var jwt = require('jsonwebtoken');
 			jwt.verify(arrays[0], 'clWve-G*-9)1', function(err, decoded) {
 				if (err) {
 					reject([false,"1"]);
-				} else if(decoded.t=="1" || decoded.t=="2" || decoded.t=="0" || decoded.t=="5") {
-					
-					/* 
-						* elimina el contrato directo 
-					*/
-					let contratoAEliminar = "registry_"+arrays[1]+"_contrato_"+arrays[2]+"_"+arrays[3]+"_"+arrays[4];
-							
-					redisClient.get("registro_contrato_"+arrays[3],function(erse,repli){
-						var contratoAsesorAntesDeEliminar = JSON.parse(repli);
-						var nuevoContratoAsesor = [];
-
-						for(var index = 0; index < contratoAsesorAntesDeEliminar.length; index++) {
-							
-							if(contratoAsesorAntesDeEliminar[index] !== contratoAEliminar) {
-								nuevoContratoAsesor.push(contratoAsesorAntesDeEliminar[index]);
-							} else {
-								redisClient.rename(contratoAEliminar,"deleted_"+contratoAEliminar,function(erse,repli){});								
-							}
-
-							if( index == contratoAsesorAntesDeEliminar.length - 1 ) {
-								redisClient.set("registro_contrato_"+arrays[3],JSON.stringify(nuevoContratoAsesor),function(erse,repli){
-									resolve([true,true]);
-								});
-							}
-						}
-					});
-
-				}else{
+				}else if(decoded.t=="0" || decoded.t=="1" || decoded.t=="2" ){
+					console.log("registry_"+arrays[1]+"_*")
+                        redisClient.keys("registry_"+arrays[1]+"_*",function(erse,contratosCliente){						
+							 
+                            if( contratosCliente.length > 0 ){ // * El cliente a eliminar, tiene un contrato activo
+                                resolve([true,"4"]);
+                            } else {
+                                /* 
+	                                * elimina dicho cliente, si no tiene contratos activos
+                                */
+                                redisClient.rename('cliente_'+arrays[1],'cliente_'+arrays[1]+'_eliminado',function(err3,reply3) {
+                                    resolve([true,true]);
+                                });
+                            }
+                        });
+				} else {
 					reject([false,"2"]);
 				}
 			});

@@ -13,8 +13,8 @@ const { generarReporteCierre } = require('./reportes/reporte_cierre');
 */
 
 if(!dev){
-	var redisClient = redis.createClient({ host : 'redis-16566.c93.us-east-1-3.ec2.cloud.redislabs.com', port : 16566 });
-	redisClient.auth('PU2IjRUHNswzeFRGQ99dohjNZvOkzqrB',function(err,reply) {
+	var redisClient = redis.createClient({ host : 'redis-10495.c83.us-east-1-2.ec2.redns.redis-cloud.com', port : 10495 });
+	redisClient.auth('RAABKOGsZg1BXOrmvyKyjgY6xfMV6QfX',function(err,reply) {
 		console.log(err);
 		if(!err) {
 			console.log("Bien: Verificando la seguridad del sistema redis "+reply+" "+ Date());

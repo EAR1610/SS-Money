@@ -31,9 +31,9 @@
     </script>
 
     <script>
-        const cloudName = "de5n5ntss";
-        const URL_API = 'https://serviceimages.supersistemas.com.gt';
-        const PORT = '11353'
+    const cloudName = "dxpwskrll";
+    const URL_API = 'https://serviceimages.supersistemas.com.gt';
+    const PORT = '10495'
 
         let reversomd = ""
         let normalmd = ""
@@ -157,7 +157,7 @@
         });
 
         function consultar_estado_cuenta(idAsesor, idContrato, dpiCliente, configuracion, plan){
-            const url = `https://apicrediemprendedor.supersistemas.com.gt/reporte?asesor=${idAsesor}&contrato=${idContrato}&dpi=${dpiCliente}&configuracion=${configuracion}&plan=${plan}`;
+            const url = `https://localhost:3016/reporte?asesor=${idAsesor}&contrato=${idContrato}&dpi=${dpiCliente}&configuracion=${configuracion}&plan=${plan}`;
             window.open(url, '_blank');
         }
 
@@ -166,7 +166,7 @@
             let idAsesor = $('#id_asesor_cierre').val();
             let datosEmpresa = JSON.parse(window.sessionStorage.getItem("Money-vars-token"))
 
-            const url = `https://apicrediemprendedor.supersistemas.com.gt/reporte-cierre?token=${datosEmpresa[1]}&idAsesor=${idAsesor}&idConfiguracion=${datosEmpresa[4]}&fecha=${fecha}`;            
+            const url = `https://localhost:3016/reporte-cierre?token=${datosEmpresa[1]}&idAsesor=${idAsesor}&idConfiguracion=${datosEmpresa[4]}&fecha=${fecha}`;            
             window.open(url, '_blank');
         }
     
@@ -1222,17 +1222,17 @@
                             <h5>Suplantar asesores</h5>
                         </div>
                         <div class="ibox-content row" style="margin-right: 0px;margin-left: 0px;">
-                            <div class="col-sm-6 col-md-4 col-xs-12" align="center" style="padding: 5%;">
+                            <div class="col-sm-6 col-md-4 col-xs-12" align="center" style="padding: 1%;">
                                 <img id="su_foto_m1" src="../img/default.jpg"
-                                     style="width:225px;height:250px;cursor:pointer;">
+                                     style="width:100%;max-width:400px;height:auto;cursor:pointer;object-fit:contain;">
                             </div>
-                            <div class="col-sm-6 col-md-4 col-xs-12" align="center" style="padding: 5%;">
+                            <div class="col-sm-6 col-md-4 col-xs-12" align="center" style="padding: 1%;">
                                 <img id="su_foto_m2" src="../img/foto_cedula_front.png"
-                                     style="width:350px;height:250px;cursor:pointer;">
+                                     style="width:100%;max-width:400px;height:auto;cursor:pointer;object-fit:contain;">
                             </div>
-                            <div class="col-sm-6 col-md-4 col-xs-12" align="center" style="padding: 5%;">
+                            <div class="col-sm-6 col-md-4 col-xs-12" align="center" style="padding: 1%;">
                                 <img id="su_foto_m3" src="../img/foto_cedula_back.png"
-                                     style="width:350px;height:250px;cursor:pointer;">
+                                     style="width:100%;max-width:400px;height:auto;cursor:pointer;object-fit:contain;">
                             </div>
 
                             <div class="col-sm-6 col-md-3 col-xs-12">
@@ -1392,6 +1392,10 @@
                                     type="button">Suplantar o editar en sistema
                             </button>
 
+                            <button class="btn btn-danger btn-sm" style="margin-left: 14px;" id="elimina_suplantar_asesor"
+                                    type="button">Eliminar imagen
+                            </button>
+
                         </div>
                     </div>
                 </div>
@@ -1477,14 +1481,14 @@
                             <h5>Crear supervisores, asesores y ayudante</h5>
                         </div>
                         <div class="ibox-content row" style="margin-right: 0px;margin-left: 0px;">
-                            <div class="col-sm-6 col-md-4 col-xs-12" align="center" style="padding: 5%;">
-                                <img id="foto_m1" src="../img/default.jpg" style="width:200px;height:250px;cursor:pointer;">
+                            <div class="col-sm-6 col-md-4 col-xs-12" align="center" style="padding: 1%;">
+                                <img id="foto_m1" src="../img/default.jpg" style="width:100%;max-width:400px;height:auto;cursor:pointer;object-fit:contain;">
                             </div>
-                            <div class="col-sm-6 col-md-4 col-xs-12" align="center" style="padding: 5%;">
-                                <img id="foto_m2" src="../img/foto_cedula_front.png" style="width:200px;height:250px;cursor:pointer;">
+                            <div class="col-sm-6 col-md-4 col-xs-12" align="center" style="padding: 1%;">
+                                <img id="foto_m2" src="../img/foto_cedula_front.png" style="width:100%;max-width:400px;height:auto;cursor:pointer;object-fit:contain;">
                             </div>
-                            <div class="col-sm-6 col-md-4 col-xs-12" align="center" style="padding: 5%;">
-                                <img id="foto_m3" src="../img/foto_cedula_back.png" style="width:200px;height:250px;cursor:pointer;">
+                            <div class="col-sm-6 col-md-4 col-xs-12" align="center" style="padding: 1%;">
+                                <img id="foto_m3" src="../img/foto_cedula_back.png" style="width:100%;max-width:400px;height:auto;cursor:pointer;object-fit:contain;">
                             </div>
 
                             <div class="col-sm-6 col-md-3 col-xs-12">
@@ -1663,6 +1667,9 @@
                                 type="button">Registrar en sistema
                             </button>
 
+                            <button class="btn btn-danger btn-sm" style="margin-left: 14px;" id="eliminar_imagen_asesor"
+                                type="button">Eliminar imagen
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -1877,6 +1884,7 @@
                                         <th>Dirección</th>
                                         <th>Celular</th>
                                         <th>Opción</th>
+                                        <th>Eliminar</th>
                                     </tr>
                                     </thead>
                                     <tbody align="center" id="listado_liengenerela">
@@ -3038,21 +3046,21 @@
                         <div class="ibox-content row" style="margin-right: 0px;margin-left: 0px;">
                             <div class="col-sm-6 col-md-3 col-xs-12" align="center" style="padding: 1%;">
                                 <img id="foto_m4md" src="../img/default.jpg"
-                                     style="width:200px;height:250px;cursor:pointer;">
+                                     style="width:100%;max-width:400px;height:auto;cursor:pointer;object-fit:contain;">
                             </div>
 
                             <div class="col-sm-6 col-md-3 col-xs-12" align="center" style="padding: 1%;">
                                 <img id="foto_m1md" src="../img/foto_cedula_front.png"
-                                     style="width:300px;height:200px;cursor:pointer;">
+                                     style="width:100%;max-width:400px;height:auto;cursor:pointer;object-fit:contain;">
                             </div>
 
                             <div class="col-sm-6 col-md-3 col-xs-12" align="center" style="padding: 1%;">
                                 <img id="foto_m2md" src="../img/foto_cedula_back.png"
-                                     style="width:300px;height:200px;cursor:pointer;">
+                                     style="width:100%;max-width:400px;height:auto;cursor:pointer;object-fit:contain;">
                             </div>
                             <div class="col-sm-6 col-md-3 col-xs-12" align="center" style="padding: 1%;">
                                 <img id="foto_m3md" src="../img/foto_resivo.png"
-                                     style="width:300px;height:200px;cursor:pointer;">
+                                     style="width:100%;max-width:400px;height:auto;cursor:pointer;object-fit:contain;">
                             </div>
 
                             <div class="col-sm-6 col-md-3 col-xs-12">
@@ -3220,6 +3228,14 @@
                                 <form role="form">
                                     <button class="btn btn-primary btn-sm" style="margin-left: 14px;" id="registro_finalmd"
                                             type="button">Registrar en sistema
+                                    </button>
+                                </form>
+                            </div>
+
+                            <div class="col-xs-12"  style="margin-top: 3%;margin-right: 4%;">
+                                <form role="form">
+                                    <button class="btn btn-danger btn-sm" style="margin-left: 14px;" id="eliminar_imagen_cliente"
+                                            type="button">Eliminar imagen
                                     </button>
                                 </form>
                             </div>
@@ -3686,7 +3702,8 @@
                 
                 const gastos = await totalGastos();
                 const renovaciones = await totalRenovaciones();
-                const totalSistema = base + recaudado - gastos - renovaciones;
+                //const totalSistema = base + recaudado - gastos - renovaciones;
+                const totalSistema = recaudado - gastos - renovaciones;
                 $("#text_total_sistema").text("Q "+totalSistema);
             }
         });
@@ -3991,34 +4008,31 @@
             return;
         }
 
-        // Si quieres mantener el resize que usabas con ImageTools
-        ImageTools.resize(block.file, { width: 200, height: 350 }, function (blob, didItResize) {
-            const formData = new FormData();
-            formData.append("file", blob);            
-            formData.append("puerto", PORT);
-            formData.append("image", perfil);
+        const formData = new FormData();
+        formData.append("file", block.file);            
+        formData.append("puerto", PORT);
+        formData.append("image", perfil);
 
-            fetch(`${URL_API}/imagenes/upload`, {
-                method: "POST",
-                body: formData
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.url) {
-                    $("#foto_m1").attr("src", data.url);
-                    $("#su_foto_m1").attr("src", data.url);
-                    block.blo = 2;
+        fetch(`${URL_API}/imagenes/upload`, {
+            method: "POST",
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.url) {
+                $("#foto_m1").attr("src", data.url);
+                $("#su_foto_m1").attr("src", data.url);
+                block.blo = 2;
 
-                    // Guardar URL_API en sessionStorage como hacías antes
-                    window.sessionStorage.setItem("Money-vars-foto-id", data.url);
-                } else {
-                    toastr.error("Error en la subida: " + JSON.stringify(data), "Atención!");
-                }
-            })
-            .catch(err => {
-                toastr.error("Error de conexión: " + err.message, "Atención!");
-            });
-        });
+                // Guardar URL_API en sessionStorage como hacías antes
+                window.sessionStorage.setItem("Money-vars-foto-id", data.url);
+            } else {
+                toastr.error("Error en la subida: " + JSON.stringify(data), "Atención!");
+            }
+        })
+        .catch(err => {
+            toastr.error("Error de conexión: " + err.message, "Atención!");
+        });        
     };
 
     block.fileinConfiguracion = document.querySelector("#foto_configuracion");
@@ -4038,31 +4052,28 @@
             return;
         }
 
-        // Si quieres mantener el resize que usabas con ImageTools
-        ImageTools.resize(block.file, { width: 200, height: 350 }, function (blob, didItResize) {
-            const formData = new FormData();
-            formData.append("file", blob);
-            formData.append("puerto", PORT);
-            formData.append("image", perfil);
+        const formData = new FormData();
+        formData.append("file", block.file);
+        formData.append("puerto", PORT);
+        formData.append("image", perfil);
 
-            fetch(`${URL_API}/imagenes/upload`, {
-                method: "POST",
-                body: formData
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.url) {
-                    $("#foto_configuracion1").attr("src", data.url);
-                    $("#su_foto_configuracion").attr("src", data.url);
-                    block.blo = 2;                    
-                } else {
-                    toastr.error("Error en la subida: " + JSON.stringify(data), "Atención!");
-                }
-            })
-            .catch(err => {
-                toastr.error("Error de conexión: " + err.message, "Atención!");
-            });
-        });
+        fetch(`${URL_API}/imagenes/upload`, {
+            method: "POST",
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.url) {
+                $("#foto_configuracion1").attr("src", data.url);
+                $("#su_foto_configuracion").attr("src", data.url);
+                block.blo = 2;                    
+            } else {
+                toastr.error("Error en la subida: " + JSON.stringify(data), "Atención!");
+            }
+        })
+        .catch(err => {
+            toastr.error("Error de conexión: " + err.message, "Atención!");
+        });        
     };
 
 	$("#su_consultar_registra").click(function(){
@@ -4715,33 +4726,30 @@ function extraer_cobros_cierre(id_asesor, id_tabla) {
             return;
         }
 
-        // Si quieres mantener el resize que usabas con ImageTools
-        ImageTools.resize(block.file, { width: 200, height: 350 }, function (blob, didItResize) {
-            const formData = new FormData();
-            formData.append("file", blob);            
-            formData.append("puerto", PORT);
-            formData.append("image", idmd);
+        const formData = new FormData();
+        formData.append("file", block.file);            
+        formData.append("puerto", PORT);
+        formData.append("image", idmd);
 
-            fetch(`${URL_API}/imagenes/upload`, {
-                method: "POST",
-                body: formData
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.url) {
-                    $("#foto_m1md").attr("src", data.url);
-                    block.blo = 2;
+        fetch(`${URL_API}/imagenes/upload`, {
+            method: "POST",
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.url) {
+                $("#foto_m1md").attr("src", data.url);
+                block.blo = 2;
 
-                    // Guardar URL_API en sessionStorage como hacías antes
-                    window.sessionStorage.setItem("Money-vars-foto-idmd", data.url);
-                } else {
-                    toastr.error("Error en la subida: " + JSON.stringify(data), "Atención!");
-                }
-            })
-            .catch(err => {
-                toastr.error("Error de conexión: " + err.message, "Atención!");
-            });
-        });
+                // Guardar URL_API en sessionStorage como hacías antes
+                window.sessionStorage.setItem("Money-vars-foto-idmd", data.url);
+            } else {
+                toastr.error("Error en la subida: " + JSON.stringify(data), "Atención!");
+            }
+        })
+        .catch(err => {
+            toastr.error("Error de conexión: " + err.message, "Atención!");
+        });        
     };
 
     
@@ -4878,33 +4886,30 @@ function extraer_cobros_cierre(id_asesor, id_tabla) {
             return;
         }
 
-        // Si quieres mantener el resize que usabas con ImageTools
-        ImageTools.resize(block.file, { width: 200, height: 350 }, function (blob, didItResize) {
-            const formData = new FormData();
-            formData.append("file", blob);
-            formData.append("puerto", PORT);
-            formData.append("image", frontald);
+        const formData = new FormData();
+        formData.append("file", block.file);
+        formData.append("puerto", PORT);
+        formData.append("image", frontald);
 
-            fetch(`${URL_API}/imagenes/upload`, {
-                method: "POST",
-                body: formData
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.url) {
-                    $("#foto_m4md").attr("src", data.url);
-                    block.blo = 2;
+        fetch(`${URL_API}/imagenes/upload`, {
+            method: "POST",
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.url) {
+                $("#foto_m4md").attr("src", data.url);
+                block.blo = 2;
 
-                    // Guardar URL_API en sessionStorage como hacías antes
-                    window.sessionStorage.setItem("Money-vars-foto-frontald", data.url);
-                } else {
-                    toastr.error("Error en la subida: " + JSON.stringify(data), "Atención!");
-                }
-            })
-            .catch(err => {
-                toastr.error("Error de conexión: " + err.message, "Atención!");
-            });
-        });
+                // Guardar URL_API en sessionStorage como hacías antes
+                window.sessionStorage.setItem("Money-vars-foto-frontald", data.url);
+            } else {
+                toastr.error("Error en la subida: " + JSON.stringify(data), "Atención!");
+            }
+        })
+        .catch(err => {
+            toastr.error("Error de conexión: " + err.message, "Atención!");
+        });        
     };
 
     // block.filein2 = document.querySelector("#foto2");
@@ -5004,34 +5009,31 @@ function extraer_cobros_cierre(id_asesor, id_tabla) {
             return;
         }
 
-        // Si quieres mantener el resize que usabas con ImageTools
-        ImageTools.resize(block.file, { width: 200, height: 350 }, function (blob, didItResize) {
-            const formData = new FormData();
-            formData.append("file", blob);            
-            formData.append("puerto", PORT);
-            formData.append("image", normal);
+        const formData = new FormData();
+        formData.append("file", block.file);            
+        formData.append("puerto", PORT);
+        formData.append("image", normal);
 
-            fetch(`${URL_API}/imagenes/upload`, {
-                method: "POST",
-                body: formData
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.url) {
-                    $("#foto_m2").attr("src", data.url);
-                    $("#su_foto_m2").attr("src", data.url);
-                    block.blo = 2;
+        fetch(`${URL_API}/imagenes/upload`, {
+            method: "POST",
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.url) {
+                $("#foto_m2").attr("src", data.url);
+                $("#su_foto_m2").attr("src", data.url);
+                block.blo = 2;
 
-                    // Guardar URL_API en sessionStorage como hacías antes
-                    window.sessionStorage.setItem("Money-vars-foto-id-normal", data.url);
-                } else {
-                    toastr.error("Error en la subida: " + JSON.stringify(data), "Atención!");
-                }
-            })
-            .catch(err => {
-                toastr.error("Error de conexión: " + err.message, "Atención!");
-            });
-        });
+                // Guardar URL_API en sessionStorage como hacías antes
+                window.sessionStorage.setItem("Money-vars-foto-id-normal", data.url);
+            } else {
+                toastr.error("Error en la subida: " + JSON.stringify(data), "Atención!");
+            }
+        })
+        .catch(err => {
+            toastr.error("Error de conexión: " + err.message, "Atención!");
+        });        
     };
 
     block.filein2 = document.querySelector("#foto2m");
@@ -5170,33 +5172,30 @@ function extraer_cobros_cierre(id_asesor, id_tabla) {
             return;
         }
 
-        // Si quieres mantener el resize que usabas con ImageTools
-        ImageTools.resize(block.file, { width: 200, height: 350 }, function (blob, didItResize) {
-            const formData = new FormData();
-            formData.append("file", blob);
-            formData.append("puerto", PORT);
-            formData.append("image", reverso);
+        const formData = new FormData();
+        formData.append("file", block.file);
+        formData.append("puerto", PORT);
+        formData.append("image", reverso);
 
-            fetch(`${URL_API}/imagenes/upload`, {
-                method: "POST",
-                body: formData
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.url) {
-                    $("#foto_m3").attr("src", data.url);
-                    $("#su_foto_m3").attr("src", data.url);
-                    block.blo = 2;
+        fetch(`${URL_API}/imagenes/upload`, {
+            method: "POST",
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.url) {
+                $("#foto_m3").attr("src", data.url);
+                $("#su_foto_m3").attr("src", data.url);
+                block.blo = 2;
 
-                    // Guardar URL_API en sessionStorage como hacías antes
-                    window.sessionStorage.setItem("Money-vars-foto-id-reverso", data.url);
-                } else {
-                    toastr.error("Error en la subida: " + JSON.stringify(data), "Atención!");
-                }
-            })
-            .catch(err => {
-                toastr.error("Error de conexión: " + err.message, "Atención!");
-            });
+                // Guardar URL_API en sessionStorage como hacías antes
+                window.sessionStorage.setItem("Money-vars-foto-id-reverso", data.url);
+            } else {
+                toastr.error("Error en la subida: " + JSON.stringify(data), "Atención!");
+            }
+        })
+        .catch(err => {
+            toastr.error("Error de conexión: " + err.message, "Atención!");
         });
     };
 
@@ -5335,33 +5334,30 @@ function extraer_cobros_cierre(id_asesor, id_tabla) {
             return;
         }
 
-        // Si quieres mantener el resize que usabas con ImageTools
-        ImageTools.resize(block.file, { width: 200, height: 350 }, function (blob, didItResize) {
-            const formData = new FormData();
-            formData.append("file", blob);
-            formData.append("puerto", PORT);
-            formData.append("image", normalmd);
+        const formData = new FormData();
+        formData.append("file", block.file);
+        formData.append("puerto", PORT);
+        formData.append("image", normalmd);
 
-            fetch(`${URL_API}/imagenes/upload`, {
-                method: "POST",
-                body: formData
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.url) {
-                    $("#foto_m2md").attr("src", data.url);
-                    block.blo = 2;
+        fetch(`${URL_API}/imagenes/upload`, {
+            method: "POST",
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.url) {
+                $("#foto_m2md").attr("src", data.url);
+                block.blo = 2;
 
-                    // Guardar URL_API en sessionStorage como hacías antes
-                    window.sessionStorage.setItem("Money-vars-foto-id-normalmd", data.url);
-                } else {
-                    toastr.error("Error en la subida: " + JSON.stringify(data), "Atención!");
-                }
-            })
-            .catch(err => {
-                toastr.error("Error de conexión: " + err.message, "Atención!");
-            });
-        });
+                // Guardar URL_API en sessionStorage como hacías antes
+                window.sessionStorage.setItem("Money-vars-foto-id-normalmd", data.url);
+            } else {
+                toastr.error("Error en la subida: " + JSON.stringify(data), "Atención!");
+            }
+        })
+        .catch(err => {
+            toastr.error("Error de conexión: " + err.message, "Atención!");
+        });        
     };
 
     // block.filein3 = document.querySelector("#foto3md");
@@ -5459,33 +5455,30 @@ function extraer_cobros_cierre(id_asesor, id_tabla) {
             return;
         }
 
-        // Si quieres mantener el resize que usabas con ImageTools
-        ImageTools.resize(block.file, { width: 200, height: 350 }, function (blob, didItResize) {
-            const formData = new FormData();
-            formData.append("file", blob); 
-            formData.append("puerto", PORT);
-            formData.append("image", reversomd);
+        const formData = new FormData();
+        formData.append("file", block.file); 
+        formData.append("puerto", PORT);
+        formData.append("image", reversomd);
 
-            fetch(`${URL_API}/imagenes/upload`, {
-                method: "POST",
-                body: formData
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.url) {
-                    $("#foto_m3md").attr("src", data.url);
-                    block.blo = 2;
+        fetch(`${URL_API}/imagenes/upload`, {
+            method: "POST",
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.url) {
+                $("#foto_m3md").attr("src", data.url);
+                block.blo = 2;
 
-                    // Guardar URL_API en sessionStorage como hacías antes
-                    window.sessionStorage.setItem("Money-vars-foto-id-reversomd", data.url);
-                } else {
-                    toastr.error("Error en la subida: " + JSON.stringify(data), "Atención!");
-                }
-            })
-            .catch(err => {
-                toastr.error("Error de conexión: " + err.message, "Atención!");
-            });
-        });
+                // Guardar URL_API en sessionStorage como hacías antes
+                window.sessionStorage.setItem("Money-vars-foto-id-reversomd", data.url);
+            } else {
+                toastr.error("Error en la subida: " + JSON.stringify(data), "Atención!");
+            }
+        })
+        .catch(err => {
+            toastr.error("Error de conexión: " + err.message, "Atención!");
+        });        
     };
 
     $("#limpiar_contrato").click(function () {
@@ -5666,19 +5659,51 @@ function extraer_cobros_cierre(id_asesor, id_tabla) {
     });
 
     $("#foto_m1").click(function () {
-        $("#foto1").click();
+        if ( block.eliminarFotoAsesor ) {
+            $("#foto_m1").attr("src", '../img/default.jpg');
+            block.blo = 2;
+
+            // Guardar URL_API en sessionStorage como hacías antes
+            window.sessionStorage.setItem("Money-vars-foto-id", '../img/default.jpg');
+        } else {
+            $("#foto1").click();
+        }        
     });
 
     $("#foto_m2").click(function () {
-        $("#foto2").click();
+        if ( block.eliminarFotoAsesor ) {
+            $("#foto_m2").attr("src", '../img/foto_cedula_front.png');
+            block.blo = 2;
+
+            // Guardar URL_API en sessionStorage como hacías antes
+            window.sessionStorage.setItem("Money-vars-foto-id-normal", '../img/foto_cedula_front.png');
+        } else {
+            $("#foto2").click();
+        }
     });
 
     $("#foto_m3").click(function () {
-        $("#foto3").click();
+        if ( block.eliminarFotoAsesor ) {
+            $("#foto_m3").attr("src", '../img/foto_cedula_back.png');
+            block.blo = 2;
+
+            // Guardar URL_API en sessionStorage como hacías antes
+            window.sessionStorage.setItem("Money-vars-foto-id-reverso", '../img/foto_cedula_back.png');
+        } else {
+            $("#foto3").click();
+        }
     });
 
 	$("#su_foto_m1").click(function () {
-        $("#foto1").click();
+        if ( block.eliminarFotoAsesorSuplantar ) {
+            $("#su_foto_m1").attr("src", '../img/default.jpg');
+            block.blo = 2;
+
+            // Guardar URL_API en sessionStorage como hacías antes
+            window.sessionStorage.setItem("Money-vars-foto-id", '../img/default.jpg');
+        } else {
+            $("#foto1").click();
+        }
     });
 
     $("#foto_configuracion1").click(function () {
@@ -5690,11 +5715,27 @@ function extraer_cobros_cierre(id_asesor, id_tabla) {
     });
 
     $("#su_foto_m2").click(function () {
-        $("#foto2").click();
+        if ( block.eliminarFotoAsesorSuplantar ) {
+            $("#su_foto_m2").attr("src", '../img/foto_cedula_front.png');
+            block.blo = 2;
+
+            // Guardar URL_API en sessionStorage como hacías antes
+            window.sessionStorage.setItem("Money-vars-foto-id-normal", '../img/foto_cedula_front.png');
+        } else {
+            $("#foto2").click();
+        }        
     });
 
     $("#su_foto_m3").click(function () {
-        $("#foto3").click();
+        if ( block.eliminarFotoAsesorSuplantar ) {
+            $("#su_foto_m3").attr("src", '../img/foto_cedula_back.png');
+            block.blo = 2;
+
+            // Guardar URL_API en sessionStorage como hacías antes
+            window.sessionStorage.setItem("Money-vars-foto-id-reverso", '../img/foto_cedula_back.png');
+        } else {
+            $("#foto3").click();
+        }
     });
 
     $("#foto_m1m").click(function () {
@@ -5702,7 +5743,16 @@ function extraer_cobros_cierre(id_asesor, id_tabla) {
     });
 
     $("#foto_m1md").click(function () {
-        $("#foto1md").click();
+        if ( block.eliminarFotoCliente) {
+            $("#foto_m1md").attr("src", '../img/foto_cedula_front.png');
+            block.blo = 2;
+
+            // Guardar URL_API en sessionStorage como hacías antes
+            window.sessionStorage.setItem("Money-vars-foto-idmd", '../img/foto_cedula_front.png');
+        }
+        else {
+            $("#foto1md").click();
+        }
     });
 
     $("#foto_m2m").click(function () {
@@ -5718,15 +5768,39 @@ function extraer_cobros_cierre(id_asesor, id_tabla) {
     });
 
     $("#foto_m4md").click(function () {
-        $("#foto4md").click();
+        if ( block.eliminarFotoCliente) {
+            $("#foto_m4md").attr("src", '../img/default.jpg');
+            block.blo = 2;
+
+            // Guardar URL_API en sessionStorage como hacías antes
+            window.sessionStorage.setItem("Money-vars-foto-frontald", '../img/default.jpg');
+        } else {
+            $("#foto4md").click();
+        }
     });
 
     $("#foto_m3md").click(function () {
-        $("#foto3md").click();
+        if ( block.eliminarFotoCliente) {
+            $("#foto_m3md").attr("src", '../img/foto_resivo.png');
+            block.blo = 2;
+
+            // Guardar URL_API en sessionStorage como hacías antes
+            window.sessionStorage.setItem("Money-vars-foto-id-reversomd", '../img/foto_resivo.png');
+        } else {
+            $("#foto3md").click();
+        }
     });
 
     $("#foto_m2md").click(function () {
-        $("#foto2md").click();
+        if ( block.eliminarFotoCliente) {
+            $("#foto_m2md").attr("src", '../img/foto_cedula_back.png');
+            block.blo = 2;
+
+            // Guardar URL_API en sessionStorage como hacías antes
+            window.sessionStorage.setItem("Money-vars-foto-id-normalmd", '../img/foto_cedula_back.png');
+        } else {
+            $("#foto2md").click();
+        }
     });
 
 
@@ -6059,7 +6133,6 @@ function extraer_cobros_cierre(id_asesor, id_tabla) {
                     // <td><div class="btn-group"><button data-toggle="dropdown" class="btn btn-default dropdown-toggle"></button> <ul class="dropdown-menu"><li><a class="dropdown-item"  href="javascript:eliminar_lis('+String.fromCharCode(39)+'registry_'+block.unox[1]+'_contrato_'+block.unox[0]+'_'+block.unox[2]+'_'+valor.d[1][0][4]+String.fromCharCode(39)+');"><i class="fa fa-times"></i> &nbsp Eliminar</a></li><li><a class="dropdown-item"  href="javascript:eliminar_edit_ya('+String.fromCharCode(39)+'contrato_'+block.unox[1]+'_'+block.unox[2]+'_'+block.unox[5]+'_'+block.unox[0]+String.fromCharCode(39)+');"><i class="fa fa-pencil"></i> &nbsp Editar</a></li></ul></div></td>
 
 					block.oso = block.oso + '<tr><td>'+block.unox[5]+'</td><td>'+block.tresx[24]+'_'+block.unox[0]+'</td> <td>'+block.tresx[6]+'</td> <td>'+block.tresx[7]+' '+block.tresx[9]+'</td><td>'+block.asesor+'</td><td>Q'+block.unox[3]+'</td> <td>'+block.unox[7]+'</td> <td>Q'+block.unox[8]+'</td><td>'+block.ayudan+'</td><td>'+block.superv+'</td></tr>';
-
                 }
                 $("#lista_enorme").html(block.oso);
             }
@@ -6145,7 +6218,7 @@ function extraer_cobros_cierre(id_asesor, id_tabla) {
 
                     block.contratoEstadoCuenta = '<td><button class="btn btn-info" onclick="javascript:consultar_estado_cuenta('+String.fromCharCode(39)+idAsesor+String.fromCharCode(39)+','+String.fromCharCode(39)+idContrato+String.fromCharCode(39)+","+String.fromCharCode(39)+dpiCliente+String.fromCharCode(39)+","+String.fromCharCode(39)+configuracion+String.fromCharCode(39)+','+String.fromCharCode(39)+plan+String.fromCharCode(39)+');">Ver Estado de Cuenta</button></td></tr>';
 
-                    block.oso = block.oso + '<tr><td>'+block.fechaRegistro+'</td> <td>'+block.sumas+'</td><td>'+block.cliente[23]+'</td><td>'+block.cliente[7]+'</td> <td>'+block.cliente[8]+' '+block.cliente[10]+'</td> <td>'+block.tesq[0]+'</td><td>'+block.contrato[3]+'</td><td>'+block.contrato[7]+'%</td><td>'+block.contrato[8]+'</td><td>'+block.fechaCulminacion+'</td><td><button class="btn btn-primary" ">Ver Contrato</button></td></tr>'; 
+                    block.oso = block.oso + '<tr><td>'+block.fechaRegistro+'</td> <td>'+block.sumas+'</td><td>'+block.cliente[23]+'</td><td>'+block.cliente[7]+'</td> <td>'+block.cliente[8]+' '+block.cliente[10]+'</td> <td>'+block.tesq[0]+'</td><td>'+block.contrato[3]+'</td><td>'+block.contrato[7]+'%</td><td>'+block.contrato[8]+'</td><td>'+block.fechaCulminacion+'</td><td><button class="btn btn-primary" ">Ver Contrato</button></td></tr>';
                     
                     // Agrega la fila a la tabla
                     table.row.add([
@@ -8176,6 +8249,7 @@ function extraer_cobros_cierre(id_asesor, id_tabla) {
 
 
     $("#registro_final").click(function () {
+        block.eliminarFotoAsesor = false
         block.pais = $("#pais_selecionado").val();
         
         reverso = window.sessionStorage.getItem("Money-vars-foto-id-reverso");
@@ -8525,16 +8599,13 @@ function extraer_cobros_cierre(id_asesor, id_tabla) {
         block.barrio = $("#tipo_barriom").val();
         block.telefofijo = $("#telefono_fijom").val();
         block.telefomovil = $("#telefono_celm").val();
-        block.correo = $("#correo_electronicom").val();
-        
+        block.correo = $("#correo_electronicom").val();       
         
 		if (window.localStorage.getItem("Money-vars-token") !== null) {
 			block.tokens = JSON.parse(window.localStorage.getItem("Money-vars-token"));
 		} else {
 			block.tokens = JSON.parse(window.sessionStorage.getItem("Money-vars-token"));
 		}
-
-                
     });
 
     function insertar_cliente(){
@@ -8606,10 +8677,14 @@ function extraer_cobros_cierre(id_asesor, id_tabla) {
                     $("#text_alias_cliente").prop("disabled", false);
                     window.sessionStorage.setItem("Money-vars-registrado", block.numero);
                     window.sessionStorage.removeItem("Money-vars-foto-id-reversom");
+                    window.sessionStorage.removeItem("Money-vars-foto-id-reversomd");
                     window.sessionStorage.removeItem("Money-vars-foto-id-normalm");
+                    window.sessionStorage.removeItem("Money-vars-foto-id-normalmd");
                     $("#foto_user_clien").attr("src", window.sessionStorage.getItem("Money-vars-foto-idm"));
                     window.sessionStorage.removeItem("Money-vars-foto-idm");
+                    window.sessionStorage.removeItem("Money-vars-foto-idmd");
                     window.sessionStorage.removeItem("Money-vars-foto-frontal");
+                    window.sessionStorage.removeItem("Money-vars-foto-frontald");
                     $("#telefono_fijom").val("");
                     $("#telefono_celm").val("");
                     $("#correo_electronicom").val("");
@@ -8642,7 +8717,44 @@ function extraer_cobros_cierre(id_asesor, id_tabla) {
         }
     }
 
+    $('#elimina_suplantar_asesor').click(function () {
+        if( block.eliminarFotoAsesorSuplantar ) {
+            block.eliminarFotoAsesorSuplantar = false
+            $("#elimina_suplantar_asesor").text("Eliminar imagen")
+            toastr.info('Se desabilitó la opción de eliminar', 'Atención!');
+        } else {
+            block.eliminarFotoAsesorSuplantar = true
+            $("#elimina_suplantar_asesor").text("Deshabilitar eliminar imagen")
+            toastr.warning('Seleccione la imagen a eliminar', 'Atención!');
+        }
+    });
+    
+    $('#eliminar_imagen_asesor').click(function () {
+        if( block.eliminarFotoAsesor ) {
+            block.eliminarFotoAsesor = false
+            $("#eliminar_imagen_asesor").text("Eliminar imagen")
+            toastr.info('Se desabilitó la opción de eliminar', 'Atención!');
+        } else {
+            block.eliminarFotoAsesor = true
+            $("#eliminar_imagen_asesor").text("Deshabilitar eliminar imagen")
+            toastr.warning('Seleccione la imagen a eliminar', 'Atención!');
+        }
+    });
+
+    $('#eliminar_imagen_cliente').click(function () {
+        if( block.eliminarFotoCliente ) {
+            block.eliminarFotoCliente = false
+            $("#eliminar_imagen_cliente").text("Eliminar imagen")
+            toastr.info('Se desabilitó la opción de eliminar', 'Atención!');
+        } else {
+            block.eliminarFotoCliente = true
+            $("#eliminar_imagen_cliente").text("Deshabilitar eliminar imagen")
+            toastr.warning('Seleccione la imagen a eliminar', 'Atención!');
+        }
+    });
+
     $("#registro_finalmd").click(function () {
+        block.eliminarFotoCliente = false
         block.pais = $("#pais_selecionadomd").val();
         block.reverso = window.sessionStorage.getItem("Money-vars-foto-id-reversomd");
         block.normal = window.sessionStorage.getItem("Money-vars-foto-id-normalmd");
@@ -8733,6 +8845,7 @@ function extraer_cobros_cierre(id_asesor, id_tabla) {
     }
 
 	$("#su_registro_final").click(function () {
+        block.eliminarFotoCliente = false
         block.pais = $("#su_pais_selecionado").val();
         block.reverso = window.sessionStorage.getItem("Money-vars-foto-id-reverso");
         block.normal = window.sessionStorage.getItem("Money-vars-foto-id-normal");
@@ -9145,6 +9258,7 @@ function extraer_cobros_cierre(id_asesor, id_tabla) {
     }
 
     function asesores_lista() {
+        eliminarImagenesCloudinary()
         $("#crear_contrato_form").css("display", "none");
         $("#crear_contrato_form_dos").css("display", "none");
         $("#lista_ayu").css("display", "none");
@@ -9876,8 +9990,8 @@ function extraer_cobros_cierre(id_asesor, id_tabla) {
                         block.apellido2 = block.item[4];
                         block.direcion = block.item[5];
                         block.telefono = block.item[6];
-                        block.identificador = block.item[25];                        
-                        block.listadi = block.listadi + '<tr><td>'+block.identificador+'</td><td>'+block.nomre +' ' + block.nomre2 + ' ' + block.apellido + ' ' + block.apellido2 + '</td><td>' + block.cedula + '</td><td>' + block.direcion + '</td><td>' + block.telefono + '</td><td><button class="btn btn-primary" onclick="javascript:editar_cliente(' + String.fromCharCode(39) + block.cedula + String.fromCharCode(39) + ');">Editar</button></td></tr>';
+                        block.identificador = block.item[25];
+                        block.listadi = block.listadi + '<tr><td>'+block.identificador+'</td><td>'+block.nomre +' ' + block.nomre2 + ' ' + block.apellido + ' ' + block.apellido2 + '</td><td>' + block.cedula + '</td><td>' + block.direcion + '</td><td>' + block.telefono + '</td><td><button class="btn btn-primary" onclick="javascript:editar_cliente(' + String.fromCharCode(39) + block.cedula + String.fromCharCode(39) + ');">Editar</button></td><td><button class="btn btn-danger" onclick="javascript:eliminar_cliente(' + String.fromCharCode(39) + block.cedula + String.fromCharCode(39) + ');">Eliminar</button></td></tr>';
                     }
                                         
                     $("#listado_liengenerela").append(block.listadi);
@@ -9919,6 +10033,41 @@ function extraer_cobros_cierre(id_asesor, id_tabla) {
         });
     }
 
+    function eliminar_cliente( cedula ){
+        toastr.info("Consultando si el cliente se puede eliminar" + cedula, "Atención");
+        block.arrays =  [block.tokens[1], cedula ];
+        block.obj = { "r": "eliminar_cliente", "d": block.arrays };
+        console.log(JSON.stringify(block.obj))
+        backend.conexionEnvio(JSON.stringify(block.obj), function (salida) {
+            var valor = JSON.parse(salida); 
+            if (!valor.e) {
+                if( valor.d[1] !== '4' ) {
+                    toastr.success("Se ha eliminado el cliente con cédula " + cedula, "Atención");
+                    if ($.fn.DataTable && $.fn.DataTable.isDataTable('#datatable')) {
+                        let table = $('#datatable').DataTable();
+                        let row = $('#datatable tbody tr').filter(function(){
+                            return $(this).find('td:eq(2)').text() === cedula;
+                        }).first();
+                        if (row.length) {
+                            table.row(row).remove().draw();
+                        }
+                    } else {
+                        $('#datatable tbody tr').filter(function(){
+                            return $(this).find('td:eq(2)').text() === cedula;
+                        }).remove();
+                    }
+                    try { window.localStorage.removeItem("Money-vars-cliente-"+cedula); } catch(e) {}
+                } else if ( valor.d[1] == '4' ) {
+                    toastr.error("El cliente a eliminar, tiene contratos vigentes.", "Atención");
+                } else {
+                    toastr.error("No tiene permisos para realizar esta operación", "Atención");
+                }
+            } else {
+                toastr.error("Ha ocurido un error al realizar está operación", "Atención");
+            }
+        });
+    }
+
     function editar_cliente( cedula ){
         block.unicos = JSON.parse( window.localStorage.getItem("Money-vars-cliente-"+cedula));
                 
@@ -9929,6 +10078,9 @@ function extraer_cobros_cierre(id_asesor, id_tabla) {
         idmd = block.unicos[9];
         frontald = block.unicos[12];
 
+        /*
+            * Obtener las imágenes de los clientes
+        */
 		window.sessionStorage.setItem("Money-vars-foto-id-reversomd",block.unicos[11]);
 		window.sessionStorage.setItem("Money-vars-foto-id-normalmd",block.unicos[10]);
 		window.sessionStorage.setItem("Money-vars-foto-idmd",block.unicos[9]);
@@ -10004,7 +10156,18 @@ function extraer_cobros_cierre(id_asesor, id_tabla) {
 
     }
 
-    function cliente_lista() {        
+    function eliminarImagenesCloudinary(){
+        window.sessionStorage.removeItem('Money-vars-foto-frontald')
+        window.sessionStorage.removeItem('Money-vars-foto-id')
+        window.sessionStorage.removeItem('Money-vars-foto-id-normal')
+        window.sessionStorage.removeItem('Money-vars-foto-id-normalmd')
+        window.sessionStorage.removeItem('Money-vars-foto-id-reverso')
+        window.sessionStorage.removeItem('Money-vars-foto-id-reversomd')
+        window.sessionStorage.removeItem('Money-vars-foto-idmd')
+    }
+
+    function cliente_lista() {
+        eliminarImagenesCloudinary()
         $("#crear_contrato_form").css("display", "none");
         $("#crear_contrato_form_dos").css("display", "none");
         $("#lista_ayu").css("display", "none");
@@ -10141,7 +10304,7 @@ function extraer_cobros_cierre(id_asesor, id_tabla) {
 
                 block.contratoMultiplesAsesores = block.lista[20];
                 NombreEmpresa = block.lista[13];
-            }else{
+            } else {
 				toastr.warning('Configure el perfil de su empresa', 'Atención!');
 				asig_configuracion();
 			}

@@ -1,6 +1,6 @@
 var backend = this;
 
-backend.dev =  false;
+backend.dev =  true;
 
 if(!backend.dev){
 	backend.usuando = "api-prestamoselamigo.supersistemas.com.gt";

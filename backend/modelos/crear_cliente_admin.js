@@ -35,18 +35,18 @@ eje = function(arrays,origen,redisClient) {
 					redisClient.get("cliente_"+arrays[7],function(err, clienteActualizado){ //El cliente se va actualizar.
 						if( clienteActualizado !== null && clienteActualizado !== undefined ){
 							let actualizaciónCliente= JSON.parse(clienteActualizado);
-							arrays.push(actualizaciónCliente[23]) //Se le adjunta el Identificador.							
+							arrays.push(actualizaciónCliente[23]) //Se le adjunta el Identificador.			
 							if( clienteActualizado !== null && clienteActualizado !== undefined){
-								redisClient.set("cliente_"+arrays[7],JSON.stringify(arrays),function(err,reply) {						
+								redisClient.set("cliente_"+arrays[7],JSON.stringify(arrays),function(err,reply) {
 									/*
-										verifico si existe y listo
+										* verifico si existe y listo
 									*/						
 									redisClient.get("registro_client_"+decoded.d,function(errw,replyw) {
 										if( replyw!==null && reply !== undefined){
 											var esa = JSON.parse(replyw);								
 											/*
 												guardo
-											*/								
+											*/
 											if(esa.indexOf("cliente_"+arrays[7])==-1){
 												esa.push("cliente_"+arrays[7]);
 												redisClient.set("registro_client_"+decoded.d,JSON.stringify(esa),function(erwrw,repelyw) {
@@ -73,7 +73,7 @@ eje = function(arrays,origen,redisClient) {
 							function recurso(ind, arrs){
 								if(ind === arrs.length){
 									arrays.push(++identificadorMayor);
-									redisClient.set("cliente_"+arrays[7],JSON.stringify(arrays),function(err,reply) {						
+									redisClient.set("cliente_"+arrays[7],JSON.stringify(arrays),function(err,reply) {
 										/*
 											verifico si existe y listo
 										*/						

@@ -37,9 +37,9 @@
     <script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
     <script>       
     
-    const cloudName = "de5n5ntss";
+    const cloudName = "dxpwskrll";
     const URL_API = 'https://serviceimages.supersistemas.com.gt';
-    const PORT = '11353'
+    const PORT = '10495'
     
     let reversomd = ""
     let normalmd = ""
@@ -49,7 +49,7 @@
     let idContratoPlanMensualIndefinido = "8"    
 
     function generarEstadoCuentaCliente(){
-        const url = `https://api-prestamoselamigo.supersistemas.com.gt/reporte?asesor=${ticketClienteImpresion.cuotas[2]}&contrato=${ticketClienteImpresion.idContrato}&dpi=${ticketClienteImpresion.cuotas[1]}&configuracion=${ticketClienteImpresion.configuracion[0]}&plan=${ticketClienteImpresion.cuotas[10]}`;
+        const url = `http://localhost:3016/reporte?asesor=${ticketClienteImpresion.cuotas[2]}&contrato=${ticketClienteImpresion.idContrato}&dpi=${ticketClienteImpresion.cuotas[1]}&configuracion=${ticketClienteImpresion.configuracion[0]}&plan=${ticketClienteImpresion.cuotas[10]}`;
         window.open(url, '_blank');
 
         swal({
@@ -109,7 +109,7 @@
             block.fechaCulminacion = 'FECHA NO ESTABLECIDA';
         }
 
-        const url = `https://api-prestamoselamigo.supersistemas.com.gt/ticket?fecha=${fecha},%20a.%20m.&asesor=${nombreAsesor}%20${apellidoAsesor}&cliente=${ticketClienteImpresion.extraer[8]}%20${ticketClienteImpresion.extraer[9]}%20${ticketClienteImpresion.extraer[10]}%20${ticketClienteImpresion.extraer[11]}&numeroCuota=${NoCuota}&montoPagado=${montoAPagar}&saldoPendiente=${saldoPendiente.toString()}&saldoAnterior=${saldoAnterior.toString()}&fechaVencimiento=${block.fechaCulminacion}&configId=${block.configuracion[0]}&plan=${ticketClienteImpresion.cuotas[10]}`;
+        const url = `http://localhost:3016/ticket?fecha=${fecha},%20a.%20m.&asesor=${nombreAsesor}%20${apellidoAsesor}&cliente=${ticketClienteImpresion.extraer[8]}%20${ticketClienteImpresion.extraer[9]}%20${ticketClienteImpresion.extraer[10]}%20${ticketClienteImpresion.extraer[11]}&numeroCuota=${NoCuota}&montoPagado=${montoAPagar}&saldoPendiente=${saldoPendiente.toString()}&saldoAnterior=${saldoAnterior.toString()}&fechaVencimiento=${block.fechaCulminacion}&configId=${block.configuracion[0]}&plan=${ticketClienteImpresion.cuotas[10]}`;
         window.open(url, '_blank');
         
         swal({
@@ -2112,8 +2112,8 @@
             if( window.sessionStorage.getItem("Lista_cuota") !== null ) {
                 block.cuotas = JSON.parse(window.sessionStorage.getItem("Lista_cuota"));
                 block.limitos = JSON.parse(window.sessionStorage.getItem("Configuracion"));
-                block.min = parseInt(block.limitos[1]);
-                block.max = parseInt(block.limitos[2]);
+                block.min = parseInt(block.limitos[1].toString().replace('.', ''));
+                block.max = parseInt(block.limitos[2].toString().replace('.', ''));
 
                 if ($("#monto_prestar_ya_admin").val()!=="") { 
 
@@ -2212,9 +2212,9 @@
             if( window.sessionStorage.getItem("Lista_cuota") !== null ) {
                 block.cuotas = JSON.parse(window.sessionStorage.getItem("Lista_cuota"));
                 block.limitos = JSON.parse(window.sessionStorage.getItem("Configuracion"));
-                block.min = parseInt(block.limitos[1]);
-                block.max = parseInt(block.limitos[2]);
-                block.minRenovar = parseInt(block.limitos[12]);
+                block.min = parseInt(block.limitos[1].toString().replace('.', ''));
+                block.max = parseInt(block.limitos[2].toString().replace('.', ''));
+                block.minRenovar = parseInt(block.limitos[12].toString().replace('.', ''));
 
                 if ($("#monto_prestar_ya_admin_ampliacion").val()!=="") { 
 
@@ -2223,7 +2223,7 @@
                     block.resa2 = block.resa.replace(".","");
                     block.nuevomonto = parseInt(block.resa2);
 
-					if( block.nuevomonto >= block.min && block.nuevomonto <= block.max  && block.nuevomonto >= parseInt($("#valor_restante_anterior").text()) ) {
+					if( block.nuevomonto >= block.min && block.nuevomonto <= block.max  && block.nuevomonto >= parseInt($("#valor_restante_anterior").text().replace('.','')) ) {
                         for (var w = 0; w < block.cuotas.length; w++) {                            
                             if (block.cuotas[w][2] == $("#selector_cuotas_selec_ampliacion").val() &&  block.cuotas[w][1] == $("#selector_cuotas_selec_ampliacion").find("option:selected").text()) { //cantidad de cuotas
 
@@ -2402,6 +2402,7 @@
     listado_contratos(block.unico);
     $("#lista_enorme").append("");
     
+    // ACTUALIZAR CREDI EMPRENDEDOR
     function listado_contratos(mun){ 
         block.unico =  parseInt(mun);
 
@@ -2415,10 +2416,10 @@
         block.obj = { "r": "contratos_lista_all", "d": block.arrays };         
         backend.conexionEnvio(JSON.stringify(block.obj), function (salida) {
             var valor = JSON.parse(salida);            
-            if (!valor.e) { 
+            if (!valor.e) {
                 block.oso="";
-                block.dat0s =valor.d[1][0];
-                block.unox = JSON.parse(block.dat0s[0]);
+                block.dat0s = valor.d[1][0];
+                block.unox = JSON.parse(block.dat0s[0]);                
                 if(block.dat0s[1].length>0) {
                     block.dosx = JSON.parse(dat0s[1]);
                 } else {
@@ -2448,25 +2449,6 @@
                 
                 var valorCp = "";
                 var valorPe = "";
-                for(var u= 0; u<block.calsulo.length; u++){
-                    if(!block.calsulo[u].ct && block.calsulo[u].pe==0){ 
-                        valorCp = block.calsulo[u].cp;  
-                        if(valorCp.includes(".")){                            
-                            block.sumas = (parseInt(block.sumas) + parseInt(valorCp.replace(/\./g, "")));
-                        } else {
-                            block.sumas = block.sumas + parseInt(valorCp);
-                        }
-                    }else if(block.calsulo[u].pe!==0){       
-                        valorPe = String(block.calsulo[u].pe);
-                        
-                        if(valorPe.includes(".")){                            
-                            block.sumas = (parseInt(block.sumas) + parseInt(valorPe.replace(/\./g, "")));
-                        } else { 
-                            // block.sumas = block.sumas + parseInt(valorPe);
-                            block.sumas = block.sumas + parseInt(block.calsulo[u].cp) - parseInt(valorPe);
-                        }
-                    }
-                }
 
                 //Damos formato a la fechad de Registro del contrato (dd-mm-yyyy);
                 block.fechaSinFormatoRegistro = block.unox[5];
@@ -2482,11 +2464,22 @@
                     let partesFecha = block.fechaSinFormatoCulminacion.split('-');
                     block.fechaCulminacion = `${ partesFecha[2] }-${ partesFecha[1] }-${ partesFecha[0] }`;
 
-                    for(var u= 0; u<block.calsulo.length; u++){                            
-                        if(!block.calsulo[u].ct && block.calsulo[u].pe==0){
-                            block.sumas = block.sumas + parseInt(block.calsulo[u].cp.replace(/\./g, ""));
-                        }else if(block.calsulo[u].pe!==0){
-                            block.sumas = block.sumas + parseInt(block.calsulo[u].cp.replace(/\./g, "")) - parseInt(block.calsulo[u].pe);
+                    for(var u= 0; u<block.calsulo.length; u++){
+                        if(!block.calsulo[u].ct && block.calsulo[u].pe==0){ 
+                            valorCp = block.calsulo[u].cp;  
+                            if(valorCp.includes(".")){                            
+                                block.sumas = (parseInt(block.sumas) + parseInt(valorCp.replace(/\./g, "")));
+                            } else {
+                                block.sumas = block.sumas + parseInt(valorCp);
+                            }
+                        } else if(block.calsulo[u].pe!==0){
+                            valorPe = String(block.calsulo[u].pe);                        
+                            if(valorPe.includes(".")){                            
+                                block.sumas = (parseInt(block.sumas) + parseInt(valorPe.replace(/\./g, "")));
+                            } else { 
+                                // block.sumas = block.sumas + parseInt(valorPe);
+                                block.sumas = block.sumas + parseInt(block.calsulo[u].cp) - parseInt(valorPe);
+                            }
                         }
                     }
 
@@ -2507,6 +2500,7 @@
             }
         });
     }
+
     function listado_contratos_vencimiento(mun){     
         block.unico =  parseInt(mun);
 
@@ -2622,8 +2616,8 @@
             if(window.sessionStorage.getItem("Lista_cuota")!==null) {
                 block.cuotas = JSON.parse(window.sessionStorage.getItem("Lista_cuota"));
                 block.limitos = JSON.parse(window.sessionStorage.getItem("Configuracion"));
-                block.min = parseInt(block.limitos[1]);
-                block.max = parseInt(block.limitos[2]);
+                block.min = parseInt(block.limitos[1].toString().replace('.', ''));
+                block.max = parseInt(block.limitos[2].toString().replace('.', ''));
 
                 if ($("#monto_prestar_ya_admin").val()!=="") {
 
@@ -3406,6 +3400,9 @@
     $("#abono_cuota").prop("disabled",true);
     $("#cuotas_coun").prop("disabled",true);
     $("#status_prestamo").prop("disabled",true);
+    // ACTUALIZAR CREDI EMPRENDEDOR
+    $("#boton_pdff").prop("disabled",true);
+
     $("#crear_contrato").prop("disabled",true);
     $("#crear_contrato_form").css("display", "none");
     $("#crear_contrato_form_dos").css("display", "none");
@@ -3474,6 +3471,7 @@
             block.tokens = JSON.parse(window.sessionStorage.getItem("Money-vars-token"));
         }
 
+
         block.arrays = [ block.tokens[1] ];        
         block.obj = { "r": "down_configuracion", "d": block.arrays };
         backend.conexionEnvio(JSON.stringify(block.obj), function (salida) {
@@ -3504,6 +3502,9 @@
     }    
 
     function procesarDescuento( Numcuota, cedula ) {
+        //ACTUALIZAR CREDI EMPRENDEDOR
+        $("#boton_pdff").prop("disabled",false);
+
         if ( window.localStorage.getItem("Money-vars-token") !== null ) {
             block.tokens = JSON.parse(window.localStorage.getItem("Money-vars-token"));
         } else {
@@ -4207,8 +4208,8 @@
 
                 block.cuotas = JSON.parse(window.sessionStorage.getItem("Lista_cuota"));
                 block.limitos = JSON.parse(window.sessionStorage.getItem("Configuracion"));
-                block.min = parseInt(block.limitos[1]);
-                block.max = parseInt(block.limitos[2]);
+                block.min = parseInt(block.limitos[1].toString().replace('.', ''));
+                block.max = parseInt(block.limitos[2].toString().replace('.', ''));
 
                 if ($("#monto_prestar_ya_admin").val()!=="") { 
 
@@ -4277,9 +4278,9 @@
 
                 block.cuotas = JSON.parse(window.sessionStorage.getItem("Lista_cuota"));
                 block.limitos = JSON.parse(window.sessionStorage.getItem("Configuracion"));
-                block.min = parseInt(block.limitos[1]);
-                block.max = parseInt(block.limitos[2]);
-                block.minRenovar = parseInt(block.limitos[12]);                
+                block.min = parseInt(block.limitos[1].toString().replace('.', ''));
+                block.max = parseInt(block.limitos[2].toString().replace('.', ''));
+                block.minRenovar = parseInt(block.limitos[12].toString().replace('.', ''));
 
                 if ($("#monto_prestar_ya_admin_ampliacion").val()!=="") { 
 
@@ -4288,7 +4289,7 @@
                     block.resa2 = block.resa.replace(".","");
                     block.nuevomonto = parseInt(block.resa2);                 
 
-					if(block.nuevomonto >= block.min && block.nuevomonto <= block.max && block.nuevomonto >= parseInt($("#valor_restante_anterior").text())) {
+					if(block.nuevomonto >= block.min && block.nuevomonto <= block.max && block.nuevomonto >= parseInt($("#valor_restante_anterior").text().replace('.',''))) {
                         if (block.minRenovar > parseInt($("#cuota_anterior").text())){
                             swal({
                                 title: "Las cuotas finalizadas no cumplen con el mínimo de cuotas para renovar el contrato, ¿Desea continuar?",

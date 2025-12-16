@@ -353,10 +353,10 @@ function generarReporteCierre(response, redisClient, token, idAsesor, idConfigur
           }
           
           // Cálculos
-          totalSistema = baseDiaria + totalRecaudado - (totalGastos + totalRenovaciones);
+          // totalSistema = baseDiaria + totalRecaudado - (totalGastos + totalRenovaciones);
+          totalSistema = totalRecaudado - (totalGastos + totalRenovaciones);
           totalAsesor = sumatoriaData[5] || 0;
-          diferencia = sumatoriaData[6] || 0;
-          
+          diferencia = sumatoriaData[6] || 0;          
         }
 
         // * Crear tabla con resumen financiero (2 filas x 4 columnas)
