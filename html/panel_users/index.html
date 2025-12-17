@@ -70,46 +70,18 @@
     }
     
     function generarPDFPago() {
-
         let fecha = new Date().toLocaleString();
-        if(ticketClienteImpresion == undefined){ 
+        if(ticketClienteImpresion == undefined){
             toastr.warning("No hay datos para generar un ticket", "Atención");
             return;
-        }        
+        }
 
-        let saldoPendiente = 0
-        let saldoAnterior = 0            
-
-        let nombreCliente = ticketClienteImpresion.extraer[8] + ' ' +ticketClienteImpresion.extraer[9];
-        let apellidoCliente = ticketClienteImpresion.extraer[10] + ' ' +ticketClienteImpresion.extraer[11];
-        let NoCuota = ticketClienteImpresion.contador_cuotas;
-        let montoAPagar = parseInt(window.sessionStorage.getItem("monto-pagado"));
         let infoSesion = JSON.parse(sessionStorage.getItem('Money-vars-token'));
         let infoSeparada = infoSesion[6].split(" ");
         let nombreAsesor = infoSeparada.slice(0, 2).join(" ");
         let apellidoAsesor = infoSeparada.slice(2).join(" ");
-        
-        if (montoAPagar == parseInt(ticketClienteImpresion.cuotas[8].toString().replace(".","")) && ticketClienteImpresion.cuotas[10] == idContratoPlanMensualIndefinido){
-            saldoPendiente = 0
-            saldoAnterior = 0            
-        } else if (ticketClienteImpresion.cuotas[10] == idContratoPlanMensualIndefinido) {
-            saldoPendiente = parseInt(ticketClienteImpresion.cuotas[3].toString().replace(".","")); 
-            saldoAnterior = parseInt(ticketClienteImpresion.cuotas[8].toString().replace(".",""));
-        } else {
-            saldoPendiente = Math.ceil(parseInt(ticketClienteImpresion.valoes - ticketClienteImpresion.acumo));
-            saldoAnterior = montoAPagar + saldoPendiente;
-        }
-        
-        
-        if (ticketClienteImpresion.cuotas[10] != idContratoPlanMensualIndefinido) {
-            // Damos formato a la fechad de Culminacion del contrato (dd-mm-yyyy);
-            let partesFecha = block.ticketClienteImpresion.cuotas[13][ticketClienteImpresion.cuotas[13].length - 1].fe.split('-');
-            block.fechaCulminacion = `${ partesFecha[2] }-${ partesFecha[1] }-${ partesFecha[0] }`;
-        } else {
-            block.fechaCulminacion = 'FECHA NO ESTABLECIDA';
-        }
 
-        const url = `http://localhost:3016/ticket?fecha=${fecha},%20a.%20m.&asesor=${nombreAsesor}%20${apellidoAsesor}&cliente=${ticketClienteImpresion.extraer[8]}%20${ticketClienteImpresion.extraer[9]}%20${ticketClienteImpresion.extraer[10]}%20${ticketClienteImpresion.extraer[11]}&numeroCuota=${NoCuota}&montoPagado=${montoAPagar}&saldoPendiente=${saldoPendiente.toString()}&saldoAnterior=${saldoAnterior.toString()}&fechaVencimiento=${block.fechaCulminacion}&configId=${block.configuracion[0]}&plan=${ticketClienteImpresion.cuotas[10]}`;
+        const url = `http://localhost:3016/ticket?fecha=${fecha},%20a.%20m.&asesor=${nombreAsesor}%20${apellidoAsesor}&cliente=${ticketClienteImpresion.extraer[8]}%20${ticketClienteImpresion.extraer[9]}%20${ticketClienteImpresion.extraer[10]}%20${ticketClienteImpresion.extraer[11]}&identificadorContrato=${block.detalleMontoPagoContrato}&configId=${block.configuracion[0]}&plan=${ticketClienteImpresion.cuotas[10]}&idContratoPlanMensualidadIndefinido=${idContratoPlanMensualIndefinido}`;
         window.open(url, '_blank');
         
         swal({
@@ -2402,7 +2374,6 @@
     listado_contratos(block.unico);
     $("#lista_enorme").append("");
     
-    // ACTUALIZAR CREDI EMPRENDEDOR
     function listado_contratos(mun){ 
         block.unico =  parseInt(mun);
 
@@ -3399,8 +3370,7 @@
 
     $("#abono_cuota").prop("disabled",true);
     $("#cuotas_coun").prop("disabled",true);
-    $("#status_prestamo").prop("disabled",true);
-    // ACTUALIZAR CREDI EMPRENDEDOR
+    $("#status_prestamo").prop("disabled",true);    
     $("#boton_pdff").prop("disabled",true);
 
     $("#crear_contrato").prop("disabled",true);
@@ -3501,9 +3471,7 @@
         });        
     }    
 
-    function procesarDescuento( Numcuota, cedula ) {
-        //ACTUALIZAR CREDI EMPRENDEDOR
-        $("#boton_pdff").prop("disabled",false);
+    function procesarDescuento( Numcuota, cedula ) {        
 
         if ( window.localStorage.getItem("Money-vars-token") !== null ) {
             block.tokens = JSON.parse(window.localStorage.getItem("Money-vars-token"));
@@ -3521,8 +3489,10 @@
 				toastr.success('Procesado correctamente', 'Atención!');
 				block.cuotas = valor.d[1];
 				block.cliente = valor.d[2];
+                block.detalleMontoPagoContrato = valor.d[3];                
+                if( block.detalleMontoPagoContrato != "" ) $("#boton_pdff").prop("disabled",false);
 				
-				$("#cuotas_coun").val("");				
+				$("#cuotas_coun").val("");
 				
 				block.limpo = block.cuotas[3].replace(".","");
 				block.limpo2 = block.limpo.replace(".","");

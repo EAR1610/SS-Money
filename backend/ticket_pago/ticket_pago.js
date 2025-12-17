@@ -2,9 +2,11 @@
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
 
-function generarTicketPago(response, redisClient, fecha, asesor, cliente, numeroCuota, montoPagado, saldoPendiente, saldoAnterior, fechaVencimiento, configId, plan) {
+function generarTicketPago(response, redisClient, fecha, asesor, cliente, identificadorContrato, configId, plan, idContratoPlanMensualidadIndefinido) {
   return new Promise((resolve, reject) => {
     try {
+      const montoAPagar = parseInt(identificadorContrato.split('_')[2]);
+      const noContrato = identificadorContrato.split('_')[7];
       
       // * Helper: descargar imagen remota como Buffer (soporta https)
       function fetchImageBuffer(url) {
@@ -57,6 +59,112 @@ function generarTicketPago(response, redisClient, fecha, asesor, cliente, numero
         });
       }
 
+      function getNumeroCuota(contrato){
+        let contador_cuotas = 0;
+        for(var x = 0; x < contrato[13].length; x++){
+					if(contrato[13][x].ct == true || contrato[13][x].pe!==0) contador_cuotas++;					
+				}
+        return contador_cuotas;
+      }
+
+      function getFechaVencimiento(contrato){
+        let fechaVencimiento = 'FECHA NO ESTABLECIDA';
+        if(contrato[10] != idContratoPlanMensualidadIndefinido){
+          let partesFecha = contrato[13][contrato[13].length - 1].fe.split('-');
+          fechaVencimiento = `${ partesFecha[2] }-${ partesFecha[1] }-${ partesFecha[0] }`;
+        }
+
+        return fechaVencimiento;
+      }
+
+      function getSaldoPendiente(contrato){
+        let saldoPendiente = 0;
+
+        if (montoAPagar == parseInt(contrato[8].toString().replace(".","")) && contrato[10] == idContratoPlanMensualidadIndefinido){
+            saldoPendiente = 0
+        } else if (contrato[10] == idContratoPlanMensualidadIndefinido) {
+            saldoPendiente = parseInt(contrato[3].toString().replace(".",""));
+        } else {
+          let valoes = 0
+          let acumo = 0
+          
+           for(var x = 0; x < contrato[13].length; x++){
+              valoes += parseInt(contrato[13][x].cp.replace(".","")); //Obtenemos la totalidad del prestamos otorgado.
+              if (contrato[13][x].pe!==0){
+                acumo += parseInt(contrato[13][x].pe.toString().replace(".",""));                  
+              } else if(contrato[13][x].ct == true){
+                acumo += parseInt(contrato[13][x].cp.replace(".",""));
+              }                
+            }
+
+            saldoPendiente = Math.ceil(parseInt(valoes - acumo));
+        }
+
+        return saldoPendiente;
+      }
+
+      function getSaldoAnterior(montoAPagar, saldoPendiente, contrato){
+        let saldoAnterior = 0
+
+        if (montoAPagar == parseInt(contrato[8].toString().replace(".","")) && contrato[10] == idContratoPlanMensualidadIndefinido){
+            saldoAnterior = 0            
+        } else if (contrato[10] == idContratoPlanMensualidadIndefinido) {
+            saldoAnterior = parseInt(contrato[8].toString().replace(".",""));
+        } else {
+            saldoAnterior = parseInt(montoAPagar + saldoPendiente);
+        }
+
+        return saldoAnterior;
+      }
+
+      // * Helper: Obtener información del contrato (busca en múltiples patrones)
+      function getContratoInfo() {
+        // Función auxiliar para buscar por un patrón específico
+        const buscarPorPatron = (pattern) => {
+          return new Promise((resolve, reject) => {
+            redisClient.keys(pattern, (err, keys) => {
+              if (err) return reject(err);
+              if (!keys || keys.length === 0) return resolve(null);
+              
+              // Si encuentra llaves, tomamos la primera
+              redisClient.get(keys[0], (err, data) => {
+                if (err) return reject(err);
+                if (!data) return resolve(null);
+                try {
+                  const parsed = JSON.parse(data);
+                  resolve(parsed);
+                } catch (parseError) {
+                  reject(parseError);
+                }
+              });
+            });
+          });
+        };
+
+        return new Promise(async (resolve, reject) => {
+          try {
+            // Intentar con el patrón nuevo/actual
+            let info = await buscarPorPatron(`registry_*_${noContrato}`);
+            
+            // Si no se encuentra, intentar con el patrón antiguo
+            if (!info) {
+              console.log('[DEBUG] No encontrado en registry, buscando en old_registry...');
+              info = await buscarPorPatron(`old_registry_*_${noContrato}`);
+            }
+
+            // Si tampoco se encuentra, probar sin el wildcard por si acaso (según sugerencia)
+            if (!info) {
+               info = await buscarPorPatron(`old_registry_${noContrato}`);
+            }
+
+            resolve(info);
+          } catch (error) {
+            console.error('[DEBUG] Error buscando contrato:', error);
+            reject(error);
+          }
+        });
+      }
+
       // * Helper: formatear fecha dd/mm/yyyy, HH:MM:SS a. m./p. m.
       function formatFechaTicket(fechaStr) {
         if (!fechaStr) return '';
@@ -105,6 +213,17 @@ function generarTicketPago(response, redisClient, fecha, asesor, cliente, numero
             console.error('Error obteniendo configuración:', err);
             return null;
           });
+
+          // Obtenemos los datos del contrato
+          const contratoData = await getContratoInfo().catch(err => {
+            console.error('Error obteniendo contrato:', err);
+            return null;
+          });
+
+          const numeroCuota = getNumeroCuota(contratoData);
+          const fechaVencimiento =getFechaVencimiento(contratoData)
+          const saldoPendiente = getSaldoPendiente(contratoData)
+          const saldoAnterior = getSaldoAnterior(montoAPagar, saldoPendiente, contratoData)
 
           let nombreEmpresa = 'NOMBRE EMPRESA';
           let logoUrl = null;
@@ -158,7 +277,7 @@ function generarTicketPago(response, redisClient, fecha, asesor, cliente, numero
       // Logo (si existe)
       if (logoBuffer) {
         try {
-          doc.image(logoBuffer, 110, 12, { width: 80 });
+          doc.image(logoBuffer, 120, 1, { width: 60 });
         } catch (e) {
           console.warn('Error renderizando logo:', e);
         }
@@ -227,7 +346,7 @@ function generarTicketPago(response, redisClient, fecha, asesor, cliente, numero
 
       currentY += 10;
 
-      if (plan == 8){
+      if (plan == idContratoPlanMensualidadIndefinido){
           // Saldo anterior
           doc.fillColor('#000000').font('Helvetica-Bold').fontSize(12);
           doc.text('Valor del contrato:', 30, currentY);
@@ -237,7 +356,7 @@ function generarTicketPago(response, redisClient, fecha, asesor, cliente, numero
           // Monto a pagar (en rojo)
           doc.fillColor('#000000').font('Helvetica-Bold');
           doc.text('Monto a pagar:', 30, currentY);
-          doc.font('Helvetica').fillColor('#000000').text(formatMonto(montoPagado), valueX, currentY, { width: 90, align: 'right' });
+          doc.font('Helvetica').fillColor('#000000').text(formatMonto(montoAPagar), valueX, currentY, { width: 90, align: 'right' });
           currentY += lineHeight;
     
           // Saldo pendiente
@@ -255,7 +374,7 @@ function generarTicketPago(response, redisClient, fecha, asesor, cliente, numero
           // Monto a pagar (en rojo)
           doc.fillColor('#000000').font('Helvetica-Bold');
           doc.text('Monto a pagar:', 30, currentY);
-          doc.font('Helvetica').fillColor('#000000').text(formatMonto(montoPagado), valueX, currentY, { width: 90, align: 'right' });
+          doc.font('Helvetica').fillColor('#000000').text(formatMonto(montoAPagar), valueX, currentY, { width: 90, align: 'right' });
           currentY += lineHeight;
     
           // Saldo pendiente

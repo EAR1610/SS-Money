@@ -79,21 +79,18 @@ var server = http.createServer(async function(request, response) {
     const fecha = url.searchParams.get('fecha');
     const asesor = url.searchParams.get('asesor');
     const cliente = url.searchParams.get('cliente');
-    const numeroCuota = url.searchParams.get('numeroCuota');
-    const montoPagado = url.searchParams.get('montoPagado');
-    const saldoPendiente = url.searchParams.get('saldoPendiente');
-    const saldoAnterior = url.searchParams.get('saldoAnterior');
-    const fechaVencimiento = url.searchParams.get('fechaVencimiento');
+    const identificadorContrato = url.searchParams.get('identificadorContrato');	
     const configId = url.searchParams.get('configId');
     const plan = url.searchParams.get('plan');
+	const idContratoPlanMensualidadIndefinido = url.searchParams.get('idContratoPlanMensualidadIndefinido');
 
-    if (!fecha || !asesor || !cliente || !numeroCuota || !montoPagado || !saldoPendiente || !saldoAnterior || !fechaVencimiento || !configId || !plan) {
+    if (!fecha || !asesor || !cliente || !identificadorContrato || !configId || !plan || !idContratoPlanMensualidadIndefinido) {
       response.writeHead(400, { 'Content-Type': 'application/json' });
       response.end(JSON.stringify({ error: 'Faltan parámetros requeridos para el ticket' }));
       return;
     }
 
-    await generarTicketPago(response, redisClient, fecha, asesor, cliente, numeroCuota, montoPagado, saldoPendiente, saldoAnterior, fechaVencimiento, configId, plan);
+    await generarTicketPago(response, redisClient, fecha, asesor, cliente, identificadorContrato, configId, plan, idContratoPlanMensualidadIndefinido);
     return;
   } else if (url.pathname === '/reporte-cierre' && request.method === 'GET') {
     // Ruta para reporte de cierre

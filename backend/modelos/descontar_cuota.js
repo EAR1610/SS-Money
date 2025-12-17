@@ -82,6 +82,7 @@ eje = function(arrays,origen,redisClient) {
 		var valurl = /^(?:(?:(?:https?|ftp):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:[/?#]\S*)?$/;
 		var correo = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/;
 		var infoContrato
+		var identificadorPago = ""
 
 		/*          0            1         2         3        4
 			* Recibo tokens, idasesor, Numcuota, idcontrato, cedula
@@ -244,6 +245,7 @@ eje = function(arrays,origen,redisClient) {
 	
 											var moment = require("moment-timezone"),fechaqx2 = moment().tz("America/Guatemala").format('YYYY-MM-DD');													
 											var fechaq = moment().tz("America/Guatemala").format('YYYY-MM-DD_hh_mm_A'),asesorw = arrays[1];
+											identificadorPago = "monto_" + asesorw + "_"+arrays[2]+"_"+fechaq+"_"+arrays[3]+"_"+cedulax[1]
 											redisClient.set("monto_" + asesorw + "_"+arrays[2]+"_"+fechaq+"_"+arrays[3]+"_"+cedulax[1],"true", function (errex, rewprlyx) {
 											});
 	
@@ -265,7 +267,7 @@ eje = function(arrays,origen,redisClient) {
 																	}
 																	if(j==infes.length-1){
 																		redisClient.set("registro_contrato_"+arrays[1],JSON.stringify(nuva), function (errx, repslyx) {
-																			resolve([true,interno,sreeply]);
+																			resolve([true,interno,sreeply, identificadorPago]);
 																		});
 																	}
 																}
@@ -297,7 +299,7 @@ eje = function(arrays,origen,redisClient) {
 																	}
 																	if(j==infes.length-1){																		
 																		redisClient.set("registro_contrato_"+arrays[1],JSON.stringify(nuva), function (errx, repslyx) {
-																			resolve([true,interno,sreeply]);
+																			resolve([true,interno,sreeply, identificadorPago]);
 																		});
 																	}
 																}
@@ -342,7 +344,7 @@ eje = function(arrays,origen,redisClient) {
 																			}
 																			if(j==infes.length-1){
 																				redisClient.set("registro_contrato_"+arrays[1],JSON.stringify(nuva), function (errx, repslyx) {
-																					resolve([true,interno,sreeply]);
+																					resolve([true,interno,sreeply, identificadorPago]);
 																				});
 																			}
 																		}
@@ -369,7 +371,7 @@ eje = function(arrays,origen,redisClient) {
 
 													// ? Actualizamos el contrato en redis
 													redisClient.set(origena,JSON.stringify(interno),function(errx,replyxs) {
-														resolve([true,interno,sreeply]);
+														resolve([true,interno,sreeply, identificadorPago]);
 													});
 
 												} else { // * Los demás contratos (normales)
@@ -377,7 +379,7 @@ eje = function(arrays,origen,redisClient) {
 													
 													// ? Actualizamos el contrato en redis
 													redisClient.set(origena,JSON.stringify(interno),function(errx,replyxs) {
-														resolve([true,interno,sreeply]);
+														resolve([true,interno,sreeply, identificadorPago]);
 													});
 												}																								
 
